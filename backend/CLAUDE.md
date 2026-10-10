@@ -1,20 +1,37 @@
 # Backend (FastAPI)
 
-**Status:** not scaffolded yet; roadmap chunk 1 does it.
+**Status:** skeleton (roadmap chunk 1): app, settings, Docker Compose, Alembic, pytest, `/health`.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
 ## Stack
 
 - Python 3.12+, uv for dependencies.
-- FastAPI, Pydantic v2 with pydantic-settings.
+- FastAPI served by uvicorn, Pydantic v2 with pydantic-settings.
 - SQLAlchemy 2 (async) with asyncpg, Alembic.
 - PostgreSQL in Docker Compose.
-- pytest with httpx, ruff.
+- pytest with httpx (`AsyncClient` + `ASGITransport`, async tests via the anyio plugin), ruff.
 
 Ask before adding anything not on this list.
 
-## Planned layout
+## Commands
+
+Run from `backend/`.
+
+```
+docker compose up -d --build       # Postgres + API on http://localhost:8000 (runs migrations first)
+docker compose up -d db            # Postgres only, for running the API on the host
+uv sync                            # install dependencies into .venv
+uv run uvicorn app.main:app --reload
+uv run pytest
+uv run ruff check . && uv run ruff format .
+uv run alembic revision --autogenerate -m "..."
+uv run alembic upgrade head
+```
+
+Copy `.env.example` to `.env` for host runs. The Compose project is named `overload`.
+
+## Layout
 
 ```
 app/main.py

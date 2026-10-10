@@ -3,7 +3,7 @@
 ## Components
 
 - **frontend/:** Expo (React Native, TypeScript) for iOS and Android. Not scaffolded yet.
-- **backend/:** FastAPI with PostgreSQL. PostgreSQL is the source of truth from day one. Not scaffolded yet.
+- **backend/:** FastAPI with PostgreSQL. PostgreSQL is the source of truth from day one.
 - **The app never talks to PostgreSQL directly,** only through the API.
 
 ```
@@ -54,7 +54,11 @@ A user must be able to log a whole workout with no connection.
 
 ## Endpoints
 
-To be filled in as chunks 3–7 land. Expected groups: auth, exercises, splits (with days and day exercises), workouts (with workout exercises and sets), bodyweight, settings, stats. Record each endpoint's path, method and payload here when it is built.
+| Method | Path | Auth | Response |
+|---|---|---|---|
+| GET | `/health` | none | `{"status": "ok"}` (liveness only; does not check the database) |
+
+The rest are filled in as chunks 3–7 land. Expected groups: auth, exercises, splits (with days and day exercises), workouts (with workout exercises and sets), bodyweight, settings, stats. Record each endpoint's path, method and payload here when it is built.
 
 ## Open questions
 

@@ -14,7 +14,7 @@ Before UI chunks, open the listed PNGs in `design/screens/`, their HTML in `desi
 
 Backend first, since PostgreSQL is the source of truth.
 
-### 1. Backend skeleton
+### 1. Backend skeleton — DONE
 
 - **Goal:** FastAPI app, settings, Docker Compose with PostgreSQL, Alembic, pytest, `/health`.
 - **Design:** none.
