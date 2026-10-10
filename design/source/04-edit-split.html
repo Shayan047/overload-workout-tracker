@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit split</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:18px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:16px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.label{display:block;margin-bottom:8px;color:#A8AFB8;font-size:13px;font-weight:600}
+.field{width:100%;height:52px;padding:0 16px;border:1px solid #3E434A;border-radius:14px;background:#16181B;color:#F3F5F7;font-family:inherit;font-size:17px;font-weight:600}
+.seg{flex:1;height:44px;border:0;border-radius:10px;background:transparent;color:#A8AFB8;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.seg.on{background:#F3F5F7;color:#0B0C0E}
+.dayrow{display:flex;align-items:center;gap:14px;padding:12px 8px 12px 14px;color:#F3F5F7;text-decoration:none}
+.dayrow:hover{background:#1D2024;color:#F3F5F7}
+.step{width:32px;height:32px;flex:none;border-radius:999px;border:1.5px solid #474C54;display:flex;align-items:center;justify-content:center;font-size:17px}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 32px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Splits.dc.html" aria-label="Back"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <h1 class="h1" style="font-size:24px">Edit split</h1>
+  </div>
+
+  <div style="margin-top:26px">
+    <label class="label" for="split-name">Split name</label>
+    <input id="split-name" class="field" type="text" value="Arnold split">
+  </div>
+
+  <div style="margin-top:22px">
+    <span class="label" id="repeat-label">How days repeat</span>
+    <div role="group" aria-labelledby="repeat-label" style="display:flex;gap:4px;padding:4px;border-radius:14px;background:#16181B">
+      <button class="seg on" aria-pressed="true">In order</button>
+      <button class="seg" aria-pressed="false">Set weekdays</button>
+    </div>
+    <p class="muted" style="margin:10px 2px 0;font-size:14px">Train the next day whenever you're ready. Rest days never shift your split.</p>
+  </div>
+
+  <div style="margin-top:24px;display:flex;align-items:baseline;justify-content:space-between">
+    <span class="label" style="margin:0">Days</span>
+    <span class="faint small">Drag to reorder</span>
+  </div>
+  <ol style="list-style:none;margin:10px 0 0;padding:6px 0;border-radius:20px;background:#16181B">
+    <li>
+      <a class="dayrow" href="DayEditor.dc.html">
+        <span class="step num">1</span>
+        <span style="flex:1"><span class="h2" style="display:block">Chest &amp; Back</span><span class="muted small">6 exercises</span></span>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      </a>
+    </li>
+    <li style="border-top:1px solid #212429;margin-left:60px"></li>
+    <li>
+      <a class="dayrow" href="DayEditor.dc.html">
+        <span class="step num">2</span>
+        <span style="flex:1"><span class="h2" style="display:block">Shoulders &amp; Arms</span><span class="muted small">6 exercises</span></span>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      </a>
+    </li>
+    <li style="border-top:1px solid #212429;margin-left:60px"></li>
+    <li>
+      <a class="dayrow" href="DayEditor.dc.html">
+        <span class="step num">3</span>
+        <span style="flex:1"><span class="h2" style="display:block">Legs</span><span class="muted small">5 exercises</span></span>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      </a>
+    </li>
+  </ol>
+
+  <div style="display:flex;align-items:center;gap:10px;margin:12px 4px 0" class="muted small">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;color:#7FD3EA"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v4.5h-4.5"></path></svg>
+    After Legs, you start again at Chest &amp; Back.
+  </div>
+
+  <button style="margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border:1.5px dashed #474C54;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"></path></svg>
+    Add a day
+  </button>
+
+  <div style="flex:1"></div>
+  <a class="btn" href="Today.dc.html">Save split</a>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

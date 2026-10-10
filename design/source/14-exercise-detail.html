@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Exercise detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:16px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;text-decoration:none;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.chip.on:hover{color:#0B0C0E}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+.ax{font-family:'Archivo',system-ui,sans-serif;font-size:11px;fill:#88909A}
+</style>
+</helmet>
+<main class="app" style="height:1240px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Progress.dc.html" aria-label="Back to progress"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <h1 class="h1" style="font-size:24px;flex:1">Bicep curl</h1>
+    <button class="icon" aria-label="Exercise options"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+  </div>
+
+  <div style="margin-top:20px">
+    <div class="muted small" style="font-weight:600">Estimated max</div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin-top:6px">
+      <span class="num" style="font-size:76px">24.7</span>
+      <span class="muted" style="font-size:22px;font-weight:600">lb</span>
+    </div>
+    <div style="margin-top:8px;display:flex;align-items:center;gap:6px;color:#FFA41B;font-weight:600">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>
+      Up 10.7 lb since your first session, Aug 18
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin:18px -20px 0;padding:0 20px;overflow-x:auto" role="group" aria-label="Weight filter">
+    <a class="chip on" href="Exercise.dc.html" aria-current="page">All weights</a>
+    <a class="chip" href="WeightProgress.dc.html">10 lb</a>
+    <a class="chip" href="WeightProgress.dc.html">15 lb</a>
+    <a class="chip" href="WeightProgress.dc.html">20 lb</a>
+  </div>
+
+  <section style="margin-top:14px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
+    <svg viewBox="0 0 350 196" width="100%" role="img" aria-label="Estimated max rose from 14.0 pounds on Aug 18 to 24.7 pounds on Oct 9, with jumps when the weight went from 10 to 15 and then 20 pounds. Projected about 28 pounds by Dec 1." style="display:block">
+      <rect x="30" y="20" width="45.7" height="140" fill="#1A1D21"></rect>
+      <rect x="75.7" y="20" width="81.3" height="140" fill="#1F2226"></rect>
+      <rect x="157" y="20" width="32" height="140" fill="#1A1D21"></rect>
+      <text class="ax" x="35" y="34" style="fill:#A8AFB8">10 lb</text>
+      <text class="ax" x="81" y="34" style="fill:#A8AFB8">15 lb</text>
+      <text class="ax" x="161" y="34" style="fill:#A8AFB8">20 lb</text>
+      <g stroke="#31353B" stroke-width="1">
+        <line x1="30" y1="20" x2="342" y2="20"></line>
+        <line x1="30" y1="55" x2="342" y2="55"></line>
+        <line x1="30" y1="90" x2="342" y2="90"></line>
+        <line x1="30" y1="125" x2="342" y2="125"></line>
+        <line x1="30" y1="160" x2="342" y2="160"></line>
+      </g>
+      <text class="ax" x="24" y="24" text-anchor="end">30</text>
+      <text class="ax" x="24" y="59" text-anchor="end">25</text>
+      <text class="ax" x="24" y="94" text-anchor="end">20</text>
+      <text class="ax" x="24" y="129" text-anchor="end">15</text>
+      <text class="ax" x="24" y="164" text-anchor="end">10</text>
+      <path d="M183.5 57.1L340 34" fill="none" stroke="#FFA41B" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round" opacity="0.75"></path>
+      <text class="ax" x="340" y="25" text-anchor="end" style="fill:#FFA41B">~28 lb</text>
+      <path d="M30 132L38.9 132L50.7 132L59.5 129.9L71.3 127.1L80.2 97L92 93.5L100.9 93.5L112.7 90L121.5 90L133.3 86.5L142.2 86.5L151 83L162.9 62L174.7 62L183.5 57.1" fill="none" stroke="#FFA41B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+      <g fill="#FFA41B">
+        <circle cx="30" cy="132" r="2.5"></circle><circle cx="38.9" cy="132" r="2.5"></circle><circle cx="50.7" cy="132" r="2.5"></circle><circle cx="59.5" cy="129.9" r="2.5"></circle><circle cx="71.3" cy="127.1" r="2.5"></circle>
+        <circle cx="80.2" cy="97" r="2.5"></circle><circle cx="92" cy="93.5" r="2.5"></circle><circle cx="100.9" cy="93.5" r="2.5"></circle><circle cx="112.7" cy="90" r="2.5"></circle><circle cx="121.5" cy="90" r="2.5"></circle>
+        <circle cx="133.3" cy="86.5" r="2.5"></circle><circle cx="142.2" cy="86.5" r="2.5"></circle><circle cx="151" cy="83" r="2.5"></circle><circle cx="162.9" cy="62" r="2.5"></circle><circle cx="174.7" cy="62" r="2.5"></circle>
+      </g>
+      <circle cx="183.5" cy="57.1" r="6" fill="#FFA41B" stroke="#16181B" stroke-width="3"></circle>
+      <text class="ax" x="30" y="182">Aug 18</text>
+      <text class="ax" x="112.7" y="182" text-anchor="middle">Sep 15</text>
+      <text class="ax" x="183.5" y="182" text-anchor="middle" style="fill:#F3F5F7">Today</text>
+      <text class="ax" x="340" y="182" text-anchor="end">Dec 1</text>
+    </svg>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 4px 0" class="muted small">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;border-radius:2px;background:#FFA41B"></span>Est. max</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:0;border-top:2px dashed #FFA41B"></span>If the trend holds</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:12px;border-radius:3px;background:#1F2226;border:1px solid #3E434A"></span>Weight used</span>
+    </div>
+  </section>
+
+  <div style="display:flex;gap:12px;align-items:center;margin-top:12px;padding:14px 16px;border-radius:16px;background:#121417">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#FFA41B"><path d="M4 18l6-6 4 4 6-8"></path><path d="M15 8h5v5"></path></svg>
+    <p style="margin:0">On pace for about <span class="num" style="font-size:19px">28 lb</span> by Dec 1. No plateau yet.</p>
+  </div>
+
+  <section style="margin-top:12px;border-radius:20px;background:#16181B;padding:4px 0">
+    <div class="row"><span class="muted">Best set</span><span><span class="num" style="font-size:22px;color:#FFA41B">20 × 7</span> <span class="faint small">today</span></span></div>
+    <div class="sep"></div>
+    <div class="row"><span class="muted">Most reps</span><span><span class="num" style="font-size:22px">10 × 14</span> <span class="faint small">Sep 1</span></span></div>
+    <div class="sep"></div>
+    <div class="row"><span class="muted">Heaviest</span><span><span class="num" style="font-size:22px">20 lb</span> <span class="faint small">since Oct 2</span></span></div>
+  </section>
+
+  <a href="Frontier.dc.html" style="margin-top:12px;display:flex;align-items:center;gap:14px;padding:14px 12px 14px 16px;border-radius:20px;background:#16181B;color:#F3F5F7;text-decoration:none">
+    <svg viewBox="0 0 48 40" width="48" height="40" aria-hidden="true" style="flex:none">
+      <path d="M4 36V4M4 36h40" stroke="#474C54" stroke-width="1.5" fill="none"></path>
+      <path d="M10 26L30 20L40 12" stroke="#7FD3EA" stroke-width="1.5" stroke-dasharray="3 3" fill="none"></path>
+      <path d="M14 10L32 16L42 26" stroke="#FFA41B" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span style="flex:1"><span class="h2" style="display:block">Rep-weight frontier</span><span class="muted small">Your most reps at every weight you've used</span></span>
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+  </a>
+
+  <div class="faint small" style="margin:20px 4px 8px;font-weight:600">Recent sessions</div>
+  <ul style="list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B">
+    <li class="row" style="min-height:60px">
+      <span><span class="h2" style="display:block">Today</span><span class="muted small">20 lb × 7, 6, 6, 5</span></span>
+      <span class="num" style="font-size:22px;color:#FFA41B">24.7</span>
+    </li>
+    <li class="sep"></li>
+    <li class="row" style="min-height:60px">
+      <span><span class="h2" style="display:block">Tue, Oct 6</span><span class="muted small">20 lb × 6, 5, 5, 4</span></span>
+      <span class="num" style="font-size:22px">24.0</span>
+    </li>
+    <li class="sep"></li>
+    <li class="row" style="min-height:60px">
+      <span><span class="h2" style="display:block">Fri, Oct 2</span><span class="muted small">20 lb × 6, 5, 4, 4</span></span>
+      <span class="num" style="font-size:22px">24.0</span>
+    </li>
+    <li class="sep"></li>
+    <li class="row" style="min-height:60px">
+      <span><span class="h2" style="display:block">Mon, Sep 28</span><span class="muted small">15 lb × 12, 10, 9, 9</span></span>
+      <span class="num" style="font-size:22px">21.0</span>
+    </li>
+  </ul>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

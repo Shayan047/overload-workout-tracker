@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bodyweight</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:17px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.ax{font-family:'Archivo',system-ui,sans-serif;font-size:11px;fill:#88909A}
+.lr{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 32px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Profile.dc.html" aria-label="Back to profile"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <h1 class="h1" style="font-size:24px">Bodyweight</h1>
+  </div>
+
+  <div style="display:flex;align-items:baseline;gap:8px;margin-top:20px">
+    <span class="num" style="font-size:68px">172.0</span>
+    <span class="muted" style="font-size:20px;font-weight:600">lb</span>
+  </div>
+  <p class="muted" style="margin:6px 0 0">Up 3.6 lb since Aug 10</p>
+
+  <div style="display:flex;gap:8px;margin-top:16px">
+    <button class="chip">1 month</button>
+    <button class="chip on" aria-pressed="true">3 months</button>
+    <button class="chip">1 year</button>
+    <button class="chip">All</button>
+  </div>
+
+  <section style="margin-top:14px;padding:12px;border-radius:20px;background:#16181B">
+    <svg viewBox="0 0 350 152" width="100%" role="img" aria-label="Bodyweight rose steadily from 168.4 pounds on Aug 10 to 172.0 pounds on Oct 9." style="display:block">
+      <g stroke="#31353B" stroke-width="1">
+        <line x1="30" y1="20" x2="342" y2="20"></line>
+        <line x1="30" y1="47.5" x2="342" y2="47.5"></line>
+        <line x1="30" y1="75" x2="342" y2="75"></line>
+        <line x1="30" y1="102.5" x2="342" y2="102.5"></line>
+        <line x1="30" y1="130" x2="342" y2="130" stroke="#474C54"></line>
+      </g>
+      <text class="ax" x="24" y="24" text-anchor="end">174</text>
+      <text class="ax" x="24" y="51.5" text-anchor="end">172</text>
+      <text class="ax" x="24" y="79" text-anchor="end">170</text>
+      <text class="ax" x="24" y="106.5" text-anchor="end">168</text>
+      <text class="ax" x="24" y="134" text-anchor="end">166</text>
+      <path d="M30 97L64.4 90.1L98.9 80.5L133.3 77.75L167.8 68.1L202.2 69.5L236.7 59.9L271.1 53L305.6 50.25L340 47.5" fill="none" stroke="#CED3D9" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"></path>
+      <g fill="#CED3D9">
+        <circle cx="30" cy="97" r="2.5"></circle><circle cx="64.4" cy="90.1" r="2.5"></circle><circle cx="98.9" cy="80.5" r="2.5"></circle><circle cx="133.3" cy="77.75" r="2.5"></circle><circle cx="167.8" cy="68.1" r="2.5"></circle>
+        <circle cx="202.2" cy="69.5" r="2.5"></circle><circle cx="236.7" cy="59.9" r="2.5"></circle><circle cx="271.1" cy="53" r="2.5"></circle><circle cx="305.6" cy="50.25" r="2.5"></circle>
+      </g>
+      <circle cx="340" cy="47.5" r="5.5" fill="#FFA41B" stroke="#16181B" stroke-width="2.5"></circle>
+      <text class="ax" x="30" y="148">Aug 10</text>
+      <text class="ax" x="167.8" y="148" text-anchor="middle">Sep 7</text>
+      <text class="ax" x="342" y="148" text-anchor="end" style="fill:#F3F5F7">Today</text>
+    </svg>
+  </section>
+
+  <ul style="list-style:none;margin:12px 0 0;padding:2px 0;border-radius:20px;background:#16181B">
+    <li class="lr"><span>Today</span><span class="num" style="font-size:20px">172.0</span></li>
+    <li class="sep"></li>
+    <li class="lr"><span class="muted">Mon, Oct 5</span><span class="num" style="font-size:20px">171.8</span></li>
+    <li class="sep"></li>
+    <li class="lr"><span class="muted">Mon, Sep 28</span><span class="num" style="font-size:20px">171.6</span></li>
+    <li class="sep"></li>
+    <li class="lr"><span class="muted">Mon, Sep 21</span><span class="num" style="font-size:20px">171.1</span></li>
+  </ul>
+
+  <p class="faint small" style="margin:12px 4px 0">Each workout keeps your bodyweight from that day, so chin-ups and dips you logged before never change.</p>
+
+  <div style="flex:1"></div>
+  <a class="btn" href="Profile.dc.html">Log bodyweight</a>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

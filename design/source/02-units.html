@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Units and bodyweight</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-0.005em}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:16px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.label{display:block;margin-bottom:10px;color:#A8AFB8;font-size:13px;font-weight:600}
+.seg{flex:1;height:52px;border:0;border-radius:11px;background:transparent;color:#A8AFB8;font-family:inherit;font-size:17px;font-weight:650;cursor:pointer}
+.seg.on{background:#F3F5F7;color:#0B0C0E}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 24px 36px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <a class="icon" href="Main.dc.html" aria-label="Back"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="faint small">Step 1 of 2</span>
+  </div>
+
+  <h1 class="h1" style="margin-top:28px">Your units</h1>
+  <p class="muted" style="margin:10px 0 0;font-size:16px;max-width:320px">You can change these any time in your profile.</p>
+
+  <section style="margin-top:36px">
+    <span class="label" id="unit-label">Weight unit</span>
+    <div role="group" aria-labelledby="unit-label" style="display:flex;gap:4px;padding:4px;border-radius:15px;background:#16181B">
+      <button class="seg on" aria-pressed="true">Pounds (lb)</button>
+      <button class="seg" aria-pressed="false">Kilograms (kg)</button>
+    </div>
+  </section>
+
+  <section style="margin-top:32px">
+    <label class="label" for="bw">Your bodyweight</label>
+    <div style="display:flex;align-items:baseline;gap:10px;padding:18px 20px;border-radius:18px;background:#16181B;border:1px solid #3E434A">
+      <input id="bw" type="text" inputmode="decimal" value="172" class="num" style="width:150px;padding:0;border:0;background:transparent;color:#F3F5F7;font-family:inherit;font-size:64px;font-stretch:68%;font-weight:800;outline:none">
+      <span class="muted" style="font-size:20px;font-weight:600">lb</span>
+    </div>
+    <p class="muted" style="margin:14px 0 0;font-size:14px">Pull-ups, dips and other bodyweight exercises use this plus any weight you add, so the whole load counts toward your progress.</p>
+  </section>
+
+  <div style="display:flex;gap:12px;align-items:flex-start;margin-top:24px;padding:16px;border-radius:16px;background:#121417">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#7FD3EA;margin-top:1px"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>
+    <p class="muted" style="margin:0;font-size:14px">Update it whenever it changes. Each workout keeps the bodyweight from that day, so older sets never shift.</p>
+  </div>
+
+  <div style="flex:1"></div>
+  <a class="btn" href="Splits.dc.html">Continue</a>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Progress</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:16px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.tabs{position:absolute;left:0;right:0;bottom:0;height:84px;padding:10px 8px 28px;display:flex;background:#101114;border-top:1px solid #1E2125}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:#88909A;font-size:11px;font-weight:600;text-decoration:none}
+.tab:hover,.tab.on{color:#F3F5F7}
+.ex{display:grid;grid-template-columns:minmax(0,1fr) 84px 64px;align-items:center;column-gap:12px;height:64px;padding:0 16px;color:#F3F5F7;text-decoration:none}
+a.ex:hover{background:#1D2024;color:#F3F5F7}
+.sep{height:1px;margin:0 16px;background:#212429}
+.spark{width:84px;height:32px;fill:none;stroke:#7FD3EA;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.val{text-align:right}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 0">
+  <h1 class="h1" style="margin-top:4px;font-size:36px">Progress</h1>
+  <p class="muted" style="margin:8px 0 0">2 new bests today, 1 lift flat for 3 weeks.</p>
+
+  <div style="display:flex;gap:8px;margin:18px -20px 0;padding:0 20px;overflow-x:auto">
+    <button class="chip on" aria-pressed="true">All</button>
+    <button class="chip">Chest &amp; Back</button>
+    <button class="chip">Shoulders &amp; Arms</button>
+    <button class="chip">Legs</button>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;margin:20px 4px 8px" class="faint small">
+    <span style="font-weight:600">Last 8 weeks</span>
+    <span style="font-weight:600">Est. max, lb</span>
+  </div>
+
+  <ul style="list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B">
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Bicep curl</span><span class="small" style="color:#FFA41B;font-weight:600">New best today</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 28L14 27L26 26L38 18L50 16L62 14L74 8L82 6"></path><circle cx="82" cy="6" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">24.7</span><span class="faint small">+76%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Lateral raise</span><span class="small" style="color:#FFA41B;font-weight:600">New best today</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 27L18 22L34 22L50 17L66 13L82 9"></path><circle cx="82" cy="9" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">28.7</span><span class="faint small">+17%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Bench press</span><span class="small" style="color:#7FD3EA;font-weight:600;display:inline-flex;align-items:center;gap:4px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M4 12h16M16 8l4 4-4 4"></path></svg>Flat for 3 weeks</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 22L14 18L26 14L38 12L50 12L62 12L74 12L82 12"></path><circle cx="82" cy="12" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">205</span><span class="faint small">+4%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Overhead press</span><span class="muted small">Barbell</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 26L18 23L34 21L50 17L66 15L82 11"></path><circle cx="82" cy="11" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">95.0</span><span class="faint small">+12%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Barbell row</span><span class="muted small">Barbell</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 24L20 21L38 19L56 16L74 13L82 12"></path><circle cx="82" cy="12" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">182</span><span class="faint small">+9%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Squat</span><span class="muted small">Barbell</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 24L18 22L34 19L50 20L66 16L82 14"></path><circle cx="82" cy="14" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">268</span><span class="faint small">+7%</span></span>
+      </a>
+    </li>
+    <li class="sep"></li>
+    <li>
+      <a class="ex" href="Exercise.dc.html">
+        <span style="min-width:0"><span class="h2" style="display:block">Chin-up</span><span class="muted small">Includes bodyweight</span></span>
+        <svg class="spark" viewBox="0 0 84 32" aria-hidden="true"><path d="M2 25L18 23L34 20L50 18L66 17L82 13"></path><circle cx="82" cy="13" r="3" fill="#FFA41B" stroke="none"></circle></svg>
+        <span class="val"><span class="num" style="font-size:22px;display:block">231</span><span class="faint small">+8%</span></span>
+      </a>
+    </li>
+  </ul>
+
+  <p class="faint small" style="margin:14px 4px 0">Est. max is the most you could lift once, estimated from your best set: weight × (1 + reps ÷ 30).</p>
+
+  <nav class="tabs" aria-label="Main">
+    <a class="tab" href="Today.dc.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"></path></svg>Today</a>
+    <a class="tab" href="SplitBuilder.dc.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><path d="M20 4v4.5h-4.5"></path></svg>Splits</a>
+    <a class="tab on" href="Progress.dc.html" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16"></path><path d="M6 15l4-5 3.5 3L19 6"></path></svg>Progress</a>
+    <a class="tab" href="History.dc.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>History</a>
+  </nav>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Add exercises</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:16px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:16px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.res{display:flex;align-items:center;gap:12px;height:56px;padding:0 4px 0 16px}
+.sep{height:1px;margin-left:16px;background:#212429}
+.pick{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent;cursor:pointer;padding:0}
+.ring{width:28px;height:28px;border-radius:999px;border:1.5px solid #555B64;color:#CED3D9;display:flex;align-items:center;justify-content:center}
+.ring.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 32px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="DayEditor.dc.html" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <h1 class="h1" style="font-size:24px">Add exercises</h1>
+  </div>
+
+  <div style="position:relative;margin-top:18px">
+    <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search exercises</label>
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:14px;top:15px;color:#88909A"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg>
+    <input id="q" type="search" value="curl" style="width:100%;height:52px;padding:0 48px 0 46px;border:1.5px solid #F3F5F7;border-radius:14px;background:#16181B;color:#F3F5F7;font-family:inherit;font-size:17px;outline:none">
+    <button aria-label="Clear search" style="position:absolute;right:6px;top:6px;width:40px;height:40px;border:0;border-radius:999px;background:transparent;color:#A8AFB8;display:flex;align-items:center;justify-content:center;cursor:pointer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </div>
+
+  <div style="display:flex;gap:8px;margin:14px -20px 0;padding:0 20px;overflow-x:auto">
+    <button class="chip">All</button>
+    <button class="chip on" aria-pressed="true">Biceps</button>
+    <button class="chip">Triceps</button>
+    <button class="chip">Shoulders</button>
+    <button class="chip">Chest</button>
+    <button class="chip">Back</button>
+    <button class="chip">Legs</button>
+  </div>
+
+  <p class="faint small" style="margin:16px 4px 8px">7 exercises match “curl”</p>
+
+  <ul style="list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B">
+    <li class="res">
+      <div style="flex:1"><div class="h2">Bicep curl</div><div class="muted small">Biceps, dumbbell</div></div>
+      <span class="faint small" style="padding-right:12px">In this day</span>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">Barbell curl</div><div class="muted small">Biceps, barbell</div></div>
+      <button class="pick" aria-pressed="true" aria-label="Barbell curl selected"><span class="ring on"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></button>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">EZ-bar curl</div><div class="muted small">Biceps, EZ bar</div></div>
+      <button class="pick" aria-pressed="false" aria-label="Select EZ-bar curl"><span class="ring"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke-width:2.2"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">Preacher curl</div><div class="muted small">Biceps, machine</div></div>
+      <button class="pick" aria-pressed="false" aria-label="Select preacher curl"><span class="ring"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke-width:2.2"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">Cable curl</div><div class="muted small">Biceps, cable</div></div>
+      <button class="pick" aria-pressed="true" aria-label="Cable curl selected"><span class="ring on"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></button>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">Incline dumbbell curl</div><div class="muted small">Biceps, dumbbell</div></div>
+      <button class="pick" aria-pressed="false" aria-label="Select incline dumbbell curl"><span class="ring"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;stroke-width:2.2"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+    </li>
+    <li class="sep"></li>
+    <li class="res">
+      <div style="flex:1"><div class="h2">Hammer curl</div><div class="muted small">Biceps, dumbbell</div></div>
+      <span class="faint small" style="padding-right:12px">In this day</span>
+    </li>
+  </ul>
+
+  <button style="margin-top:12px;display:flex;align-items:center;gap:10px;height:48px;padding:0 4px;border:0;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;text-align:left">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px;color:#FFA41B"><path d="M12 5v14M5 12h14"></path></svg>
+    Can't find it? Create a custom exercise
+  </button>
+
+  <div style="flex:1"></div>
+  <a class="btn" href="DayEditor.dc.html">Add 2 exercises</a>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

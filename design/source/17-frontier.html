@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rep-weight frontier</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:16px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.ax{font-family:'Archivo',system-ui,sans-serif;font-size:11px;fill:#88909A}
+.pt{font-family:'Archivo',system-ui,sans-serif;font-size:14px;font-weight:800;font-stretch:72%}
+.trow{display:flex;align-items:center;gap:14px;padding:12px 16px}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Exercise.dc.html" aria-label="Back to bicep curl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <div>
+      <h1 class="h1" style="font-size:22px">Rep-weight frontier</h1>
+      <div class="muted small">Bicep curl</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+    <span class="muted small" style="font-weight:600;margin-right:2px">Compare with</span>
+    <button class="chip on" aria-pressed="true">Sep 15</button>
+    <button class="chip" aria-pressed="false">Aug 18</button>
+  </div>
+
+  <section style="margin-top:14px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
+    <svg viewBox="0 0 350 250" width="100%" role="img" aria-label="Frontier of most reps at each weight. Today: 20 pounds for 7, 15 for 12, 10 for 14. On Sep 15: 15 pounds for 10, 10 for 14. The line moved up and to the right." style="display:block">
+      <g stroke="#31353B" stroke-width="1">
+        <line x1="40" y1="20" x2="336" y2="20"></line>
+        <line x1="40" y1="60" x2="336" y2="60"></line>
+        <line x1="40" y1="100" x2="336" y2="100"></line>
+        <line x1="40" y1="140" x2="336" y2="140"></line>
+        <line x1="40" y1="180" x2="336" y2="180"></line>
+        <line x1="40" y1="220" x2="336" y2="220" stroke="#474C54"></line>
+        <line x1="40" y1="20" x2="40" y2="220" stroke="#474C54"></line>
+      </g>
+      <text class="ax" x="32" y="24" text-anchor="end">25</text>
+      <text class="ax" x="32" y="64" text-anchor="end">20</text>
+      <text class="ax" x="32" y="104" text-anchor="end">15</text>
+      <text class="ax" x="32" y="144" text-anchor="end">10</text>
+      <text class="ax" x="32" y="184" text-anchor="end">5</text>
+      <text class="ax" x="40" y="238" text-anchor="middle">0</text>
+      <text class="ax" x="114" y="238" text-anchor="middle">4</text>
+      <text class="ax" x="188" y="238" text-anchor="middle">8</text>
+      <text class="ax" x="262" y="238" text-anchor="middle">12</text>
+      <text class="ax" x="336" y="238" text-anchor="end">16 reps</text>
+      <text class="ax" x="4" y="10">lb</text>
+
+      <polygon points="40,60 169.5,60 262,100 299,140 299,220 40,220" fill="#FFA41B" opacity="0.1"></polygon>
+      <path d="M40 100L225 100L299 140L299 220" fill="none" stroke="#7FD3EA" stroke-width="2" stroke-dasharray="5 5" stroke-linejoin="round"></path>
+      <path d="M40 60L169.5 60L262 100L299 140L299 220" fill="none" stroke="#FFA41B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+
+      <circle cx="225" cy="100" r="5" fill="#0B0C0E" stroke="#7FD3EA" stroke-width="2"></circle>
+      <text class="pt" x="218" y="120" text-anchor="end" style="fill:#7FD3EA">15 × 10</text>
+
+      <circle cx="188" cy="60" r="6" fill="none" stroke="#CED3D9" stroke-width="1.5" stroke-dasharray="2.5 2.5"></circle>
+      <circle cx="95.5" cy="20" r="6" fill="none" stroke="#CED3D9" stroke-width="1.5" stroke-dasharray="2.5 2.5"></circle>
+
+      <g fill="#FFA41B" stroke="#16181B" stroke-width="2.5">
+        <circle cx="169.5" cy="60" r="6"></circle>
+        <circle cx="262" cy="100" r="6"></circle>
+        <circle cx="299" cy="140" r="6"></circle>
+      </g>
+      <text class="pt" x="160" y="47" text-anchor="middle" style="fill:#FFA41B">20 × 7</text>
+      <text class="pt" x="262" y="86" text-anchor="middle" style="fill:#FFA41B">15 × 12</text>
+      <text class="pt" x="308" y="160" text-anchor="start" style="fill:#FFA41B">10 × 14</text>
+    </svg>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:10px 4px 0" class="muted small">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;border-radius:2px;background:#FFA41B"></span>Today</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:0;border-top:2px dashed #7FD3EA"></span>Sep 15</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:12px;border-radius:3px;background:#2F261B"></span>You can already do this</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:999px;border:1.5px dashed #CED3D9"></span>Next targets</span>
+    </div>
+  </section>
+
+  <p class="muted" style="margin:14px 4px 0;font-size:14px">Each point is the most reps you've done at that weight. When the line moves up or to the right, you got stronger.</p>
+
+  <div class="faint small" style="margin:18px 4px 8px;font-weight:600">Push the line</div>
+  <ul style="list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B">
+    <li class="trow">
+      <span class="num" style="font-size:24px;width:78px">20 × 8</span>
+      <span class="muted small" style="flex:1">One rep past your best at 20 lb</span>
+    </li>
+    <li style="height:1px;margin:0 16px;background:#212429"></li>
+    <li class="trow">
+      <span class="num" style="font-size:24px;width:78px">25 × 3</span>
+      <span class="muted small" style="flex:1">Your first set at a new weight</span>
+    </li>
+  </ul>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Change an exercise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer}
+.btn2:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.act{display:flex;align-items:center;gap:14px;width:100%;padding:12px 10px;border:0;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.act:hover{background:#22252A;color:#F3F5F7}
+.badge{width:42px;height:42px;flex:none;border-radius:12px;background:#22252A;display:flex;align-items:center;justify-content:center;color:#F3F5F7}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 16px 0">
+  <div aria-hidden="true">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="width:44px;height:44px;border-radius:999px;background:#16181B"></span>
+      <div style="flex:1"><div class="muted small" style="font-weight:600">Shoulders &amp; Arms</div><div class="num" style="font-size:26px;margin-top:2px">42:40</div></div>
+      <span style="height:40px;width:76px;border-radius:999px;background:#22252A"></span>
+    </div>
+    <div style="margin-top:20px;height:300px;border-radius:22px;background:#1A1D21;border:1.5px solid #7A5418"></div>
+    <div style="margin-top:14px;height:190px;border-radius:20px;background:#16181B"></div>
+  </div>
+  <div style="position:absolute;inset:0;background:rgba(5,8,12,0.7)"></div>
+
+  <section role="dialog" aria-label="Change hammer curl for today" style="position:absolute;left:0;right:0;bottom:0;padding:10px 16px 30px;border-radius:28px 28px 0 0;background:#16181B">
+    <div style="width:40px;height:5px;border-radius:4px;background:#474C54;margin:0 auto 16px"></div>
+
+    <div style="padding:0 6px">
+      <h2 class="h2" style="font-size:22px;font-stretch:85%">Hammer curl</h2>
+      <div class="small" style="color:#7FD3EA;margin-top:2px">Up next. Last time 25 × 9, 8, 7</div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;margin:14px 0 8px;padding:12px 14px;border-radius:14px;background:#08090B">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;color:#A8AFB8;margin-top:1px"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+      <p class="muted small" style="margin:0">Changes here apply to today's workout only. Your split stays the same.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column">
+      <a class="act" href="ExercisePicker.dc.html">
+        <span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h12l-3-3M17 17H5l3 3"></path></svg></span>
+        <span style="flex:1"><span class="h2" style="display:block">Swap for another exercise</span><span class="muted small">Search the library or pick a similar one</span></span>
+      </a>
+      <button class="act">
+        <span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></span>
+        <span style="flex:1"><span class="h2" style="display:block">Move to the end</span><span class="muted small">Do it after chin-ups</span></span>
+      </button>
+      <button class="act">
+        <span class="badge"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l9 6-9 6V6zM18 6v12"></path></svg></span>
+        <span style="flex:1"><span class="h2" style="display:block">Skip today</span><span class="muted small">It's still in your split next time</span></span>
+      </button>
+      <div style="height:1px;margin:6px 10px;background:#212429"></div>
+      <a class="act" href="ExercisePicker.dc.html">
+        <span class="badge" style="background:#FFA41B;color:#1C1102"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width:2.2"><path d="M12 5v14M5 12h14"></path></svg></span>
+        <span style="flex:1"><span class="h2" style="display:block">Add an exercise to today</span><span class="muted small">Goes to the end of today's list</span></span>
+      </a>
+    </div>
+
+    <a class="btn2" href="Workout.dc.html" style="margin-top:14px">Cancel</a>
+  </section>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

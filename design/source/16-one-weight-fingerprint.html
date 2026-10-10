@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One weight: fingerprint</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chip{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;flex:none;border:1px solid #3E434A;border-radius:999px;background:transparent;color:#CED3D9;font-family:inherit;font-size:14px;font-weight:550;white-space:nowrap;text-decoration:none;cursor:pointer}
+.chip:hover{color:#F3F5F7}
+.chip.on{background:#F3F5F7;border-color:#F3F5F7;color:#0B0C0E}
+.chip.on:hover{color:#0B0C0E}
+.seg{flex:1;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:#A8AFB8;font-size:15px;font-weight:600;text-decoration:none}
+.seg:hover{color:#F3F5F7}
+.seg.on{background:#22252A;color:#F3F5F7}
+.ax{font-family:'Archivo',system-ui,sans-serif;font-size:11px;fill:#88909A}
+.rr{display:grid;grid-template-columns:62px minmax(0,1fr) 92px 40px;align-items:center;column-gap:10px;height:44px;padding:0 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+.track{height:8px;border-radius:6px;background:#25282D;position:relative;overflow:hidden}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+</style>
+</helmet>
+<main class="app" style="height:920px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Exercise.dc.html" aria-label="Back to bicep curl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <h1 class="h1" style="font-size:24px">Bicep curl</h1>
+  </div>
+
+  <nav aria-label="View" style="display:flex;gap:4px;margin-top:16px;padding:4px;border-radius:14px;background:#16181B">
+    <a class="seg" href="WeightProgress.dc.html">Progress</a>
+    <a class="seg on" href="Fingerprint.dc.html" aria-current="page">Fingerprint</a>
+  </nav>
+
+  <div style="display:flex;gap:8px;margin:14px -20px 0;padding:0 20px;overflow-x:auto" role="group" aria-label="Weight filter">
+    <a class="chip" href="Exercise.dc.html">All weights</a>
+    <a class="chip on" href="Fingerprint.dc.html" aria-current="page">10 lb</a>
+    <a class="chip" href="Fingerprint.dc.html">15 lb</a>
+    <a class="chip" href="Fingerprint.dc.html">20 lb</a>
+  </div>
+
+  <div style="display:flex;align-items:flex-start;gap:14px;margin-top:20px">
+    <span class="num" style="font-size:56px;color:#FFA41B">79%</span>
+    <p style="margin:2px 0 0;font-size:15px">of your first set's reps held through your last set on Sep 1. <span class="muted">Up from 58% on Aug 18.</span></p>
+  </div>
+
+  <section style="margin-top:16px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
+    <svg viewBox="0 0 350 220" width="100%" role="img" aria-label="Reps by set number for five sessions at 10 pounds. Aug 18 went 12, 8, 7, 7. Sep 1 went 14, 12, 11, 11, a flatter line." style="display:block">
+      <g stroke="#31353B" stroke-width="1">
+        <line x1="40" y1="38.9" x2="336" y2="38.9"></line>
+        <line x1="40" y1="76.7" x2="336" y2="76.7"></line>
+        <line x1="40" y1="114.4" x2="336" y2="114.4"></line>
+        <line x1="40" y1="152.2" x2="336" y2="152.2"></line>
+        <line x1="40" y1="190" x2="336" y2="190" stroke="#474C54"></line>
+      </g>
+      <text class="ax" x="28" y="42.9" text-anchor="end">14</text>
+      <text class="ax" x="28" y="80.7" text-anchor="end">12</text>
+      <text class="ax" x="28" y="118.4" text-anchor="end">10</text>
+      <text class="ax" x="28" y="156.2" text-anchor="end">8</text>
+      <text class="ax" x="28" y="194" text-anchor="end">6</text>
+
+      <polygon points="40,38.9 136.7,76.7 233.3,95.6 330,95.6 330,171.1 233.3,171.1 136.7,152.2 40,76.7" fill="#FFA41B" opacity="0.09"></polygon>
+
+      <g fill="none" stroke="#7FD3EA" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M40 76.7L136.7 152.2L233.3 171.1L330 171.1" opacity="0.35"></path>
+        <path d="M40 76.7L136.7 133.3L233.3 133.3L330 152.2" opacity="0.5"></path>
+        <path d="M40 76.7L136.7 114.4L233.3 133.3L330 133.3" opacity="0.65"></path>
+        <path d="M40 57.8L136.7 95.6L233.3 114.4L330 114.4" opacity="0.85"></path>
+      </g>
+      <path d="M40 38.9L136.7 76.7L233.3 95.6L330 95.6" fill="none" stroke="#FFA41B" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
+      <g fill="#FFA41B" stroke="#16181B" stroke-width="2">
+        <circle cx="40" cy="38.9" r="5"></circle><circle cx="136.7" cy="76.7" r="5"></circle><circle cx="233.3" cy="95.6" r="5"></circle><circle cx="330" cy="95.6" r="5"></circle>
+      </g>
+      <text class="ax" x="330" y="187" text-anchor="end" style="fill:#7FD3EA">Aug 18</text>
+      <text class="ax" x="330" y="86" text-anchor="end" style="fill:#FFA41B">Sep 1</text>
+
+      <text class="ax" x="40" y="210" text-anchor="middle">Set 1</text>
+      <text class="ax" x="136.7" y="210" text-anchor="middle">Set 2</text>
+      <text class="ax" x="233.3" y="210" text-anchor="middle">Set 3</text>
+      <text class="ax" x="330" y="210" text-anchor="end">Set 4</text>
+    </svg>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 4px 0" class="muted small">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:3px;border-radius:2px;background:#FFA41B"></span>Latest</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:2px;border-radius:2px;background:#7FD3EA"></span>Earlier, fading with age</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:12px;border-radius:3px;background:#2F261B"></span>Your gain</span>
+    </div>
+  </section>
+
+  <section style="margin-top:12px;border-radius:20px;background:#16181B;padding:4px 0">
+    <div class="rr faint small" style="height:32px;font-weight:600"><span>Date</span><span>First to last</span><span>Retention</span><span></span></div>
+    <div class="sep"></div>
+    <div class="rr"><span>Sep 1</span><span class="muted">14 to 11</span><span class="track"><span class="fill" style="width:79%;background:#FFA41B"></span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">79%</span></div>
+    <div class="sep"></div>
+    <div class="rr"><span>Aug 28</span><span class="muted">13 to 10</span><span class="track"><span class="fill" style="width:77%;background:#7FD3EA"></span></span><span class="num" style="font-size:19px;text-align:right">77%</span></div>
+    <div class="sep"></div>
+    <div class="rr"><span>Aug 25</span><span class="muted">12 to 9</span><span class="track"><span class="fill" style="width:75%;background:#7FD3EA"></span></span><span class="num" style="font-size:19px;text-align:right">75%</span></div>
+    <div class="sep"></div>
+    <div class="rr"><span>Aug 21</span><span class="muted">12 to 8</span><span class="track"><span class="fill" style="width:67%;background:#7FD3EA"></span></span><span class="num" style="font-size:19px;text-align:right">67%</span></div>
+    <div class="sep"></div>
+    <div class="rr"><span>Aug 18</span><span class="muted">12 to 7</span><span class="track"><span class="fill" style="width:58%;background:#7FD3EA"></span></span><span class="num" style="font-size:19px;text-align:right">58%</span></div>
+  </section>
+
+  <p class="faint small" style="margin:12px 4px 0">Retention is your last set's reps divided by your first set's. Higher means you hold your strength better from set to set.</p>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

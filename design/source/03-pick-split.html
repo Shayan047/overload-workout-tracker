@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pick a split</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:18px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.opt{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 18px;border-radius:18px;background:#16181B;color:#F3F5F7;text-decoration:none}
+.opt:hover{background:#1D2024;color:#F3F5F7}
+.day{display:inline-block;padding:3px 8px;border-radius:6px;background:#22252A;color:#CED3D9;font-size:12px;font-weight:550;white-space:nowrap}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 32px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px">
+    <a class="icon" href="Units.dc.html" aria-label="Back"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <span class="faint small">Step 2 of 2</span>
+  </div>
+
+  <div style="padding:0 4px">
+    <h1 class="h1" style="margin-top:24px">Pick a split</h1>
+    <p class="muted" style="margin:10px 0 22px;font-size:16px;max-width:330px">Start from a common split or build your own. You can rename days and change exercises after.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <a class="opt" href="SplitBuilder.dc.html">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Push, pull, legs</h2><span class="faint small">3-day rotation</span></div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="day">Push</span><span class="day">Pull</span><span class="day">Legs</span></div>
+      </div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+    </a>
+
+    <a class="opt" href="SplitBuilder.dc.html">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Arnold split</h2><span class="faint small">3-day rotation</span></div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="day">Chest &amp; Back</span><span class="day">Shoulders &amp; Arms</span><span class="day">Legs</span></div>
+      </div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+    </a>
+
+    <a class="opt" href="SplitBuilder.dc.html">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Upper, lower</h2><span class="faint small">4 days a week</span></div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="day">Upper</span><span class="day">Lower</span><span class="day">Upper</span><span class="day">Lower</span></div>
+      </div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+    </a>
+
+    <a class="opt" href="SplitBuilder.dc.html">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Body part split</h2><span class="faint small">5 days a week</span></div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="day">Chest</span><span class="day">Back</span><span class="day">Shoulders</span><span class="day">Arms</span><span class="day">Legs</span></div>
+      </div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+    </a>
+
+    <a class="opt" href="SplitBuilder.dc.html">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Full body</h2><span class="faint small">3 days a week</span></div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="day">Mon</span><span class="day">Wed</span><span class="day">Fri</span></div>
+      </div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
+    </a>
+
+    <a class="opt" href="SplitBuilder.dc.html" style="background:transparent;border:1.5px dashed #474C54;padding:16px 14px 16px 18px">
+      <span style="width:36px;height:36px;border-radius:999px;background:#FFA41B;color:#1C1102;display:flex;align-items:center;justify-content:center;flex:none">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px;stroke-width:2.2"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>
+      <div style="flex:1">
+        <h2 class="h2">Build my own</h2>
+        <div class="muted small" style="margin-top:2px">Name your days and pick exercises</div>
+      </div>
+    </a>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

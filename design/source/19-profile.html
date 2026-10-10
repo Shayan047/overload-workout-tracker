@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:16px;line-height:1.25;font-weight:600}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer}
+.btn2:hover{background:#16181B;color:#F3F5F7}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.grp{list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B}
+.it{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px 8px 16px;color:#F3F5F7;text-decoration:none}
+a.it:hover{background:#1D2024;color:#F3F5F7}
+.sep{height:1px;margin:0 16px;background:#212429}
+.val{color:#A8AFB8}
+.chev{width:18px;height:18px;color:#88909A}
+.sw{width:52px;height:32px;flex:none;padding:3px;border:0;border-radius:999px;background:#FFA41B;cursor:pointer;display:flex;justify-content:flex-end}
+.knob{width:26px;height:26px;border-radius:999px;background:#1C1102}
+.gl{margin:22px 4px 8px;font-weight:600}
+</style>
+</helmet>
+<main class="app" style="height:940px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="Today.dc.html" aria-label="Back"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <h1 class="h1" style="font-size:24px">Profile</h1>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;margin-top:22px">
+    <span style="width:56px;height:56px;border-radius:999px;background:#22252A;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-stretch:85%">S</span>
+    <span><span class="h2" style="display:block;font-size:19px;font-weight:650">Shayan</span><span class="muted small">Training since Aug 2026, 46 workouts</span></span>
+  </div>
+
+  <div class="faint small gl">Training</div>
+  <ul class="grp">
+    <li><a class="it" href="Units.dc.html"><span style="flex:1">Units</span><span class="val">Pounds</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+    <li class="sep"></li>
+    <li><a class="it" href="Bodyweight.dc.html"><span style="flex:1">Bodyweight</span><span class="val">172 lb</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+    <li class="sep"></li>
+    <li><a class="it" href="SplitBuilder.dc.html"><span style="flex:1">Current split</span><span class="val">Arnold split</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+    <li class="sep"></li>
+    <li class="it">
+      <span style="flex:1"><span style="display:block">Ghost mode</span><span class="muted small">Show last time's numbers while you log</span></span>
+      <button class="sw" role="switch" aria-checked="true" aria-label="Ghost mode"><span class="knob"></span></button>
+    </li>
+    <li class="sep"></li>
+    <li><a class="it" href="Profile.dc.html"><span style="flex:1"><span style="display:block">Rest timer alerts</span><span class="muted small">Buzz at 10 seconds left and when rest ends</span></span><span class="val">Sound on</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+  </ul>
+
+  <div class="faint small gl">Sync and data</div>
+  <ul class="grp">
+    <li class="it">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#A8AFB8"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.1 4.5 4.5 0 0 0 7 18z"></path><path d="M4 4l16 16"></path></svg>
+      <span style="flex:1"><span style="display:block">2 workouts waiting</span><span class="muted small">They sync next time you're on Wi-Fi</span></span>
+    </li>
+    <li class="sep"></li>
+    <li class="it">
+      <span style="flex:1"><span style="display:block">Sync on Wi-Fi only</span><span class="muted small">Workouts are always saved on this phone first</span></span>
+      <button class="sw" role="switch" aria-checked="true" aria-label="Sync on Wi-Fi only"><span class="knob"></span></button>
+    </li>
+    <li class="sep"></li>
+    <li><a class="it" href="ExercisePicker.dc.html"><span style="flex:1">Custom exercises</span><span class="val">3</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+    <li class="sep"></li>
+    <li><a class="it" href="Profile.dc.html"><span style="flex:1">Export workouts</span><span class="val">CSV</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+  </ul>
+
+  <button class="btn2" style="margin-top:22px">Sign out</button>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

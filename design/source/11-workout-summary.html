@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workout summary</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:17px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer}
+.btn2:hover{background:#16181B;color:#F3F5F7}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gr{display:grid;grid-template-columns:minmax(0,1fr) 92px 58px;align-items:center;column-gap:8px;height:44px;padding:0 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+.stat{flex:1;display:flex;flex-direction:column;gap:6px}
+</style>
+</helmet>
+<main class="app" style="height:1050px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <span style="width:44px;height:44px;border-radius:999px;border:2px solid #FFA41B;color:#FFA41B;display:flex;align-items:center;justify-content:center">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width:2.4"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+    </span>
+    <a class="icon" href="Today.dc.html" aria-label="Close"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+  </div>
+
+  <h1 class="h1" style="margin-top:16px">Shoulders &amp; Arms done</h1>
+  <p class="muted" style="margin:6px 0 0">Friday, Oct 9, 6:12 to 6:59 PM</p>
+
+  <div style="display:flex;gap:16px;margin-top:20px;padding:16px 18px;border-radius:18px;background:#16181B">
+    <div class="stat"><span class="num" style="font-size:34px">47</span><span class="muted small">minutes</span></div>
+    <div style="width:1px;background:#212429"></div>
+    <div class="stat"><span class="num" style="font-size:34px">20</span><span class="muted small">sets</span></div>
+    <div style="width:1px;background:#212429"></div>
+    <div class="stat" style="flex:1.4"><span class="num" style="font-size:34px">9,427</span><span class="muted small">lb lifted</span></div>
+  </div>
+
+  <section style="margin-top:12px;border-radius:20px;background:#16181B;padding:8px 0 6px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px 10px">
+      <span style="display:flex;align-items:center;gap:8px;color:#7FD3EA;font-weight:600">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>
+        vs. Tue, Oct 6
+      </span>
+      <span style="color:#FFA41B;font-weight:650">Ahead on 4 of 6</span>
+    </div>
+    <div class="gr faint small" style="height:28px;font-weight:600"><span>Total reps</span><span style="text-align:right">Today / last</span><span style="text-align:right">Change</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Overhead press</span><span class="num" style="font-size:19px;text-align:right">29 <span style="color:#7FD3EA">/ 28</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+1</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Lateral raise</span><span class="num" style="font-size:19px;text-align:right">35 <span style="color:#7FD3EA">/ 33</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+2</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Bicep curl</span><span class="num" style="font-size:19px;text-align:right">24 <span style="color:#7FD3EA">/ 20</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+4</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Hammer curl</span><span class="num" style="font-size:19px;text-align:right">24 <span style="color:#7FD3EA">/ 24</span></span><span class="faint" style="text-align:right;font-size:14px">Even</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Triceps pushdown</span><span class="num" style="font-size:19px;text-align:right">33 <span style="color:#7FD3EA">/ 34</span></span><span class="num" style="font-size:19px;text-align:right;color:#7FD3EA">−1</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Chin-up</span><span class="num" style="font-size:19px;text-align:right">21 <span style="color:#7FD3EA">/ 20</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+1</span></div>
+  </section>
+
+  <section style="margin-top:12px;border-radius:20px;background:#16181B;padding:14px 16px 6px">
+    <div style="display:flex;align-items:center;gap:8px;color:#FFA41B;font-weight:650">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"></path></svg>
+      2 new bests
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #212429">
+      <div><div class="h2">Bicep curl</div><div class="muted small">Est. max 24.7 lb, up from 24.0</div></div>
+      <span class="num" style="font-size:26px;color:#FFA41B">20 × 7</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0">
+      <div><div class="h2">Lateral raise</div><div class="muted small">Est. max 28.7 lb, up from 28.0</div></div>
+      <span class="num" style="font-size:26px;color:#FFA41B">20 × 13</span>
+    </div>
+  </section>
+
+  <div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#121417">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;color:#A8AFB8;margin-top:1px"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.1 4.5 4.5 0 0 0 7 18z"></path><path d="M4 4l16 16"></path></svg>
+    <p class="muted small" style="margin:0">Saved on this phone. It syncs to your account the next time you're on Wi-Fi.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+    <a class="btn" href="Today.dc.html">Done</a>
+    <a class="btn2" href="Exercise.dc.html">See bicep curl progress</a>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1050}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

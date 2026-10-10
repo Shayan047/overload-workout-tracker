@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit a day</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:16px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer}
+.btn2:hover{background:#16181B;color:#F3F5F7}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tag{display:inline-block;padding:2px 7px;border-radius:6px;background:#22252A;color:#CED3D9;font-size:12px;font-weight:550;white-space:nowrap}
+.rest{display:inline-flex;align-items:center;gap:4px;padding:1px 7px;white-space:nowrap;flex:none;border-radius:6px;border:1px solid #3E434A;color:#A8AFB8;font-size:12px;font-weight:550;font-variant-numeric:tabular-nums}
+.rest svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ex{display:flex;align-items:center;gap:12px;padding:11px 4px 11px 12px}
+.more{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent;color:#88909A;cursor:pointer}
+.more:hover{background:#22252A;color:#F3F5F7}
+.sep{height:1px;margin-left:46px;background:#212429}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 32px;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <a class="icon" href="SplitBuilder.dc.html" aria-label="Back to split"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <button class="icon" aria-label="Rename day"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg></button>
+  </div>
+
+  <h1 class="h1" style="margin-top:22px">Shoulders &amp; Arms</h1>
+  <p class="muted" style="margin:8px 0 0">Day 2 of 3 in your Arnold split</p>
+
+  <div style="margin:22px 0 10px;display:flex;justify-content:space-between;align-items:baseline">
+    <span class="muted small" style="font-weight:600">6 exercises</span>
+    <span class="faint small">Workout order. Drag to change it.</span>
+  </div>
+
+  <ul style="list-style:none;margin:0;padding:4px 0;border-radius:20px;background:#16181B">
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Overhead press</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Shoulders</span><span class="tag">Barbell</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 2:30</span></div></div>
+      <button class="more" aria-label="Options for overhead press"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+    <li class="sep"></li>
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Lateral raise</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Side delts</span><span class="tag">Dumbbell</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 1:00</span></div></div>
+      <button class="more" aria-label="Options for lateral raise"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+    <li class="sep"></li>
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Bicep curl</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Biceps</span><span class="tag">Dumbbell</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 1:30</span></div></div>
+      <button class="more" aria-label="Options for bicep curl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+    <li class="sep"></li>
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Hammer curl</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Biceps</span><span class="tag">Dumbbell</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 1:30</span></div></div>
+      <button class="more" aria-label="Options for hammer curl"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+    <li class="sep"></li>
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Triceps pushdown</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Triceps</span><span class="tag">Cable</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 1:00</span></div></div>
+      <button class="more" aria-label="Options for triceps pushdown"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+    <li class="sep"></li>
+    <li class="ex">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A;stroke-width:3"><path d="M9 7h.01M15 7h.01M9 12h.01M15 12h.01M9 17h.01M15 17h.01"></path></svg>
+      <div style="flex:1"><div class="h2">Chin-up</div><div style="display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px"><span class="tag">Back, biceps</span><span class="tag">Bodyweight</span><span class="rest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 9.5V13l2 1.5M10 3h4"></path></svg>Rest 2:00</span></div></div>
+      <button class="more" aria-label="Options for chin-up"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></button>
+    </li>
+  </ul>
+
+  <a class="btn2" href="ExercisePicker.dc.html" style="margin-top:14px">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"></path></svg>
+    Add exercise
+  </a>
+
+  <div style="flex:1"></div>
+  <a class="btn" href="SplitBuilder.dc.html">Done</a>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
