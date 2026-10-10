@@ -20,7 +20,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** none.
 - **Done when:** `docker compose up` works, `/health` returns ok, and one test passes.
 
-### 2. Schema and migrations
+### 2. Schema and migrations — DONE
 
 - **Goal:** models and the first Alembic migration from `docs/data-model.md`. Resolve its open decisions and remove the "Draft" mark.
 - **Design:** none.

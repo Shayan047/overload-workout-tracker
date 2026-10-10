@@ -2,14 +2,14 @@
 
 Personal workout tracker for iOS and Android. "Overload" is a working name.
 
-**Status:** backend skeleton (roadmap chunk 1). Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
+**Status:** backend schema (roadmap chunk 2). Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
 
 ## Where things live
 
 | Path | What |
 |---|---|
 | `docs/product-spec.md` | Features, user flow, sample data for stats tests |
-| `docs/data-model.md` | Tables and columns (draft until the schema chunk) |
+| `docs/data-model.md` | Tables, columns, constraints and schema decisions |
 | `docs/api-and-sync.md` | Architecture, API conventions, offline sync |
 | `docs/roadmap.md` | Numbered build chunks with "Done when" lines |
 | `design/README.md` | How to use the designs; screen-to-chunk map |

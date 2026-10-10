@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** skeleton (roadmap chunk 1): app, settings, Docker Compose, Alembic, pytest, `/health`.
+**Status:** schema (roadmap chunk 2): models and the initial migration on top of the chunk 1 skeleton.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -31,6 +31,14 @@ uv run alembic upgrade head
 
 Copy `.env.example` to `.env` for host runs. The Compose project is named `overload`.
 
+Tests need Postgres running (`docker compose up -d db`). They use a separate
+`<database>_test` database that is dropped, recreated and migrated up, down and up again
+at the start of each run; each test runs in a transaction that is rolled back.
+`test_migration_matches_models` fails if the models and migrations drift apart.
+
+New migrations: generate with `--autogenerate`, then read and fix the file by hand
+(a ruff post-write hook formats it).
+
 ## Layout
 
 ```
@@ -52,6 +60,7 @@ tests/
 - Accept client-generated UUIDs. All writes are idempotent PUT upserts.
 - Soft deletes use `deleted_at`, and list endpoints support `updated_since`.
 - Weights are stored in kg as NUMERIC(7,3).
+- User-owned models use `UserOwnedMixin` and add `sync_index(table)` to `__table_args__`.
 - The stats module stays pure and unit tested (tests use the sample data in
   `../docs/product-spec.md`).
 - Secrets come only from environment variables. `.env` is never committed;
