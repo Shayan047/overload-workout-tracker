@@ -72,7 +72,7 @@ Every UI chunk's "Done when" also requires:
 - the navigation matches the "User flow" section of `docs/product-spec.md`,
 - the chunk summary lists each screen's verdict, the number of review rounds, and any remaining minor items.
 
-### 8. Frontend skeleton and review tooling
+### 8. Frontend skeleton and review tooling — DONE
 
 - **Goal:**
   - Expo with TypeScript, and four tabs: Today, Splits, Progress, History.
