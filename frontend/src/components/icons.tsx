@@ -68,3 +68,23 @@ export function AlertIcon({ color, size = 22 }: IconProps) {
     </Svg>
   );
 }
+
+/** Last time / your past self (01), drawn in ice. */
+export function GhostIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z" stroke={color} {...stroke} />
+      <Path d="M10 11h.01M14 11h.01" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Time / the bodyweight from that day (02). */
+export function ClockIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={12} cy={12} r={8.5} stroke={color} {...stroke} />
+      <Path d="M12 7.5V12l3 2" stroke={color} {...stroke} />
+    </Svg>
+  );
+}

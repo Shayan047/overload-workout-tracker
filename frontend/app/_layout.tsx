@@ -42,9 +42,12 @@ function Routes() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="dev-sync" />
       </Stack.Protected>
+      {/* Signed out: onboarding first (Welcome is where they land), then the account. */}
       <Stack.Protected guard={isReviewMode || !signedIn}>
-        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="welcome" />
+        <Stack.Screen name="units" />
         <Stack.Screen name="sign-up" />
+        <Stack.Screen name="sign-in" />
       </Stack.Protected>
     </Stack>
   );

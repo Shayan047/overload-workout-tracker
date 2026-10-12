@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { useSync } from '@/api/AppProviders';
 import { syncStatusText } from '@/api/network';
-import { colors, font, radius } from '@/theme';
+import { colors, radius, type } from '@/theme';
 
 import { CloudOffIcon } from './icons';
 import { Text } from './Text';
@@ -30,5 +30,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.chip,
     backgroundColor: colors.surface,
   },
-  text: { ...font(600), fontSize: 12, lineHeight: 16, color: colors.textSecondary },
+  text: { ...type.pill, color: colors.textSecondary },
 });

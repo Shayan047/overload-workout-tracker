@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, type PressableProps, StyleSheet } from 'react-native';
 
-import { colors, font, radius } from '@/theme';
+import { colors, radius, type } from '@/theme';
 
 import { Text } from './Text';
 
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.chip,
   },
   selected: { backgroundColor: colors.text, borderColor: colors.text },
-  label: { ...font(550), fontSize: 14, lineHeight: 18, color: colors.textSecondary },
+  label: { ...type.chip, color: colors.textSecondary },
   selectedLabel: { color: colors.bg },
 });

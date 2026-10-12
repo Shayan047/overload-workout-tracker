@@ -11,7 +11,7 @@ export function Notice({ message }: { message: string }) {
   return (
     <View style={styles.box} accessibilityRole="alert" accessibilityLiveRegion="polite">
       <AlertIcon color={colors.text} />
-      <Text color="textSecondary" style={styles.text}>
+      <Text variant="note" color="textSecondary" style={styles.text}>
         {message}
       </Text>
     </View>
@@ -27,5 +27,5 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: colors.surfaceQuiet,
   },
-  text: { flex: 1, fontSize: 14, lineHeight: 20 },
+  text: { flex: 1 },
 });

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, type PressableProps, StyleSheet, View } from 'react-native';
 
-import { colors, font, radius } from '@/theme';
+import { colors, radius, type } from '@/theme';
 
 import { Text } from './Text';
 
@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   text: { height: 44, backgroundColor: 'transparent' },
-  labelMedium: { fontSize: 16 },
+  labelMedium: type.buttonMedium,
 });
 
 const labels = StyleSheet.create({
-  primary: { ...font(650), fontSize: 17, lineHeight: 22, color: colors.onAccent },
-  secondary: { ...font(600), fontSize: 15, lineHeight: 20, color: colors.text },
-  text: { ...font(600), fontSize: 15, lineHeight: 20, color: colors.textSecondary },
+  primary: { ...type.button, color: colors.onAccent },
+  secondary: { ...type.buttonSecondary, color: colors.text },
+  text: { ...type.buttonSecondary, color: colors.textSecondary },
 });
 
 const pressedStyles = StyleSheet.create({

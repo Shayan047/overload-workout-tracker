@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
-import { colors, font } from '@/theme';
+import { colors, type } from '@/theme';
 
 import { Text } from './Text';
 
@@ -22,5 +22,5 @@ export function BrandMark() {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  word: { ...font(750, 80), fontSize: 20, lineHeight: 28, letterSpacing: 0.2 },
+  word: { ...type.wordmark, color: colors.text },
 });

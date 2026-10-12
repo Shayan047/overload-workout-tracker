@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors, font } from '@/theme';
+import { colors, type } from '@/theme';
 
 import { Text } from './Text';
 
@@ -27,7 +27,11 @@ export function SegmentedControl<T extends string>({
 }: Props<T>) {
   const large = height === 52;
   return (
-    <View accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel} style={styles.group}>
+    <View
+      accessibilityRole="radiogroup"
+      accessibilityLabel={accessibilityLabel}
+      style={[styles.group, { borderRadius: large ? 15 : 14 }]}
+    >
       {options.map((option) => {
         const selected = option.value === value;
         return (
@@ -58,16 +62,11 @@ export function SegmentedControl<T extends string>({
 }
 
 const styles = StyleSheet.create({
-  group: {
-    flexDirection: 'row',
-    gap: 4,
-    padding: 4,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-  },
+  // Container radius: 15 around 52 px segments (02), 14 around smaller ones (04).
+  group: { flexDirection: 'row', gap: 4, padding: 4, backgroundColor: colors.surface },
   segment: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   selectedLight: { backgroundColor: colors.text },
   selectedRaised: { backgroundColor: colors.surfaceRaised },
-  label: { ...font(600), fontSize: 15, lineHeight: 20, color: colors.textMuted },
-  labelLarge: { ...font(650), fontSize: 17, lineHeight: 22, color: colors.textMuted },
+  label: { ...type.segment, color: colors.textMuted },
+  labelLarge: { ...type.segmentLarge, color: colors.textMuted },
 });

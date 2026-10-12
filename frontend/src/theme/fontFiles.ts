@@ -8,6 +8,7 @@ export const fontFiles = {
   'Archivo-100-650': require('../../assets/fonts/Archivo-100-650.ttf'),
   'Archivo-100-700': require('../../assets/fonts/Archivo-100-700.ttf'),
   'Archivo-100-750': require('../../assets/fonts/Archivo-100-750.ttf'),
+  'Archivo-68-300': require('../../assets/fonts/Archivo-68-300.ttf'),
   'Archivo-68-800': require('../../assets/fonts/Archivo-68-800.ttf'),
   'Archivo-72-700': require('../../assets/fonts/Archivo-72-700.ttf'),
   'Archivo-72-800': require('../../assets/fonts/Archivo-72-800.ttf'),

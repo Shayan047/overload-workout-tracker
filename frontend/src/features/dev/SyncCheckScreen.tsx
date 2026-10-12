@@ -42,7 +42,7 @@ export function SyncCheckScreen() {
       <Text variant="h1" style={styles.title}>
         Sync check
       </Text>
-      <Text color="textMuted" style={styles.subtitle}>
+      <Text variant="lead" color="textMuted" style={styles.subtitle}>
         Signed in as {user?.email}. Writes here go through the outbox like every other write.
       </Text>
 
@@ -58,7 +58,7 @@ export function SyncCheckScreen() {
           }
         />
         <Separator />
-        <ListRow label="Waiting to send" trailing={<Text variant="number" style={styles.count}>{status.pending}</Text>} />
+        <ListRow label="Waiting to send" trailing={<Text variant="h2">{status.pending}</Text>} />
         <Separator />
         <ListRow label="Outbox state" trailing={<Text color="textMuted">{status.state}</Text>} />
         <Separator />
@@ -94,8 +94,7 @@ export function SyncCheckScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { marginTop: 28 },
-  subtitle: { marginTop: 10, fontSize: 16, lineHeight: 22 },
+  subtitle: { marginTop: 10 },
   card: { marginTop: 28, paddingVertical: 6 },
-  count: { fontSize: 22, color: colors.text },
   actions: { marginTop: 28, gap: 12 },
 });
