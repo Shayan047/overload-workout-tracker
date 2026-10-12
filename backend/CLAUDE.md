@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** splits API (roadmap chunk 5).
+**Status:** workouts API (roadmap chunk 6).
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 

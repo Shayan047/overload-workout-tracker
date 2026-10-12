@@ -44,7 +44,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** 03, 04, 05.
 - **Done when:** tests cover creating a split from each preset, editing days and exercises, and next-day results for "in order" (rest days don't shift it) and "set weekdays".
 
-### 6. Workouts API
+### 6. Workouts API — DONE
 
 - **Goal:** start, PUT sets, finish, resume in progress, today-only changes, idempotent upserts, and `updated_since` pulls.
 - **Design:** 07, 08, 10.

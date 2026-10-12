@@ -161,4 +161,51 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 | GET | `/settings` | | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, updated_at}` |
 | PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). |
 
-The rest are filled in as chunks 6–7 land.
+### Workouts
+
+| Method | Path | Body / query | Response |
+|---|---|---|---|
+| PUT | `/workouts/{id}` | `{split_day_id?, title, started_at, ended_at?, bodyweight_kg?}` | Start (no `ended_at`), edit, or finish (with `ended_at`). `409 {detail: {message, in_progress_workout_id}}` if another workout is in progress; `422` if `ended_at` is before `started_at`, or if `bodyweight_kg` is omitted on create and the user has no bodyweight entry. |
+| GET | `/workouts` | `updated_since?` | `[{split_day_id, title, started_at, ended_at, bodyweight_kg}]` |
+| GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
+| GET | `/workouts/{id}` | | The workout with its live exercises in order, each with its live sets in order: `{…, exercises: [{…, sets: [...]}]}`. `404` if deleted. |
+| DELETE | `/workouts/{id}` | | `204`. Also soft-deletes its exercises and their sets. |
+| GET | `/workouts/last-sessions` | `exercise_id` (repeat, up to 100) | Last time (ghost) per exercise: `[{exercise_id, workout_id, title, started_at, ended_at, bodyweight_kg, sets: [{set_number, weight_kg, reps}]}]`. Exercises never done are left out. |
+| PUT | `/workout-exercises/{id}` | `{workout_id, exercise_id, position, status?, source?, rest_seconds}` | `status` is `planned` (default), `done` or `skipped`; `source` is `split` (default), `added` or `swapped`. |
+| GET | `/workout-exercises` | `updated_since?` | `[{workout_id, exercise_id, position, status, source, rest_seconds}]` |
+| DELETE | `/workout-exercises/{id}` | | `204`. Also soft-deletes its sets. |
+| PUT | `/sets/{id}` | `{workout_exercise_id, set_number (1–100), weight_kg, reps (0–1000), logged_at}` | The set. For bodyweight exercises `weight_kg` is the added weight only. |
+| GET | `/sets` | `updated_since?` | `[{workout_exercise_id, set_number, weight_kg, reps, logged_at}]` |
+| DELETE | `/sets/{id}` | | `204` |
+| PUT | `/bodyweight-entries/{id}` | `{weight_kg, measured_on}` | The entry. Never changes past workouts. |
+| GET | `/bodyweight-entries` | `updated_since?` | `[{weight_kg, measured_on}]` |
+| DELETE | `/bodyweight-entries/{id}` | | `204` |
+
+How the phone drives a workout (all through the outbox):
+
+1. **Start:** `PUT /workouts/{id}` with `split_day_id`, `title` (the day's name) and
+   `started_at`, then one `PUT /workout-exercises/{id}` per split day exercise, copying
+   `exercise_id`, `position` and `rest_seconds`. The phone creates these rows itself so the
+   whole workout can be logged offline.
+2. **Log:** `PUT /sets/{id}` per set; mark the exercise `done` with a PUT to its row.
+3. **Today-only changes** are PUTs to `/workout-exercises/{id}`, never to the split:
+   swap = same row with a new `exercise_id` and `source: "swapped"`; skip =
+   `status: "skipped"`; move to end = a larger `position`; add = a new row with
+   `source: "added"` and its own `rest_seconds`.
+4. **Finish:** `PUT /workouts/{id}` again with `ended_at`.
+5. **Resume:** after a restart, `GET /workouts/in-progress` (or the phone's own cache).
+
+Rules:
+
+- **Bodyweight snapshot (rule 3):** if `bodyweight_kg` is omitted when a workout is created,
+  the server copies the latest live bodyweight entry (by `measured_on`, then `updated_at`).
+  On later PUTs an omitted value keeps the stored one. New entries never touch old workouts.
+- **A finished workout stays finished:** a PUT without `ended_at` keeps the stored one, so a
+  replayed start can't reopen it.
+- **One workout in progress** per user (`409` otherwise).
+- **Ghost (rule 9):** the most recent finished, non-deleted workout (by `ended_at`) in which
+  the exercise has at least one live set, so a planned-then-skipped exercise isn't a ghost.
+  In-progress workouts never count. If the exercise appears twice in that workout, its
+  sets are listed in row order.
+
+The rest are filled in as chunk 7 lands.

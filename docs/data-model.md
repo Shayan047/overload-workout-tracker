@@ -46,7 +46,8 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 - **Bodyweight snapshot:** `workouts.bodyweight_kg` is copied at workout start. Later bodyweight entries never touch old workouts.
 - **Today-only changes** are rows in `workout_exercises` (`status`, `source`, `position`, `rest_seconds`). They never write to `split_day_exercises`. A swap changes the row's `exercise_id` and sets `source = 'swapped'`; an added exercise is a new row with `source = 'added'`.
 - **Workout title** is copied from the split day at start, so renaming a day never renames history.
-- **Ghost:** the most recent completed workout (`ended_at` not null) that contains the same exercise. Served by the `(user_id, exercise_id)` index on `workout_exercises`.
+- **Ghost:** the most recent completed workout (`ended_at` not null) that contains the same exercise with at least one live set. Served by the `(user_id, exercise_id)` index on `workout_exercises`.
+- **Deleting a workout or a workout exercise** soft-deletes its children (exercises, sets) in the same request.
 - **Active split** is `user_settings.active_split_id`, so switching splits is one row write.
 - **Deleting a split or a day** soft-deletes its children in the same request (days, day
   exercises) and clears `active_split_id` if it pointed at the split.
