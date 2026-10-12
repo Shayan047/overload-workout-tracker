@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.routes import auth, health
+from app.api.routes import auth, exercises, health
 from app.core.config import require_jwt_secret
 from app.db.session import engine
 
@@ -18,3 +18,4 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(title="Overload API", lifespan=lifespan)
 app.include_router(health.router)
 app.include_router(auth.router)
+app.include_router(exercises.router)

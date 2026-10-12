@@ -32,7 +32,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** none.
 - **Done when:** a protected-route test passes.
 
-### 4. Exercise library
+### 4. Exercise library — DONE
 
 - **Goal:** seed import from free-exercise-db (confirm license), list/search/filter API, and custom exercises.
 - **Design:** 06 (for which fields and filters the API must serve).

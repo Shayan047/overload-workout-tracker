@@ -20,9 +20,8 @@ this file in the same commit.
   CHECK constraints, not Postgres enums, so adding a value is a one-line migration.
 - Constraint names follow a convention (`pk_`, `fk_`, `uq_`, `ck_`, `ix_` + table and
   column), set in `app/db/base.py`.
-- Timestamps are `timestamptz`. `updated_at` defaults to the server's `now()` on insert
-  and update; whether the API instead stores the client's edit time for last-write-wins is
-  decided in chunk 6.
+- Timestamps are `timestamptz`. `updated_at` is the server's `now()` on insert and on any
+  change, and is what last-write-wins and pull cursors use (see `api-and-sync.md`).
 
 ## Tables
 
@@ -55,8 +54,8 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 - **Split presets are data in code, not a table.** Creating a split from a preset (chunk 5)
   copies its days and exercises into the user's own `splits`, `split_days` and
   `split_day_exercises` rows. Presets then need no sync, migration or per-user state.
-  Presets refer to library exercises by a stable key; chunk 4 decides that key (for
-  example a UUIDv5 derived from the free-exercise-db id, which also keeps the seed idempotent).
+  Presets refer to library exercises by id; library ids are UUIDv5 of the
+  free-exercise-db id (chunk 4), so they are stable across servers.
 - **Weekdays: 0 = Monday … 6 = Sunday**, matching Python's `date.weekday()`. JavaScript's
   `Date.getDay()` uses 0 = Sunday, so the app converts with `(getDay() + 6) % 7`.
 - **`workout_exercises.rest_seconds` exists.** It is copied from the split day exercise at

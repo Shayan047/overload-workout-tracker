@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** auth (roadmap chunk 3).
+**Status:** exercise library (roadmap chunk 4).
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -28,6 +28,7 @@ uv run pytest
 uv run ruff check . && uv run ruff format .
 uv run alembic revision --autogenerate -m "..."
 uv run alembic upgrade head
+uv run python -m app.seed          # load/refresh the exercise library (idempotent)
 ```
 
 Copy `.env.example` to `.env` for host runs. The Compose project is named `overload`.
@@ -59,7 +60,8 @@ tests/
 - Every schema change is an Alembic migration, and an applied migration is never edited.
 - Every query is scoped to the current user. Protected routes take `user: CurrentUser` and
   `session: SessionDep` from `app/api/deps.py`.
-- Accept client-generated UUIDs. All writes are idempotent PUT upserts.
+- Accept client-generated UUIDs. All writes are idempotent PUT upserts through
+  `app/services/sync.py` (`upsert`, `soft_delete`, `pull_filter`); don't hand-roll them.
 - Soft deletes use `deleted_at`, and list endpoints support `updated_since`.
 - Weights are stored in kg as NUMERIC(7,3).
 - User-owned models use `UserOwnedMixin` and add `sync_index(table)` to `__table_args__`.

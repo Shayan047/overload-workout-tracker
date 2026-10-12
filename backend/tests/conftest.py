@@ -3,6 +3,7 @@ import os
 import uuid
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -93,6 +94,12 @@ async def client(session: AsyncSession) -> AsyncIterator[AsyncClient]:
             yield c
     finally:
         app.dependency_overrides.clear()
+
+
+def just_before(timestamp: str) -> str:
+    """An `updated_since` cursor a second before a returned timestamp. Within one test
+    everything shares a transaction, so Postgres's now() does not move between requests."""
+    return (datetime.fromisoformat(timestamp) - timedelta(seconds=1)).isoformat()
 
 
 @dataclass

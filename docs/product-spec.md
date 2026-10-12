@@ -31,11 +31,13 @@ Overload (working name) is a workout tracker for iOS and Android.
 
 ### Exercise library
 
-- A premade list seeded from [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (800+ exercises, released under the Unlicense, a public-domain dedication; re-check before importing in chunk 4).
-- Search and muscle filters.
-- Users can create custom exercises.
+- A premade list seeded from [free-exercise-db](https://github.com/yuhonas/free-exercise-db), released under the Unlicense (a public-domain dedication; confirmed 2026-10-11 at commit `f00c92c`). A trimmed copy is vendored in `backend/app/seed/free_exercise_db.json`.
+- 739 exercises: the upstream 876 minus the stretching (123) and cardio (14) entries, which can't be logged as weight × reps.
+- Search and muscle-group filters.
+- Users can create custom exercises, visible only to them.
 - Each exercise has a primary muscle, secondary muscles, equipment, and a kind: weighted or bodyweight.
-- Import mapping notes (decide finally in chunk 4): free-exercise-db stores `primaryMuscles` as an array, so take the first entry as `primary_muscle` and append the rest to `secondary_muscles`. Derive `kind` from equipment (`body only` → bodyweight, otherwise weighted). Some `equipment` values are null.
+- Import mapping (`backend/app/seed/exercises.py`): the first of `primaryMuscles` is `primary_muscle` and the rest join `secondary_muscles` (deduplicated). `kind` is bodyweight when equipment is `body only`, otherwise weighted. Null equipment stays null. Names are converted to sentence case, keeping proper nouns (Arnold, Smith, Romanian…), abbreviations (EZ) and shape letters (T-bar) capitalized.
+- Library ids are UUIDv5 of the upstream id, so they are the same on every server, presets can refer to them, and the seed (`python -m app.seed`, run on every container start) is idempotent: it inserts new exercises, updates changed ones, leaves unchanged ones alone, and soft-deletes ones no longer in the file.
 
 ### Workout
 
