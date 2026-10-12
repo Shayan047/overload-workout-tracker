@@ -58,98 +58,162 @@ Backend first, since PostgreSQL is the source of truth.
 
 ## Frontend
 
-### 8. Frontend skeleton
+## How UI chunks are reviewed
 
-- **Goal:** Expo + TypeScript, four tabs (Today, Splits, Progress, History), the theme from `design/tokens.json`, Archivo, and base components.
-- **Design:** tokens.json; tab bar from 07.
-- **Done when:** the themed tabs run on a phone.
+Chunks 8–23 build screens. They follow the review loop in CLAUDE.md and use the `design-reviewer` subagent (`.claude/agents/design-reviewer.md`).
+
+For each screen, take a screenshot with `npm run shot -- <route> <NN-name> [height]`. It's saved as `frontend/review/NN-name.png`, at 390 px wide and 2x, with the design's sample data.
+
+Then give a fresh design-reviewer the design PNG, the design HTML, `tokens.json` and the screenshot. Fix every blocker and major item, take a new screenshot, and review again with a new reviewer. Repeat until you get `VERDICT: PASS`, for at most 4 rounds. If the screen still fails after 4 rounds, stop and report the remaining items to the user. Never review your own screenshot.
+
+Every UI chunk's "Done when" also requires:
+
+- every listed screen has `VERDICT: PASS`,
+- the navigation matches the "User flow" section of `docs/product-spec.md`,
+- the chunk summary lists each screen's verdict, the number of review rounds, and any remaining minor items.
+
+### 8. Frontend skeleton and review tooling
+
+- **Goal:**
+  - Expo with TypeScript, and four tabs: Today, Splits, Progress, History.
+  - The theme from `design/tokens.json`, and the Archivo font.
+  - Base components: button, chip, card, list row, bottom sheet, segmented control, switch.
+  - The review tooling:
+    - Expo's web target, used for review screenshots only.
+    - `frontend/scripts/screenshot.mjs`, run as `npm run shot`. It uses Playwright, a 390 px viewport, deviceScaleFactor 2, full-page capture, and waits for fonts.
+    - A `?review=1` sample-data mode that loads fixed data: the bicep curl sample, Friday Oct 9, and the Arnold split.
+    - `frontend/review/` added to `.gitignore`.
+    - `.claude/agents/design-reviewer.md`, if it doesn't exist yet.
+- **Design:** `tokens.json`, and the tab bar from 07.
+- **Review:** screenshot the Today tab shell and compare only the tab bar and background against 07.
+- **Done when:** the themed tabs run on a phone, `npm run shot` produces a 780 px wide PNG, and the tab bar gets PASS.
 
 ### 9. Plumbing
 
-- **Goal:** API client, auth screens, offline outbox and cache, the Wi-Fi rule, and sync status UI.
-- **Design:** none dedicated; follow tokens.json and existing components.
-- **Done when:** a write made in airplane mode shows "Saved on this phone", is sent once Wi-Fi returns, and replaying the outbox is harmless.
+- **Goal:** API client, sign-in and sign-up screens, offline outbox and cache, the Wi-Fi rule, and the sync status UI.
+- **Design:** none dedicated. Follow `tokens.json` and the style of 01–02.
+- **Review:** the reviewer compares sign-in and sign-up with 01–02 for style (colors, type, buttons, fields) instead of an exact layout.
+- **Done when:**
+  - a write made in airplane mode shows "Saved on this phone", is sent once Wi-Fi returns, and replaying the outbox is harmless,
+  - the auth screens get PASS.
 
 ### 10. Onboarding
 
 - **Goal:** welcome, units and bodyweight.
 - **Design:** 01, 02.
-- **Done when:** a new user completes onboarding and their unit and bodyweight are saved.
+- **Review:** `01-welcome`, `02-units`.
+- **Done when:** a new user completes onboarding, their unit and bodyweight are saved, and both screens get PASS.
 
 ### 11. Splits UI
 
 - **Goal:** pick a split, edit a split, edit a day, add exercises.
 - **Design:** 03, 04, 05, 06.
-- **Done when:** a user can pick a preset or build a custom split, edit days, exercises and rest lengths, save, and land on Today.
+- **Review:** `03-pick-split`, `04-edit-split`, `05-edit-day`, `06-add-exercises`. Screens that don't depend on each other may be reviewed in parallel.
+- **Done when:**
+  - a user can pick a preset or build a custom split, edit days, exercises and rest lengths, save, and land on Today,
+  - all four screens get PASS.
 
 ### 12. Today screen
 
 - **Goal:** today's split day, its exercises, and Start workout.
 - **Design:** 07.
-- **Done when:** Today shows the correct next day for both repeat modes, offline from cache too.
+- **Review:** `07-today`.
+- **Done when:** Today shows the correct next day for both repeat modes, works offline from the cache, and gets PASS.
 
 ### 13. Active workout, log a set, and ghost
 
-- **Goal:** active workout screen, log-a-set sheet, elapsed time, ghost/last-time comparison, resume after restart.
+- **Goal:** active workout screen, log-a-set sheet, elapsed time, the ghost/last-time comparison, and resume after restart.
 - **Design:** 08, 09.
-- **Done when:** a whole workout can be logged offline, ghost shows last time set by set with ahead/behind, and killing the app resumes the workout.
+- **Review:**
+  - `08-active-workout`, using height 1310, with the rest timer hidden until chunk 15. The reviewer ignores the timer card.
+  - `09-log-set`, with the sheet open.
+- **Done when:**
+  - a whole workout can be logged offline,
+  - ghost shows last time set by set, with ahead or behind,
+  - killing the app resumes the workout,
+  - both screens get PASS.
 
 ### 14. Change an exercise for today
 
-- **Goal:** swap, skip, move to end, add.
-- **Design:** 10, 06.
-- **Done when:** each action works and the saved split is unchanged afterwards.
+- **Goal:** swap, skip, move to end, and add.
+- **Design:** 10, and 06 for swap.
+- **Review:** `10-change-exercise`, with the sheet open.
+- **Done when:** each action works, the saved split is unchanged afterwards, and 10 gets PASS.
 
 ### 15. Rest timer
 
-- **Goal:** auto-start on set save, −15/+15/skip, haptics at 10 s and at the end, optional sound, local notification when locked.
-- **Design:** 08, 09, 12.
-- **Done when:** the timer survives backgrounding (timestamp-based) and the notification fires with the phone locked.
+- **Goal:** auto-start when a set is saved, −15/+15/skip, haptics at 10 s and at the end, optional sound, and a local notification when the phone is locked.
+- **Design:** 08, 09 and 12.
+- **Review:**
+  - re-review `08-active-workout`, now including the timer card,
+  - re-review `09-log-set`, including the "Saving starts your rest timer" line.
+- **Done when:**
+  - the timer survives backgrounding, because it's based on timestamps,
+  - the notification fires with the phone locked,
+  - 08 and 09 get PASS.
 
 ### 16. Workout summary
 
-- **Goal:** duration, sets, volume, per-exercise comparison with last time, new bests.
+- **Goal:** duration, sets, volume, per-exercise comparison with last time, and new bests.
 - **Design:** 11.
-- **Done when:** the summary is correct offline and "See progress" opens Exercise detail.
+- **Review:** `11-workout-summary`, using height 1050.
+- **Done when:** the summary is correct offline, "See progress" opens Exercise detail, and 11 gets PASS.
 
 ### 17. Progress list and exercise detail
 
-- **Goal:** list with est. max sparklines and plateau flags; detail with est. max chart, weight bands, projection, weight chips.
+- **Goal:**
+  - the list, with est. max sparklines and plateau flags,
+  - exercise detail, with the est. max chart, weight bands, projection and weight chips.
 - **Design:** 13, 14.
-- **Done when:** both screens render from the stats API and from cache when offline.
+- **Review:** `13-progress` and `14-exercise-detail` (height 1240). Chart lines, dots, bands and labels must match in position and color.
+- **Done when:** both screens render from the stats API and from the cache when offline, and both get PASS.
 
 ### 18. One-weight views
 
-- **Goal:** Progress (stacked reps per set) and Fingerprint (reps by set number, retention).
+- **Goal:** Progress (stacked reps per set) and Fingerprint (reps by set number, plus retention).
 - **Design:** 15, 16.
-- **Done when:** the sample bicep curl data renders with the expected totals and retention.
+- **Review:** `15-one-weight-progress` and `16-one-weight-fingerprint`, both at height 920.
+- **Done when:** the sample bicep curl data renders with the expected totals (34, 38, 40, 44, 48) and retention (58%, 67%, 75%, 77%, 79%), and both screens get PASS.
 
 ### 19. Frontier
 
-- **Goal:** rep-weight frontier chart.
+- **Goal:** the rep-weight frontier chart.
 - **Design:** 17.
-- **Done when:** the sample data shows 20 × 7, 15 × 12, 10 × 14.
+- **Review:** `17-frontier`.
+- **Done when:** the sample data shows 20 × 7, 15 × 12 and 10 × 14, and 17 gets PASS.
 
 ### 20. History, profile and bodyweight
 
-- **Goal:** history calendar and recent list, profile settings, bodyweight log.
+- **Goal:** the history calendar and recent list, profile settings, and the bodyweight log.
 - **Design:** 18, 19, 20.
-- **Done when:** all settings persist and sync, and changing bodyweight does not change old workouts.
+- **Review:** `18-history` (height 880), `19-profile` (height 940) and `20-bodyweight`.
+- **Done when:**
+  - all settings persist and sync,
+  - changing bodyweight doesn't change old workouts,
+  - all three screens get PASS.
 
 ### 21. CSV export
 
 - **Goal:** export the user's workouts and sets as CSV from Profile.
-- **Design:** 19 (entry point).
-- **Done when:** the exported file opens in a spreadsheet with one row per set and weights in the user's unit.
+- **Design:** 19, where the export row is the entry point.
+- **Review:** re-review `19-profile` only if it changed.
+- **Done when:** the exported file opens in a spreadsheet with one row per set, and weights are in the user's unit.
 
 ### 22. Lock-screen timer
 
-- **Goal:** iOS Live Activity and Android ongoing notification for the rest timer.
+- **Goal:** an iOS Live Activity and an Android ongoing notification for the rest timer.
 - **Design:** 12.
-- **Done when:** the rest countdown is visible on the lock screen on both platforms.
+- **Review:** a web screenshot can't capture the lock screen. Take simulator or emulator screenshots instead (`xcrun simctl io booted screenshot` on iOS, `adb exec-out screencap -p` on Android), then have the design-reviewer compare each against `12-rest-timer-lock-screen` for content and colors. The system frame and layout will differ.
+- **Done when:** the rest countdown is visible on the lock screen on both platforms, and both screenshots get PASS for content and colors.
 
 ### 23. Release prep
 
-- **Goal:** accessibility pass and store builds.
+- **Goal:** accessibility pass, a final design pass, and store builds.
 - **Design:** all.
-- **Done when:** screen reader labels and touch targets pass review, and signed iOS and Android builds are produced.
+- **Review:**
+  - re-screenshot all 20 screens and run one fresh design-reviewer per screen, in parallel batches,
+  - check the full user flow from first launch to the summary.
+- **Done when:**
+  - every screen gets PASS,
+  - screen reader labels and 44 px touch targets pass review,
+  - signed iOS and Android builds are produced.
