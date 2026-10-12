@@ -24,6 +24,29 @@ A user must be able to log a whole workout with no connection.
 - **Status in the UI.** "Saved on this phone" and "Waiting for Wi-Fi" states.
 - Every write goes through the outbox and the UI updates immediately. Logging never waits on the network.
 
+How it's built (chunk 9, `frontend/src/api/`):
+
+- **Outbox** (`outbox.ts`): a JSON array in AsyncStorage (`overload.outbox.v1`). `add()`
+  resolves once the entry is stored. One run at a time sends the oldest entry and waits for
+  its answer. It applies the retry rule below: 408, 429, 5xx and no answer back off 2 s, 5 s,
+  15 s, 30 s, 1 min, 2 min, then every 5 min.
+- **What starts a run:** a NetInfo network change (airplane mode off, Wi-Fi back), the app
+  returning to the foreground, a new write, or the retry timer. Runs happen only while the
+  app is open; anything queued while it's closed goes on the next open.
+- **The Wi-Fi rule** (`network.ts`): with "Sync on Wi-Fi only" on, only Wi-Fi or ethernet
+  sends. No connection, or a network that reports no internet, counts as offline.
+  Reachability not checked yet counts as reachable (a failed send just retries). The rule
+  limits the outbox only; reads may use mobile data.
+- **Status copy** (the pill on Today, 07): nothing waiting → hidden; on mobile data with
+  Wi-Fi only → "N waiting for Wi-Fi"; signed out → "Sign in to sync"; otherwise (offline,
+  sending, retrying) → "Saved on this phone".
+- **Cache** (`cache.ts`): TanStack Query results marked `meta: { persist: true }` are saved
+  in AsyncStorage (`overload.cache.v1`) and restored before the first screen renders.
+- **Tests:** `outbox.test.ts` covers the rules with a fake network and server.
+  `outbox.e2e.test.ts` runs the real outbox against the API: a whole session written
+  offline is saved and not sent, goes out once on Wi-Fi, and two full replays leave the
+  data unchanged.
+
 ## IDs and writes
 
 Implemented once in `backend/app/services/sync.py` and used by every synced resource.
@@ -86,7 +109,13 @@ Implemented once in `backend/app/services/sync.py` and used by every synced reso
   deleted user, gets `401` with `WWW-Authenticate: Bearer`.
 - Emails are trimmed and lowercased; uniqueness ignores case. Sign-in gives the same `401`
   for an unknown email and a wrong password, and takes the same time for both.
-- Tokens are stored on the phone in expo-secure-store.
+- Tokens are stored on the phone in expo-secure-store (the web build, used only for review
+  screenshots, keeps it in localStorage). The app opens signed in from the phone, with no
+  network check, so it works offline.
+- A 401 from the API sends the app back to sign-in. Unsent writes stay and go out once the
+  same user signs in again. If a different user signs in on the phone, the outbox and cache
+  are cleared first, so nobody's writes reach someone else's account. Signing out clears
+  them too.
 - Every query is scoped to the current user.
 
 ## Endpoints
