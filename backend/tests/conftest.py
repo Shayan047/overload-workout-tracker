@@ -1,6 +1,8 @@
 import asyncio
 import os
+import uuid
 from collections.abc import AsyncIterator
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -17,6 +19,7 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 
 # Tests run against "<database>_test" on the same server, never the dev database.
 # Point DATABASE_URL at it before the app (and its engine) is imported.
+os.environ.setdefault("JWT_SECRET", "test-secret-test-secret-test-secret-0123")
 _url = make_url(get_settings().database_url)
 if not _url.database.endswith("_test"):
     _url = _url.set(database=f"{_url.database}_test")
@@ -28,14 +31,6 @@ get_settings.cache_clear()
 @pytest.fixture(scope="session")
 def anyio_backend() -> str:
     return "asyncio"
-
-
-@pytest.fixture
-async def client() -> AsyncIterator[AsyncClient]:
-    from app.main import app
-
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
-        yield c
 
 
 async def _recreate_test_database() -> None:
@@ -81,3 +76,48 @@ async def session(migrated_database: None) -> AsyncIterator[AsyncSession]:
             await session.close()
             await transaction.rollback()
     await engine.dispose()
+
+
+@pytest.fixture
+async def client(session: AsyncSession) -> AsyncIterator[AsyncClient]:
+    """API client whose requests share the test's session, so nothing outlives the test."""
+    from app.db.session import get_session
+    from app.main import app
+
+    async def test_session() -> AsyncIterator[AsyncSession]:
+        yield session
+
+    app.dependency_overrides[get_session] = test_session
+    try:
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
+            yield c
+    finally:
+        app.dependency_overrides.clear()
+
+
+@dataclass
+class SignedIn:
+    user_id: uuid.UUID
+    email: str
+    headers: dict[str, str]
+
+
+async def sign_up(client: AsyncClient, email: str, password: str = "correct horse") -> SignedIn:
+    response = await client.post("/auth/sign-up", json={"email": email, "password": password})
+    assert response.status_code == 201, response.text
+    body = response.json()
+    return SignedIn(
+        user_id=uuid.UUID(body["user"]["id"]),
+        email=email,
+        headers={"Authorization": f"Bearer {body['access_token']}"},
+    )
+
+
+@pytest.fixture
+async def signed_in(client: AsyncClient) -> SignedIn:
+    return await sign_up(client, "lifter@example.com")
+
+
+@pytest.fixture
+async def other_user(client: AsyncClient) -> SignedIn:
+    return await sign_up(client, "someone-else@example.com")

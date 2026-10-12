@@ -13,7 +13,7 @@ overload/
 └── backend/           FastAPI + PostgreSQL API
 ```
 
-Status: backend schema (roadmap chunk 2). Build follows docs/roadmap.md.
+Status: backend auth (roadmap chunk 3). Build follows docs/roadmap.md.
 
 ## Designs
 

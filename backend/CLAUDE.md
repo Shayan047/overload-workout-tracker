@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** schema (roadmap chunk 2): models and the initial migration on top of the chunk 1 skeleton.
+**Status:** auth (roadmap chunk 3).
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -9,6 +9,7 @@ Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 - Python 3.12+, uv for dependencies.
 - FastAPI served by uvicorn, Pydantic v2 with pydantic-settings.
 - SQLAlchemy 2 (async) with asyncpg, Alembic.
+- pwdlib[argon2] for password hashing, PyJWT for access tokens.
 - PostgreSQL in Docker Compose.
 - pytest with httpx (`AsyncClient` + `ASGITransport`, async tests via the anyio plugin), ruff.
 
@@ -56,7 +57,8 @@ tests/
 ## Rules
 
 - Every schema change is an Alembic migration, and an applied migration is never edited.
-- Every query is scoped to the current user.
+- Every query is scoped to the current user. Protected routes take `user: CurrentUser` and
+  `session: SessionDep` from `app/api/deps.py`.
 - Accept client-generated UUIDs. All writes are idempotent PUT upserts.
 - Soft deletes use `deleted_at`, and list endpoints support `updated_since`.
 - Weights are stored in kg as NUMERIC(7,3).

@@ -26,7 +26,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** none.
 - **Done when:** the migration applies on an empty database and model tests pass.
 
-### 3. Auth
+### 3. Auth — DONE
 
 - **Goal:** email and password sign-up and sign-in, JWT, and a current-user dependency.
 - **Design:** none.

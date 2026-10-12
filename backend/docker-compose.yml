@@ -20,6 +20,8 @@ services:
   api:
     build: .
     environment:
+      # Dev-only fallback secret. Set JWT_SECRET in backend/.env for anything real.
+      JWT_SECRET: ${JWT_SECRET:-dev-only-insecure-secret-change-me-0123456789}
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-overload}:${POSTGRES_PASSWORD:-overload}@db:5432/${POSTGRES_DB:-overload}
     ports:
       - "8000:8000"

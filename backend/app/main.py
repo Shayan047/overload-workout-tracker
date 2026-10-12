@@ -3,15 +3,18 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.routes import health
+from app.api.routes import auth, health
+from app.core.config import require_jwt_secret
 from app.db.session import engine
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    require_jwt_secret()  # fail at boot, not at the first sign-in
     yield
     await engine.dispose()
 
 
 app = FastAPI(title="Overload API", lifespan=lifespan)
 app.include_router(health.router)
+app.include_router(auth.router)

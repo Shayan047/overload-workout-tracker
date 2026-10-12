@@ -48,7 +48,15 @@ A user must be able to log a whole workout with no connection.
 
 ## Auth
 
-- Email and password sign-up and sign-in, JWT (chunk 3).
+- Email and password sign-up and sign-in. Passwords are hashed with Argon2id (pwdlib).
+- Both return an HS256 JWT access token (`sub` = user id) valid for 30 days
+  (`ACCESS_TOKEN_TTL_DAYS`). It is long-lived because the app can be offline for days.
+  There are no refresh tokens yet; when the token expires the app signs in again, and the
+  outbox waits until it has.
+- Requests send `Authorization: Bearer <token>`. A missing, invalid or expired token, or a
+  deleted user, gets `401` with `WWW-Authenticate: Bearer`.
+- Emails are trimmed and lowercased; uniqueness ignores case. Sign-in gives the same `401`
+  for an unknown email and a wrong password, and takes the same time for both.
 - Tokens are stored on the phone in expo-secure-store.
 - Every query is scoped to the current user.
 
@@ -57,6 +65,9 @@ A user must be able to log a whole workout with no connection.
 | Method | Path | Auth | Response |
 |---|---|---|---|
 | GET | `/health` | none | `{"status": "ok"}` (liveness only; does not check the database) |
+| POST | `/auth/sign-up` | none | `{email, password (8–256 chars), display_name?}` → `201 {access_token, token_type: "bearer", user}`; `409` if the email is taken. Also creates the user's settings row. |
+| POST | `/auth/sign-in` | none | `{email, password}` → `200 {access_token, token_type, user}`; `401` on bad credentials |
+| GET | `/me` | bearer | `{id, email, display_name}` |
 
 The rest are filled in as chunks 3–7 land. Expected groups: auth, exercises, splits (with days and day exercises), workouts (with workout exercises and sets), bodyweight, settings, stats. Record each endpoint's path, method and payload here when it is built.
 
