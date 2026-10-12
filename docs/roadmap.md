@@ -88,7 +88,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** screenshot the Today tab shell and compare only the tab bar and background against 07.
 - **Done when:** the themed tabs run on a phone, `npm run shot` produces a 780 px wide PNG, and the tab bar gets PASS.
 
-### 9. Plumbing
+### 9. Plumbing — DONE
 
 - **Goal:** API client, sign-in and sign-up screens, offline outbox and cache, the Wi-Fi rule, and the sync status UI.
 - **Design:** none dedicated. Follow `tokens.json` and the style of 01–02.

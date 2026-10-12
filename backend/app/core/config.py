@@ -18,6 +18,14 @@ class Settings(BaseSettings):
     # Long-lived because the app works offline for days; there are no refresh tokens yet.
     access_token_ttl_days: int = 30
 
+    # Browser origins allowed to call the API (comma-separated). Phones don't need this;
+    # it's for the Expo web dev server (`npm run web`). Set it to "" to allow none.
+    cors_origins: str = "http://localhost:8081,http://127.0.0.1:8081"
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
 
 @lru_cache
 def get_settings() -> Settings:
