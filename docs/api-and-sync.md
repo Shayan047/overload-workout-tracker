@@ -123,4 +123,42 @@ Vocabulary (validated on custom exercises, `422` otherwise; defined in
   these to display labels (e.g. "e-z curl bar" → "EZ bar", "body only" → "Bodyweight").
 - **Kind:** weighted, bodyweight.
 
-The rest are filled in as chunks 5–7 land.
+### Splits
+
+| Method | Path | Body / query | Response |
+|---|---|---|---|
+| GET | `/presets` | | `[{key, name, summary, repeat_mode, days: [{name, weekday, exercises: [{exercise_id, rest_seconds}]}]}]` |
+| POST | `/splits/{id}/from-preset` | `{preset}` | Creates the split at `id` from a preset and returns it like `GET /splits/{id}`. Idempotent: if the split exists, nothing changes. Day ids are `uuid5(split_id, "day:{i}")` and day exercise ids `uuid5(split_id, "day:{i}:exercise:{j}")` (0-based), so the phone can create a split from a preset offline and keep editing it before it syncs. |
+| GET | `/splits` | `updated_since?` | `[{name, repeat_mode}]` |
+| GET | `/splits/{id}` | | The split with its live days in order, each with its live exercises in order: `{name, repeat_mode, days: [{name, position, weekday, exercises: [{exercise_id, position, rest_seconds}]}]}`. `404` if deleted. |
+| PUT | `/splits/{id}` | `{name, repeat_mode}` | The split. `repeat_mode` is `in_order` or `weekdays`. |
+| DELETE | `/splits/{id}` | | `204`. Also soft-deletes its days and their exercises, and clears it as the active split. |
+| GET | `/splits/{id}/next-day` | `on` (the phone's local date, `YYYY-MM-DD`) | `{split_id, day}`; `day` is null on a rest day or when the split has no days. See "Next day" below. |
+| GET | `/split-days` | `updated_since?` | `[{split_id, name, position, weekday}]` |
+| PUT | `/split-days/{id}` | `{split_id, name, position, weekday?}` | The day. `weekday` is 0 (Monday) to 6 (Sunday) and only used in weekdays mode. |
+| DELETE | `/split-days/{id}` | | `204`. Also soft-deletes the day's exercises. |
+| GET | `/split-day-exercises` | `updated_since?` | `[{split_day_id, exercise_id, position, rest_seconds}]` |
+| PUT | `/split-day-exercises/{id}` | `{split_day_id, exercise_id, position, rest_seconds}` | The row. `rest_seconds` is 0–3600. The exercise must be a library exercise or the user's own. |
+| DELETE | `/split-day-exercises/{id}` | | `204` |
+
+Reordering is a PUT per moved row with its new `position`. Positions don't have to be
+unique or contiguous; lists sort by `position`, then `created_at`.
+
+**Next day** (`app/services/splits.py`, `next_day`):
+
+- **In order:** the live day after the day of the most recent finished, non-deleted workout
+  for this split (by `ended_at`), wrapping to the first day. No such workout: the first
+  day. The date doesn't matter, so rest days never shift the rotation. If that last day
+  has since been deleted, the rotation continues from where it was.
+- **Set weekdays:** the live day whose `weekday` is `on`'s weekday; none means a rest day.
+  History doesn't matter.
+- In-progress workouts don't count; Today offers to resume them instead.
+
+### Settings
+
+| Method | Path | Body | Response |
+|---|---|---|---|
+| GET | `/settings` | | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, updated_at}` |
+| PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). |
+
+The rest are filled in as chunks 6–7 land.

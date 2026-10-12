@@ -25,6 +25,17 @@ def _owned(row: Any, owner: dict[str, uuid.UUID | None]) -> bool:
     return all(getattr(row, column) == value for column, value in owner.items())
 
 
+async def require_owned[M: Base](
+    session: AsyncSession, model: type[M], row_id: uuid.UUID, user_id: uuid.UUID
+) -> M:
+    """For references to the user's own rows. Soft-deleted rows still count, so replays of
+    older writes keep working."""
+    row = await session.get(model, row_id)
+    if row is None or not _owned(row, {"user_id": user_id}):
+        raise NotFoundError
+    return row
+
+
 async def upsert[M: Base](
     session: AsyncSession,
     model: type[M],
@@ -49,12 +60,15 @@ async def upsert[M: Base](
 
 async def soft_delete[M: Base](
     session: AsyncSession, model: type[M], row_id: uuid.UUID, owner: dict[str, uuid.UUID | None]
-) -> None:
+) -> M | None:
+    """Returns the (now) deleted row, or None if the user has no such row."""
     row = await session.get(model, row_id)
-    if row is None or not _owned(row, owner) or row.deleted_at is not None:  # type: ignore[attr-defined]
-        return
-    row.deleted_at = func.now()  # type: ignore[attr-defined]
-    await session.flush()
+    if row is None or not _owned(row, owner):
+        return None
+    if row.deleted_at is None:  # type: ignore[attr-defined]
+        row.deleted_at = func.now()  # type: ignore[attr-defined]
+        await session.flush()
+    return row
 
 
 def pull_filter(model: Any, updated_since: datetime | None) -> ColumnElement[bool]:

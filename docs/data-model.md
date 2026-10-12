@@ -48,6 +48,8 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 - **Workout title** is copied from the split day at start, so renaming a day never renames history.
 - **Ghost:** the most recent completed workout (`ended_at` not null) that contains the same exercise. Served by the `(user_id, exercise_id)` index on `workout_exercises`.
 - **Active split** is `user_settings.active_split_id`, so switching splits is one row write.
+- **Deleting a split or a day** soft-deletes its children in the same request (days, day
+  exercises) and clears `active_split_id` if it pointed at the split.
 
 ## Decisions (chunk 2)
 
@@ -83,4 +85,4 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 
 ## Next-day rule for "in order" splits
 
-The split day after the one in the user's most recent finished workout for the active split (wrapping to the first day after the last). Built in chunk 5.
+The split day after the one in the user's most recent finished workout for the active split (wrapping to the first day after the last). Implemented in chunk 5; see "Next day" in `api-and-sync.md`.

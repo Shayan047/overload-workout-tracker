@@ -13,12 +13,16 @@ Overload (working name) is a workout tracker for iOS and Android.
 
 ### Splits
 
-- Presets are stored as data:
-  - Push/Pull/Legs
-  - Arnold split: Chest & Back, Shoulders & Arms, Legs
-  - Upper/Lower
-  - Body part split: Chest, Back, Shoulders, Arms, Legs
-  - Full body (Mon/Wed/Fri)
+- Presets are stored as data in code (`backend/app/services/presets.py`), each with library
+  exercises and rest lengths. Picking one copies it into the user's own split.
+  - Push, pull, legs (in order): Push, Pull, Legs
+  - Arnold split (in order): Chest & Back, Shoulders & Arms, Legs. Shoulders & Arms matches
+    screen 05: overhead press 2:30, lateral raise 1:00, bicep curl 1:30, hammer curl 1:30,
+    triceps pushdown 1:00, chin-up 2:00.
+  - Upper, lower (in order): Upper A, Lower A, Upper B, Lower B (A/B so Today can tell the
+    two upper days apart; screen 03 shows them as Upper, Lower, Upper, Lower)
+  - Body part split (in order): Chest, Back, Shoulders, Arms, Legs
+  - Full body (set weekdays): Full body A (Mon), B (Wed), C (Fri)
 - Users can also build fully custom splits.
 - Two repeat modes:
   - **In order:** a rotation. The next day comes whenever the user trains, and rest days never shift it. Next day = the split day after the one in the user's most recent finished workout for the active split (wrapping around).

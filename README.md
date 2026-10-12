@@ -13,7 +13,7 @@ overload/
 └── backend/           FastAPI + PostgreSQL API
 ```
 
-Status: backend exercise library (roadmap chunk 4). Build follows docs/roadmap.md.
+Status: backend splits API (roadmap chunk 5). Build follows docs/roadmap.md.
 
 ## Designs
 

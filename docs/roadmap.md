@@ -38,7 +38,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** 06 (for which fields and filters the API must serve).
 - **Done when:** the seed loads, search and muscle filter tests pass, and a user can create a custom exercise visible only to them.
 
-### 5. Splits API
+### 5. Splits API — DONE
 
 - **Goal:** presets, creating and editing a split, days, day exercises with rest seconds, and next-day logic for both repeat modes.
 - **Design:** 03, 04, 05.

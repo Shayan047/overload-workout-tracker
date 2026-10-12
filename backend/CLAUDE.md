@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** exercise library (roadmap chunk 4).
+**Status:** splits API (roadmap chunk 5).
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
