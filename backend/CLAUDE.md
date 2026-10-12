@@ -1,6 +1,6 @@
 # Backend (FastAPI)
 
-**Status:** workouts API (roadmap chunk 6).
+**Status:** backend API complete through stats (roadmap chunk 7). Frontend is next.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 

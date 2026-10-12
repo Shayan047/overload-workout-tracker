@@ -88,7 +88,31 @@ Formulas:
 - Est. max = weight × (1 + reps ÷ 30) (Epley). A session's est. max comes from its best set. Computed, never stored.
 - Retention = reps in the last set ÷ reps in the first set, at one exact weight.
 - Frontier: for each weight, keep the most reps ever done. Drop a point if another point has at least the same weight and at least the same reps.
-- Plateau and projection: method decided in chunk 7 and documented here.
+- Plateau and projection (decided in chunk 7; `backend/app/stats/trend.py`):
+  - **Plateau ("Flat for N weeks"):** the best session est. max ever was set at least
+    21 days before the latest session, with at least 2 sessions since. N = those days ÷ 7,
+    rounded down. Measured to the latest session, not to today, so a lift that simply
+    wasn't trained lately isn't called a plateau. A tie doesn't count as a new best.
+  - **Projection ("If the trend holds… on pace for about X by D"):** a least-squares line
+    through the session est. max values of the 8 weeks up to the latest session, projected
+    8 weeks past it, starting from the latest est. max. The weekly gain is never negative
+    and at most 1.5% of the latest est. max, because a straight line through a jump to a
+    heavier weight promises far too much. Needs 3 sessions spanning at least 2 weeks. The
+    sample gives about 27.6 lb on Dec 4 (capped).
+  - **Change (screen 13, e.g. "+76%"):** latest est. max vs the first session in the window
+    (8 weeks by default). Needs two sessions in the window.
+  - **New best:** the latest session's est. max beats every earlier session.
+- Other stats rules (chunk 7):
+  - Sets with 0 reps are failed attempts: they don't count toward est. max, best set or
+    the frontier.
+  - Retention needs at least 2 sets at that weight and a first set with reps.
+  - Bodyweight exercises: est. max uses the load (bodyweight snapshot + added weight), so
+    it "includes bodyweight". One-weight views and the frontier use the added weight, since
+    that's what the user picks.
+  - Records on Exercise detail: best set = highest est. max (earliest on ties); most reps
+    = most reps (heavier, then earliest, on ties); heaviest = heaviest weight and the date
+    it was first used.
+  - Only finished, non-deleted workouts count.
 
 ### History, bodyweight and profile
 

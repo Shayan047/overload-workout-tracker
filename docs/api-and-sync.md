@@ -208,4 +208,15 @@ Rules:
   In-progress workouts never count. If the exercise appears twice in that workout, its
   sets are listed in row order.
 
-The rest are filled in as chunk 7 lands.
+### Stats
+
+Computed on request by the pure functions in `app/stats` (never stored). Weights and est.
+max are in kg (est. max rounded to the gram); the phone converts and rounds for display.
+The app caches responses for offline viewing.
+
+| Method | Path | Query | Response |
+|---|---|---|---|
+| GET | `/stats/progress` | `weeks?` (default 8), `as_of?` (default now) | Progress list (13), most recently trained first: `[{exercise_id, includes_bodyweight, sessions, latest_at, est_max_kg, change, is_new_best, plateau: {weeks_flat, best_kg, best_at} \| null, sparkline: [{at, est_max_kg}]}]`. `change` is a fraction (0.76 = +76%). |
+| GET | `/stats/exercises/{id}` | | Exercise detail (14): `{includes_bodyweight, est_max_kg, latest_at, first: {at, est_max_kg}, is_new_best, series: [{workout_id, at, est_max_kg, best_set, sets: [{weight_kg, reps}]}], weights: [{weight_kg, sessions, first_at}], best_set, most_reps, heaviest: {weight_kg, first_at}, plateau, projection: {at, est_max_kg, weekly_gain_kg, capped}, frontier}`. Empty values for an exercise never done; `404` for an exercise the user can't see. |
+| GET | `/stats/exercises/{id}/weights/{weight_kg}` | | One-weight views (15, 16): `{weight_kg, sessions: [{workout_id, at, reps: [...], total, average, retention}], total_change, first_retention, latest_retention, moved_up_on}`. The weight is rounded to the gram before matching, like stored weights, so 10 lb can be sent as 4.5359237. |
+| GET | `/stats/exercises/{id}/frontier` | `as_of?` | Frontier (17): `{as_of, points: [{weight_kg, reps, at}]}`, lightest first. `as_of` gives the frontier as it stood then ("compare with"). |

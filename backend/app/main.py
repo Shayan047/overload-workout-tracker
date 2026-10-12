@@ -3,7 +3,16 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.routes import auth, bodyweight, exercises, health, settings, splits, workouts
+from app.api.routes import (
+    auth,
+    bodyweight,
+    exercises,
+    health,
+    settings,
+    splits,
+    stats,
+    workouts,
+)
 from app.core.config import require_jwt_secret
 from app.db.session import engine
 
@@ -23,3 +32,4 @@ app.include_router(splits.router)
 app.include_router(settings.router)
 app.include_router(workouts.router)
 app.include_router(bodyweight.router)
+app.include_router(stats.router)

@@ -2,7 +2,7 @@
 
 Personal workout tracker for iOS and Android. "Overload" is a working name.
 
-**Status:** backend workouts API (roadmap chunk 6). Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
+**Status:** backend done through roadmap chunk 7 (stats). Frontend not scaffolded yet. Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
 
 ## Where things live
 

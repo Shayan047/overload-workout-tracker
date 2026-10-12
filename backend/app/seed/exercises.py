@@ -43,7 +43,7 @@ def _keeps_case(part: str) -> bool:
 
 
 def sentence_case(name: str) -> str:
-    """ "Close-Grip EZ Bar Curl" -> "Close-grip EZ bar curl" (the app's copy is sentence case)."""
+    """Sentence case, like the app's copy: "Close-Grip EZ Bar Curl" -> "Close-grip EZ bar curl"."""
     words = []
     for w, word in enumerate(name.split(" ")):
         parts = word.split("-")

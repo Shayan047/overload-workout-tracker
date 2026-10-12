@@ -50,7 +50,7 @@ Backend first, since PostgreSQL is the source of truth.
 - **Design:** 07, 08, 10.
 - **Done when:** tests show replaying the same PUTs twice changes nothing, an in-progress workout is returned on resume, today-only changes leave the split untouched, and `updated_since` returns soft-deleted rows.
 
-### 7. Stats module and endpoints
+### 7. Stats module and endpoints — DONE
 
 - **Goal:** est. max, per-weight sessions, retention, frontier, plateau and projection, as pure functions in `app/stats` plus endpoints.
 - **Design:** 13–17 (for which numbers the endpoints must serve).
