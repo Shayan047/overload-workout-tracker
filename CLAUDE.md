@@ -2,7 +2,7 @@
 
 Personal workout tracker for iOS and Android. "Overload" is a working name.
 
-**Status:** backend done through roadmap chunk 7 (stats). Frontend not scaffolded yet. Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
+**Status:** backend done through roadmap chunk 7; frontend skeleton done (chunk 8). Frontend not scaffolded yet. Build follows `docs/roadmap.md`.
 
 ## Where things live
 
@@ -16,7 +16,8 @@ Personal workout tracker for iOS and Android. "Overload" is a working name.
 | `design/screens/` | 20 rendered PNGs (the look) |
 | `design/source/` | 20 HTML mockups (the exact spec) |
 | `design/tokens.json` | Colors, fonts, radii, spacing |
-| `frontend/CLAUDE.md` | Expo app stack, layout and rules |
+| `frontend/CLAUDE.md` | Expo app stack, layout, commands and rules |
+| `.claude/agents/design-reviewer.md` | The design reviewer used in the UI review loop |
 | `backend/CLAUDE.md` | FastAPI stack, layout and rules |
 
 ## Product in brief
@@ -75,6 +76,10 @@ Full detail: `docs/api-and-sync.md`.
   Stop when it's met, and don't start the next chunk unless asked.
 - Before any UI work, open the matching PNG in `design/screens`, its HTML in `design/source`,
   and `design/tokens.json`, and match them. Never hard-code colors or font values outside the theme.
+- UI chunks end with the review loop in `docs/roadmap.md` ("How UI chunks are reviewed"):
+  screenshot each screen with `npm run shot`, have a fresh design-reviewer compare it
+  with the design, fix every blocker and major, and repeat until `VERDICT: PASS`
+  (at most 4 rounds). Never review your own screenshot.
 - Write unit tests first for domain logic.
 - Ask before adding a dependency that isn't listed in `frontend/CLAUDE.md` or `backend/CLAUDE.md`.
 - Update `docs/` whenever a decision changes, such as the data model or the API.
