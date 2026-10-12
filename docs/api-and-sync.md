@@ -118,6 +118,14 @@ Implemented once in `backend/app/services/sync.py` and used by every synced reso
   them too.
 - Every query is scoped to the current user.
 
+## CORS
+
+Phones don't need CORS. The browser does, for the Expo web dev server (`npm run web`), so
+the API allows the origins in `CORS_ORIGINS` (comma-separated; default
+`http://localhost:8081,http://127.0.0.1:8081`). Methods GET, POST, PUT and DELETE, headers
+`Authorization` and `Content-Type`, and no credentials, since tokens never travel in cookies.
+Set `CORS_ORIGINS=""` in production unless a web client is deployed.
+
 ## Endpoints
 
 | Method | Path | Auth | Response |

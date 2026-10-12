@@ -76,6 +76,13 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
 - A 401 anywhere sends the user back to sign-in; their unsent writes stay and go out after.
   Signing in as someone else clears the outbox and cache first.
 
+## Testing on the web
+
+`npm run web` serves the app at http://localhost:8081 and talks to the real API (the
+backend allows that origin; see "CORS" in `../docs/api-and-sync.md`). Differences from a
+phone: the token is kept in localStorage, and "Sync on Wi-Fi only" is ignored because
+browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
+
 ## Layout and safe areas
 
 The designs' top padding includes a 44 px status bar, and the bottom padding a 34 px home
