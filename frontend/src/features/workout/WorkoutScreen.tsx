@@ -15,9 +15,19 @@ import { isReviewMode, now } from '@/review/reviewMode';
 import { colors, figure, figures, radius } from '@/theme';
 
 import { aheadText, elapsedText, exerciseDelta, ghost, ghostDate, lastTimeText, setText } from './ghost';
+import { ChangeExerciseSheet, type ChangeTarget } from './ChangeExerciseSheet';
 import { LogSetSheet, type SetTarget } from './LogSetSheet';
 import { useWorkoutActions } from './useWorkoutActions';
-import { currentExercise, defaultWeightKg, type LoggedSet, plannedRows, setsFor, type WorkoutRow } from './workout';
+import {
+  afterName,
+  currentExercise,
+  defaultWeightKg,
+  lastPlanned,
+  type LoggedSet,
+  plannedRows,
+  setsFor,
+  type WorkoutRow,
+} from './workout';
 import { inProgress, useActiveWorkout } from './workoutStore';
 
 const sum = (sets: readonly { reps: number }[]) => sets.reduce((total, s) => total + s.reps, 0);
@@ -147,6 +157,13 @@ export function WorkoutScreen() {
     setTarget({ rowId: current.id, setNumber: nextSetNumber, plannedSets: planned, weightKg: nextWeightKg, reps: null, field });
   };
 
+  // Review: 10 is this screen with Change exercise open on the first exercise up next.
+  const [changing, setChanging] = useState<string | null>(() =>
+    isReviewMode && params.sheet === 'change'
+      ? (rows.find((r) => r.status === 'planned' && r.id !== current?.id)?.id ?? null)
+      : null,
+  );
+
   // Review: 09 is this screen with the sheet open on set 3, "6" typed.
   const [target, setTarget] = useState<SetTarget | null>(() =>
     isReviewMode && params.sheet === 'log' && current
@@ -158,6 +175,7 @@ export function WorkoutScreen() {
 
   const done = rows.filter((r) => r.status === 'done' && r.id !== current?.id);
   const upNext = rows.filter((r) => r.status === 'planned' && r.id !== current?.id);
+  const skipped = [...state.exercises].filter((r) => r.status === 'skipped').sort((a, b) => a.position - b.position);
   const anySets = state.sets.length > 0;
   const savingLocally = status.pending > 0 && status.state !== 'sending';
 
@@ -171,6 +189,30 @@ export function WorkoutScreen() {
   const targetInfo = targetRow ? info(targetRow) : null;
   const targetLastSet =
     ghostMode && target && targetInfo?.last ? (targetInfo.last.sets.find((s) => s.set_number === target.setNumber) ?? null) : null;
+
+  const changeRow = changing ? state.exercises.find((e) => e.id === changing) : undefined;
+  const changeTarget: ChangeTarget | null = (() => {
+    if (!changeRow) return null;
+    const { name, bodyweight, last, today } = info(changeRow);
+    const end = lastPlanned(state);
+    const place = changeRow.id === current?.id ? 'Doing now' : 'Up next';
+    return {
+      rowId: changeRow.id,
+      name,
+      subtitle: ghostMode && last ? `${place}. Last time ${lastTimeText(last.sets, unit, bodyweight)}` : place,
+      hasSets: today.length > 0,
+      after: end && end.id !== changeRow.id ? afterName(info(end).name) : null,
+    };
+  })();
+  const pick = (mode: 'swap' | 'add', rowId?: string) => {
+    setChanging(null);
+    router.push({ pathname: '/pick-exercise', params: rowId ? { mode, rowId } : { mode } });
+  };
+  const change = (action: (rowId: string) => Promise<void>) => {
+    if (!changing) return;
+    setChanging(null);
+    void action(changing);
+  };
 
   const currentCard = () => {
     if (!current || !currentInfo) return null;
@@ -190,7 +232,7 @@ export function WorkoutScreen() {
               {subtitle}
             </Text>
           </View>
-          <MoreButton label={`Change ${name.toLowerCase()} for today`} />
+          <MoreButton label={`Change ${name.toLowerCase()} for today`} onPress={() => setChanging(current.id)} />
         </View>
 
         {ghostMode && last ? <GhostPanel today={today} last={last} /> : null}
@@ -426,7 +468,7 @@ export function WorkoutScreen() {
                           </Text>
                         ) : null}
                       </Pressable>
-                      <MoreButton label={`Change ${name.toLowerCase()} for today`} />
+                      <MoreButton label={`Change ${name.toLowerCase()} for today`} onPress={() => setChanging(row.id)} />
                     </View>
                   </View>
                 );
@@ -434,6 +476,34 @@ export function WorkoutScreen() {
             </View>
           </>
         ) : null}
+
+        {skipped.length ? (
+          <>
+            <Text variant="label" color="textFaint" style={styles.upNextLabel}>
+              Skipped today
+            </Text>
+            <View style={styles.upNext}>
+              {skipped.map((row, i) => (
+                <View key={row.id}>
+                  {i > 0 ? <Separator inset={16} /> : null}
+                  <View style={styles.upNextRow}>
+                    <Text variant="rowTitle" color="textFaint" style={styles.flex}>
+                      {info(row).name}
+                    </Text>
+                    <Button title="Undo" variant="text" onPress={() => void actions.restore(row.id)} />
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        ) : null}
+
+        {current ? null : (
+          <View style={styles.allDone}>
+            <Text variant="h2">Every exercise is done</Text>
+            <Button title="Add an exercise to today" variant="secondary" onPress={() => pick('add')} />
+          </View>
+        )}
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: bottom - 4 }]}>
@@ -463,6 +533,16 @@ export function WorkoutScreen() {
         }}
       />
 
+      <ChangeExerciseSheet
+        target={changeTarget}
+        onClose={() => setChanging(null)}
+        onSwap={() => changing && pick('swap', changing)}
+        onAdd={() => pick('add')}
+        onMove={() => change(actions.moveToEnd)}
+        onSkip={() => change(actions.skip)}
+        onDone={() => change(actions.markDone)}
+      />
+
       <BottomSheet visible={discarding} onClose={() => setDiscarding(false)} accessibilityLabel="Discard workout">
         <View style={styles.discard}>
           <Text variant="h2">No sets logged yet</Text>
@@ -486,10 +566,10 @@ export function WorkoutScreen() {
   );
 }
 
-/** The "…" button that opens Change exercise (chunk 14). */
-function MoreButton({ label }: { label: string }) {
+/** The "…" button that opens Change exercise (10). */
+function MoreButton({ label, onPress }: { label: string; onPress: () => void }) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [styles.more, pressed && styles.pressed]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.more, pressed && styles.pressed]}>
       <MoreIcon color={colors.textMuted} />
     </Pressable>
   );
@@ -616,6 +696,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.barBorder,
     backgroundColor: colors.bg,
   },
+  allDone: { gap: 14, marginTop: 20, paddingHorizontal: 4 },
   discard: { paddingHorizontal: 6 },
   discardNote: { marginTop: 4 },
   discardActions: { marginTop: 18, gap: 4 },

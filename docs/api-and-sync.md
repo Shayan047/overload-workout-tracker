@@ -261,6 +261,15 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   data are updated on the phone, so Today moves on and the next ghost is right offline.
   Finishing with no sets logged offers to discard the workout (`DELETE /workouts/{id}`).
   Until chunk 16's summary, finishing returns to Today.
+- **Today-only changes** (chunk 14, 10): every "…" opens Change exercise. Swap and Add use
+  the 06 picker (`ExercisePicker`, route `/pick-exercise`). Swap picks one exercise and
+  starts on the same muscle group's filter ("pick a similar one"). Add picks several,
+  which go to the end with the default 1:30 rest. Move to the end gives the row the next
+  position. Skip sets `skipped`; skipped exercises are listed under "Skipped today" with
+  Undo. Once a set is logged, Swap and Skip give way to "Done for today" (marks it `done`
+  with the sets so far). Each is one PUT to the workout's row; the split is never written.
+- **Last time for a new set of exercises** (a swap, an add, another day) starts from what
+  the other cached last-time queries know, so it shows offline too.
 - **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies
   workout PUTs and DELETEs still in the outbox, and last-time data keeps a session finished
   on the phone while its writes are unsent (per exercise, the later `ended_at` wins).

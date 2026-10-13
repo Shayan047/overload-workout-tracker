@@ -133,7 +133,7 @@ Every UI chunk's "Done when" also requires:
   - killing the app resumes the workout,
   - both screens get PASS.
 
-### 14. Change an exercise for today
+### 14. Change an exercise for today — DONE
 
 - **Goal:** swap, skip, move to end, and add.
 - **Design:** 10, and 06 for swap.

@@ -1,15 +1,23 @@
 import {
+  addExercisesToWorkout,
   addRow,
+  afterName,
   currentExercise,
   deleteSet,
   defaultWeightKg,
   finishWorkout,
+  lastPlanned,
   logSet,
+  markDone,
   mergeLastSessions,
+  moveToEnd,
   plannedRows,
+  restoreExercise,
   sessionsFrom,
   setsFor,
+  skipExercise,
   startWorkout,
+  swapExercise,
   type ActiveWorkout,
 } from '../workout';
 
@@ -222,5 +230,73 @@ describe('after finishing: last time for the next workout, offline', () => {
       ['curl', '2026-10-06T18:00:00Z'],
       ['row', '2026-10-09T18:00:00Z'],
     ]);
+  });
+});
+
+describe('today-only changes (10): PUTs to this workout’s rows, never to the split', () => {
+  const rowPaths = (writes: { method: string; path: string }[]) => {
+    expect(writes.every((w) => w.path.startsWith('/workout-exercises/'))).toBe(true);
+    return paths(writes);
+  };
+
+  test('swap: the same row with the new exercise, marked swapped', () => {
+    const { state } = start();
+    const [, curl] = state.exercises;
+    const result = swapExercise(state, curl.id, 'hammer');
+    expect(rowPaths(result.writes)).toEqual([`PUT /workout-exercises/${curl.id}`]);
+    expect(result.writes[0].body).toMatchObject({ exercise_id: 'hammer', source: 'swapped', position: 1, rest_seconds: 90 });
+    expect(result.state.exercises[1]).toMatchObject({ id: curl.id, exercise_id: 'hammer', source: 'swapped' });
+  });
+
+  test('skip, and undo', () => {
+    const { state } = start();
+    const [ohp, curl] = state.exercises.map((e) => e.id);
+    const skipped = skipExercise(state, ohp);
+    expect(skipped.writes[0].body).toMatchObject({ status: 'skipped' });
+    expect(currentExercise(skipped.state, {})?.id).toBe(curl);
+    const back = restoreExercise(skipped.state, ohp);
+    expect(back.writes[0].body).toMatchObject({ status: 'planned' });
+    expect(currentExercise(back.state, {})?.id).toBe(ohp);
+  });
+
+  test('move to the end: after the last row', () => {
+    const { state } = start();
+    const [ohp, curl] = state.exercises.map((e) => e.id);
+    const moved = moveToEnd(state, ohp);
+    expect(moved.writes[0].body).toMatchObject({ position: 2 });
+    expect(currentExercise(moved.state, {})?.id).toBe(curl);
+    expect(lastPlanned(moved.state)?.id).toBe(ohp);
+  });
+
+  test('add: new rows at the end, marked added, with the default rest', () => {
+    const { state } = start();
+    const result = addExercisesToWorkout(state, ['row', 'fly'], makeId);
+    expect(rowPaths(result.writes)).toEqual(['PUT /workout-exercises/id-4', 'PUT /workout-exercises/id-5']);
+    expect(result.state.exercises.slice(2).map((e) => [e.exercise_id, e.position, e.source, e.status, e.rest_seconds])).toEqual([
+      ['row', 2, 'added', 'planned', 90],
+      ['fly', 3, 'added', 'planned', 90],
+    ]);
+  });
+
+  test('done for today: an exercise with sets stops early', () => {
+    let { state } = start();
+    const [ohp, curl] = state.exercises.map((e) => e.id);
+    ({ state } = logSet(state, { rowId: ohp, weightKg: 34, reps: 8, now: at(1), makeId }));
+    const result = markDone(state, ohp);
+    expect(result.writes[0].body).toMatchObject({ status: 'done' });
+    expect(currentExercise(result.state, {})?.id).toBe(curl);
+  });
+});
+
+describe('afterName: "Do it after chin-ups"', () => {
+  test.each([
+    ['Chin-up', 'chin-ups'],
+    ['Triceps pushdown', 'triceps pushdowns'],
+    ['Leg press', 'leg presses'],
+    ['Dumbbell fly', 'dumbbell flies'],
+    ['Triceps', 'triceps'],
+    ['Bench press', 'bench presses'],
+  ])('%s → %s', (name, plural) => {
+    expect(afterName(name)).toBe(plural);
   });
 });

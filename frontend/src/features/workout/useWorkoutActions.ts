@@ -12,14 +12,20 @@ import { newId } from '@/lib/ids';
 import { isReviewMode, now } from '@/review/reviewMode';
 
 import {
+  addExercisesToWorkout,
   addRow,
   currentExercise,
   deleteSet,
   finishWorkout,
   logSet,
+  markDone,
   mergeLastSessions,
+  moveToEnd,
+  restoreExercise,
   sessionsFrom,
+  skipExercise,
   startWorkout,
+  swapExercise,
   updateRow,
   type Write,
 } from './workout';
@@ -122,6 +128,40 @@ export function useWorkoutActions() {
           writes.push(...result.writes);
         }
         return commit({ state, focusId: rowId }, writes);
+      },
+
+      // Today-only changes (10). The exercise in focus loses focus when it's changed, so the
+      // next planned one comes up.
+      swap(rowId: string, exerciseId: string) {
+        const saved = require();
+        const { state, writes } = swapExercise(saved.state, rowId, exerciseId);
+        return commit({ ...saved, state }, writes);
+      },
+      skip(rowId: string) {
+        const saved = require();
+        const { state, writes } = skipExercise(saved.state, rowId);
+        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+      },
+      restore(rowId: string) {
+        const saved = require();
+        const { state, writes } = restoreExercise(saved.state, rowId);
+        return commit({ ...saved, state }, writes);
+      },
+      moveToEnd(rowId: string) {
+        const saved = require();
+        const { state, writes } = moveToEnd(saved.state, rowId);
+        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+      },
+      /** "Done for today": stops an exercise with the sets logged so far. */
+      markDone(rowId: string) {
+        const saved = require();
+        const { state, writes } = markDone(saved.state, rowId);
+        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+      },
+      add(exerciseIds: readonly string[]) {
+        const saved = require();
+        const { state, writes } = addExercisesToWorkout(saved.state, exerciseIds, newId);
+        return commit({ ...saved, state }, writes);
       },
 
       /** Finishes the workout: saved as done on the phone and in the outbox, the cached

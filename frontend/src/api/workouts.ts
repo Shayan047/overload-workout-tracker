@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { type QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { mergeLastSessions } from '@/features/workout/workout';
 
@@ -25,6 +25,15 @@ export function useWorkouts() {
   });
 }
 
+function fromOtherQueries(queryClient: QueryClient, ids: readonly string[]): LastSession[] | undefined {
+  const wanted = new Set(ids);
+  const known = queryClient
+    .getQueriesData<LastSession[]>({ queryKey: ['last-sessions'] })
+    .flatMap(([, data]) => data ?? [])
+    .filter((s) => wanted.has(s.exercise_id));
+  return known.length ? mergeLastSessions([], known) : undefined;
+}
+
 /** Last time for each exercise, cached for offline use. */
 export function useLastSessions(exerciseIds: readonly string[]) {
   const { request, outbox } = useSync();
@@ -43,6 +52,9 @@ export function useLastSessions(exerciseIds: readonly string[]) {
     },
     meta: { persist: true },
     enabled: signedIn && ids.length > 0 && !isReviewMode,
-    initialData: isReviewMode ? sampleLastSessions : undefined,
+    // A new set of exercises (a swap, an added exercise, another day) starts from what other
+    // cached queries know, so last time shows offline; it's refreshed right away when online.
+    initialData: isReviewMode ? sampleLastSessions : () => fromOtherQueries(queryClient, ids),
+    initialDataUpdatedAt: 0,
   });
 }

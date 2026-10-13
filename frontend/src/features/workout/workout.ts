@@ -4,6 +4,7 @@
 // killed.
 
 import type { OutboxEntry } from '@/api/outbox';
+import { DEFAULT_REST_SECONDS } from '@/features/splits/draft';
 
 export type Write = Pick<OutboxEntry, 'method' | 'path' | 'body'>;
 
@@ -256,4 +257,72 @@ export function mergeLastSessions<T extends Pick<Session, 'exercise_id' | 'ended
     if (!known || new Date(session.ended_at) > new Date(known.ended_at)) merged.set(session.exercise_id, session);
   }
   return [...merged.values()];
+}
+
+// Today-only changes (10). Each is a PUT to this workout's row; the split is never touched
+// (rule 6).
+
+const rowById = (state: ActiveWorkout, rowId: string) => {
+  const row = state.exercises.find((e) => e.id === rowId);
+  if (!row) throw new Error(`No exercise row ${rowId} in this workout`);
+  return row;
+};
+
+/** Swap for another exercise: the same row and place, marked swapped. */
+export function swapExercise(state: ActiveWorkout, rowId: string, exerciseId: string): Result {
+  return updateRow(state, { ...rowById(state, rowId), exercise_id: exerciseId, source: 'swapped' });
+}
+
+export function skipExercise(state: ActiveWorkout, rowId: string): Result {
+  return updateRow(state, { ...rowById(state, rowId), status: 'skipped' });
+}
+
+/** Undoes a skip. */
+export function restoreExercise(state: ActiveWorkout, rowId: string): Result {
+  return updateRow(state, { ...rowById(state, rowId), status: 'planned' });
+}
+
+/** Stops an exercise early: done with the sets logged so far. */
+export function markDone(state: ActiveWorkout, rowId: string): Result {
+  return updateRow(state, { ...rowById(state, rowId), status: 'done' });
+}
+
+const nextPosition = (state: ActiveWorkout) => Math.max(-1, ...state.exercises.map((e) => e.position)) + 1;
+
+export function moveToEnd(state: ActiveWorkout, rowId: string): Result {
+  return updateRow(state, { ...rowById(state, rowId), position: nextPosition(state) });
+}
+
+/** The planned exercise done last ("Do it after chin-ups"). */
+export function lastPlanned(state: ActiveWorkout): WorkoutRow | null {
+  const planned = state.exercises.filter((e) => e.status === 'planned').sort((a, b) => a.position - b.position);
+  return planned[planned.length - 1] ?? null;
+}
+
+/** Add exercises to today: new rows at the end, with the default rest. */
+export function addExercisesToWorkout(state: ActiveWorkout, exerciseIds: readonly string[], makeId: () => string): Result {
+  let next = state;
+  const writes: Write[] = [];
+  for (const exerciseId of exerciseIds) {
+    const result = updateRow(next, {
+      id: makeId(),
+      exercise_id: exerciseId,
+      position: nextPosition(next),
+      status: 'planned',
+      source: 'added',
+      rest_seconds: DEFAULT_REST_SECONDS,
+    });
+    next = result.state;
+    writes.push(...result.writes);
+  }
+  return { state: next, writes };
+}
+
+/** An exercise name as a plural for "Do it after …": "chin-ups", "leg presses". */
+export function afterName(name: string): string {
+  const lower = name.toLowerCase();
+  if (/(ss|sh|ch|x|z)$/.test(lower)) return `${lower}es`;
+  if (/[^aeiou]y$/.test(lower)) return `${lower.slice(0, -1)}ies`;
+  if (lower.endsWith('s')) return lower;
+  return `${lower}s`;
 }

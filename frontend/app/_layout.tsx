@@ -41,6 +41,7 @@ function Routes() {
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="workout" />
+        <Stack.Screen name="pick-exercise" />
         <Stack.Screen name="profile" />
         <Stack.Screen name="dev-sync" />
       </Stack.Protected>

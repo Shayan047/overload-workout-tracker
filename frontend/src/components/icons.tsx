@@ -214,3 +214,40 @@ export function BackspaceIcon({ color, size = 22 }: IconProps) {
     </Svg>
   );
 }
+
+/** Swap for another exercise (10). */
+export function SwapIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M7 7h12l-3-3M17 17H5l3 3" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Move to the end (10). */
+export function ArrowDownIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 5v14M6 13l6 6 6-6" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Skip today (10). */
+export function SkipIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M6 6l9 6-9 6V6zM18 6v12" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Information (10's note). */
+export function InfoIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={12} cy={12} r={8.5} stroke={color} {...stroke} />
+      <Path d="M12 11v5M12 8h.01" stroke={color} {...stroke} />
+    </Svg>
+  );
+}

@@ -3,6 +3,7 @@ import {
   type Exercise,
   exerciseSubtitle,
   formatRest,
+  muscleGroupOf,
   muscleLabel,
   searchExercises,
 } from '../exercises';
@@ -78,5 +79,18 @@ describe('labels', () => {
     expect(formatRest(60)).toBe('1:00');
     expect(formatRest(45)).toBe('0:45');
     expect(formatRest(0)).toBe('0:00');
+  });
+});
+
+describe('muscleGroupOf: the filter chip a muscle belongs to (swap shows similar ones)', () => {
+  test.each([
+    ['biceps', 'biceps'],
+    ['lats', 'back'],
+    ['quadriceps', 'legs'],
+    ['abdominals', 'core'],
+    ['forearms', 'forearms'],
+    ['side delts', null],
+  ])('%s → %s', (muscle, group) => {
+    expect(muscleGroupOf(muscle)).toBe(group);
   });
 });
