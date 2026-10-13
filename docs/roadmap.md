@@ -113,7 +113,7 @@ Every UI chunk's "Done when" also requires:
   - a user can pick a preset or build a custom split, edit days, exercises and rest lengths, save, and land on Today,
   - all four screens get PASS.
 
-### 12. Today screen
+### 12. Today screen — DONE
 
 - **Goal:** today's split day, its exercises, and Start workout.
 - **Design:** 07.

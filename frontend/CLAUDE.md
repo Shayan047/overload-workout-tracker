@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** splits UI (roadmap chunk 11): Pick a split (03), Edit split (04), Edit a day (05), Add exercises (06), the Splits tab.
+**Status:** Today (roadmap chunk 12) on top of the splits UI (chunk 11).
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -31,7 +31,7 @@ src/theme/            built from ../design/tokens.json (Metro watches ../design)
 src/components/       shared UI: Text, Button, Chip, Card, ListRow, Separator,
                       BottomSheet, SegmentedControl, Switch, Screen, TabBar, icons
 src/review/           review mode: ?review=1 flag, fixed clock, sample data
-src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, dev/)
+src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, today/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
                       (Wi-Fi rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
@@ -97,6 +97,14 @@ browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
 - Review routes: `pick-split?mode=onboarding`, `edit-split?mode=onboarding`,
   `edit-day/rv-day-shoulders`, `add-exercises/rv-day-shoulders` (sample data in
   `src/review/sampleData.ts`).
+
+## Today
+
+- `features/today/today.ts` (tested): the next-day rule, the rotation strip, rest days,
+  relative dates and "best set last time", all from cached data.
+- Data: settings → active split tree, `GET /workouts` (last day done) and
+  `GET /workouts/last-sessions` (best sets), all persisted for offline use. Cached data is
+  fresh for 30 s; returning to the app refreshes anything stale.
 
 ## Layout and safe areas
 

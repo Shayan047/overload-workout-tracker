@@ -40,6 +40,8 @@ function Routes() {
       {/* Review mode opens every screen, so each can be screenshotted. */}
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="workout" />
+        <Stack.Screen name="profile" />
         <Stack.Screen name="dev-sync" />
       </Stack.Protected>
       {/* Signed out: onboarding first (Welcome is where they land), then the account. */}

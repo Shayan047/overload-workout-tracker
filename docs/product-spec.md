@@ -155,6 +155,19 @@ Screen numbers match `design/screens/`.
 - The Splits tab shows the active split in Edit split, with "Pick another" instead of a back
   button; with no active split it shows Pick a split.
 
+**Today (chunk 12)**
+
+- Shows the next day of the active split, worked out on the phone from cached data (the
+  same rule as the API), so it works offline.
+- The rotation strip: in order, the previous day (with a check and when it was done, if it
+  has been), today and the next day; set weekdays, the scheduled days before and after.
+- Each exercise shows its best set last time (highest est. max; bodyweight exercises as
+  "BW+10 × 8", counting the bodyweight for "best"), with the date of the latest one.
+- "Do a different day" picks another day of the split for today only (until midnight).
+- No design yet, decided here: a rest day (set weekdays, nothing today) shows "Rest day",
+  the next scheduled day and "Train anyway"; no active split shows "Pick a split".
+- Start workout and Profile open placeholders until chunks 13 and 20.
+
 **Returning users**
 
 - Open on Today (07). Tabs: Today, Splits, Progress, History.

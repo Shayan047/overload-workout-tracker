@@ -145,6 +145,25 @@ export const type = {
     fontSize: tokens.font.small.size,
     lineHeight: lineHeight(body.size, body.lineHeight),
   },
+  /** Body text at 600: the date on Today (07). */
+  bodyStrong: {
+    ...font(600),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** Today's day name (07): 38 px. */
+  dayTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 38,
+    lineHeight: lineHeight(38, 1.1),
+    letterSpacing: em(38, -0.01),
+  },
+  /** 13 px at 650: today's day in the rotation strip (07). */
+  labelHeavy: {
+    ...font(650),
+    fontSize: tokens.font.small.size,
+    lineHeight: 18,
+  },
   /** Screen titles in a header row (04, 06): 24 px. */
   h1Small: {
     ...font(headings.weight, headings.widthPercent),
@@ -220,6 +239,8 @@ export const figures = {
   welcomeToday: { size: 120, timesSize: 72, timesGap: 10, timesRaise: 12 },
   /** The bodyweight input on 02. */
   bodyweight: 64,
+  /** Best set last time on Today (07). */
+  lastTime: 20,
   /** The day number in its circle on 04. */
   dayStep: 17,
   /** The rest length in the exercise options sheet. */
