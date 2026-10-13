@@ -260,3 +260,31 @@ export function StarIcon({ color, size = 22 }: IconProps) {
     </Svg>
   );
 }
+
+/** A plateau (13): level, going on. */
+export function ArrowRightIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 12h16M16 8l4 4-4 4" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Up since the first session (14). */
+export function ArrowUpIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 19V5M6 11l6-6 6 6" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** The pace note (14). */
+export function TrendIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 18l6-6 4 4 6-8" stroke={color} {...stroke} />
+      <Path d="M15 8h5v5" stroke={color} {...stroke} />
+    </Svg>
+  );
+}

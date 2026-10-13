@@ -145,6 +145,12 @@ export const type = {
     fontSize: tokens.font.small.size,
     lineHeight: lineHeight(body.size, body.lineHeight),
   },
+  /** `label` sitting in a 15 px line: 13's "New best today". */
+  labelInBody: {
+    ...font(600),
+    fontSize: tokens.font.small.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
   /** Body text at 600: the date on Today (07). */
   bodyStrong: {
     ...font(600),
@@ -229,6 +235,25 @@ export const type = {
     fontSize: 14,
     lineHeight: 18,
   },
+  /** A tab's page title: "Progress" (13), 36 px. */
+  pageTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 36,
+    lineHeight: lineHeight(36, 1.1),
+    letterSpacing: em(36, -0.01),
+  },
+  /** The unit beside the big est. max (14): "lb", 22 px. */
+  estMaxUnit: {
+    ...font(600),
+    fontSize: 22,
+    lineHeight: 26,
+  },
+  /** Chart axis and band labels (14), 11 px. */
+  chartLabel: {
+    ...font(body.weight),
+    fontSize: 11,
+    lineHeight: 14,
+  },
   /** The "Overload" wordmark next to the mark (01). */
   wordmark: {
     ...font(750, 80),
@@ -287,6 +312,12 @@ export const figures = {
   summaryStat: 34,
   summaryReps: 19,
   summaryBest: 26,
+  /** Progress (13): each lift's est. max. Exercise detail (14): the big est. max, records,
+   * the pace note's projection and each recent session's est. max. */
+  progressValue: 22,
+  estMax: 76,
+  record: 22,
+  pace: 19,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */

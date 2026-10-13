@@ -317,3 +317,20 @@ The app caches responses for offline viewing.
 | GET | `/stats/exercises/{id}` | | Exercise detail (14): `{includes_bodyweight, est_max_kg, latest_at, first: {at, est_max_kg}, is_new_best, series: [{workout_id, at, est_max_kg, best_set, sets: [{weight_kg, reps}]}], weights: [{weight_kg, sessions, first_at}], best_set, most_reps, heaviest: {weight_kg, first_at}, plateau, projection: {at, est_max_kg, weekly_gain_kg, capped}, frontier}`. Empty values for an exercise never done; `404` for an exercise the user can't see. |
 | GET | `/stats/exercises/{id}/weights/{weight_kg}` | | One-weight views (15, 16): `{weight_kg, sessions: [{workout_id, at, reps: [...], total, average, retention}], total_change, first_retention, latest_retention, moved_up_on}`. The weight is rounded to the gram before matching, like stored weights, so 10 lb can be sent as 4.5359237. |
 | GET | `/stats/exercises/{id}/frontier` | `as_of?` | Frontier (17): `{as_of, points: [{weight_kg, reps, at}]}`, lightest first. `as_of` gives the frontier as it stood then ("compare with"). |
+
+How the app shows them (chunk 17, `frontend/src/features/progress/`):
+
+- **Cache:** `GET /stats/progress?weeks=8` and `GET /stats/exercises/{id}` are cached on the
+  phone (persisted queries), so Progress and Exercise detail open offline with the last
+  answer. A workout finished offline shows up there once it has synced and the stats are
+  fetched again; until then its numbers are on the summary (11).
+- **Progress (13):** today's new bests first, then plateaus, then the rest in the API's
+  order (most recently trained first). Values have one decimal under 100 and none above.
+  The chips filter by the active split's days. Sparklines run from the window's first
+  session to its last, with the lowest est. max at the bottom.
+- **Exercise detail (14):** the chart's x axis runs from the first session to the
+  projection date (or the last session), y has gridlines at a "nice" step (at most four
+  intervals). Weight bands follow the best set's weight; a band changes halfway between the
+  last session at one weight and the first at the next. The weight chips open the
+  one-weight views (chunk 18) and the frontier card opens the frontier (chunk 19); both are
+  placeholders until then.

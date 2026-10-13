@@ -6,6 +6,7 @@
 import type { Preset, SplitDraft } from '@/features/splits/draft';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
 import type { Rest } from '@/features/workout/rest';
+import type { ExerciseStats, ProgressItem } from '@/api/stats';
 import { summarize, type Summary } from '@/features/workout/summary';
 import type { ActiveWorkout } from '@/features/workout/workout';
 import type { Exercise } from '@/lib/exercises';
@@ -162,14 +163,23 @@ export const sampleLastSessions: LastSession[] = [
   lastSession('rv-chinup', 10, [8, 6, 6]),
 ];
 
-/** Bicep curl history from docs/product-spec.md ("Sample data for stats tests"). */
+/** Bicep curl history: docs/product-spec.md's sessions (10 lb, then 15 and 20 lb), plus the
+ * 15 lb weeks that 14's chart draws. */
 export const bicepCurlSessions = [
   { date: '2026-08-18', weightKg: kg(10), reps: [12, 8, 7, 7] },
   { date: '2026-08-21', weightKg: kg(10), reps: [12, 9, 9, 8] },
   { date: '2026-08-25', weightKg: kg(10), reps: [12, 10, 9, 9] },
   { date: '2026-08-28', weightKg: kg(10), reps: [13, 11, 10, 10] },
   { date: '2026-09-01', weightKg: kg(10), reps: [14, 12, 11, 11] },
+  { date: '2026-09-04', weightKg: kg(15), reps: [8, 7, 6, 6] },
+  { date: '2026-09-08', weightKg: kg(15), reps: [9, 7, 7, 6] },
+  { date: '2026-09-11', weightKg: kg(15), reps: [9, 8, 7, 7] },
+  { date: '2026-09-15', weightKg: kg(15), reps: [10, 8, 7, 7] },
+  { date: '2026-09-18', weightKg: kg(15), reps: [10, 8, 8, 7] },
+  { date: '2026-09-22', weightKg: kg(15), reps: [11, 9, 8, 8] },
+  { date: '2026-09-25', weightKg: kg(15), reps: [11, 9, 9, 8] },
   { date: '2026-09-28', weightKg: kg(15), reps: [12, 10, 9, 9] },
+  { date: '2026-10-02', weightKg: kg(20), reps: [6, 5, 4, 4] },
   { date: '2026-10-06', weightKg: kg(20), reps: [6, 5, 5, 4] },
   { date: '2026-10-09', weightKg: kg(20), reps: [7, 6, 6, 5] },
 ];
@@ -246,3 +256,90 @@ export function sampleSummary(): Summary {
   };
   return summarize(state, new Date(2026, 9, 9, 18, 59).toISOString(), sampleLastSessions, new Set(['rv-chinup']));
 }
+
+// Progress (13) and Exercise detail (14). Stats come from the server, so these are written
+// out as the API would answer: est. max in kg, rounded to the gram.
+const epley = (weightKg: number, reps: number) => Math.round(weightKg * (1 + reps / 30) * 1000) / 1000;
+const sessionDate = (date: string) => {
+  const [y, m, d] = date.split('-').map(Number);
+  return new Date(y, m - 1, d, 18, 40).toISOString();
+};
+
+/** A sparkline in the shape 13 draws: its SVG points, turned back into est. max values that
+ * run from `first` to `last` (lb), over the 8 weeks to today. */
+function sparkFrom(path: [number, number][], first: number, last: number) {
+  const [y0, y1] = [path[0][1], path[path.length - 1][1]];
+  const start = new Date(2026, 7, 18, 18, 40).getTime();
+  const span = new Date(2026, 9, 9, 18, 40).getTime() - start;
+  return path.map(([x, y]) => ({
+    at: new Date(start + ((x - 2) / 80) * span).toISOString(),
+    est_max_kg: kg(first + ((y0 - y) / (y0 - y1 || 1)) * (last - first)),
+  }));
+}
+
+const progressRow = (
+  exerciseId: string,
+  estLb: number,
+  change: number,
+  latest: Date,
+  path: [number, number][],
+  extra: Partial<ProgressItem> = {},
+): ProgressItem => ({
+  exercise_id: exerciseId,
+  includes_bodyweight: false,
+  sessions: path.length,
+  latest_at: latest.toISOString(),
+  est_max_kg: kg(estLb),
+  change,
+  is_new_best: false,
+  plateau: null,
+  sparkline: sparkFrom(path, estLb / (1 + change), estLb),
+  ...extra,
+});
+
+const TODAY = new Date(2026, 9, 9, 18, 40);
+export const sampleProgress: ProgressItem[] = [
+  progressRow('rv-curl', 24.667, 0.76, TODAY, [[2, 28], [14, 27], [26, 26], [38, 18], [50, 16], [62, 14], [74, 8], [82, 6]], { is_new_best: true }),
+  progressRow('rv-lateral', 28.667, 0.17, TODAY, [[2, 27], [18, 22], [34, 22], [50, 17], [66, 13], [82, 9]], { is_new_best: true }),
+  progressRow('rv-bench', 205, 0.04, new Date(2026, 9, 8, 18, 30), [[2, 22], [14, 18], [26, 14], [38, 12], [50, 12], [62, 12], [74, 12], [82, 12]], {
+    plateau: { weeks_flat: 3, best_kg: kg(205), best_at: new Date(2026, 8, 17).toISOString() },
+  }),
+  progressRow('rv-ohp', 95, 0.12, TODAY, [[2, 26], [18, 23], [34, 21], [50, 17], [66, 15], [82, 11]]),
+  progressRow('rv-row', 182, 0.09, new Date(2026, 9, 8, 18, 20), [[2, 24], [20, 21], [38, 19], [56, 16], [74, 13], [82, 12]]),
+  progressRow('rv-squat', 268, 0.07, new Date(2026, 9, 7, 18, 30), [[2, 24], [18, 22], [34, 19], [50, 20], [66, 16], [82, 14]]),
+  progressRow('rv-chinup', 231, 0.08, new Date(2026, 9, 6, 18, 40), [[2, 25], [18, 23], [34, 20], [50, 18], [66, 17], [82, 13]], {
+    includes_bodyweight: true,
+  }),
+];
+
+const curlSeries = bicepCurlSessions.map((s, i) => {
+  const best = { weight_kg: Math.round(s.weightKg * 1000) / 1000, reps: s.reps[0] };
+  return {
+    workout_id: `rv-curl-${i}`,
+    at: sessionDate(s.date),
+    est_max_kg: epley(best.weight_kg, best.reps),
+    best_set: best,
+    sets: s.reps.map((reps) => ({ weight_kg: best.weight_kg, reps })),
+  };
+});
+const curlWeight = (lb: number) => {
+  const sessions = curlSeries.filter((p) => Math.abs(p.best_set.weight_kg - kg(lb)) < 0.001);
+  return { weight_kg: kg(lb), sessions: sessions.length, first_at: sessions[0].at };
+};
+
+/** 14: bicep curl, up from 14.0 lb on Aug 18 to 24.7 today, about 28 lb by Dec 1. */
+export const sampleExerciseStats: ExerciseStats = {
+  exercise_id: 'rv-curl',
+  includes_bodyweight: false,
+  est_max_kg: curlSeries[curlSeries.length - 1].est_max_kg,
+  latest_at: curlSeries[curlSeries.length - 1].at,
+  first: { at: curlSeries[0].at, est_max_kg: curlSeries[0].est_max_kg },
+  is_new_best: true,
+  series: curlSeries,
+  weights: [curlWeight(10), curlWeight(15), curlWeight(20)],
+  best_set: { weight_kg: kg(20), reps: 7, at: curlSeries[15].at },
+  most_reps: { weight_kg: kg(10), reps: 14, at: curlSeries[4].at },
+  heaviest: { weight_kg: kg(20), first_at: curlSeries[13].at },
+  plateau: null,
+  projection: { at: new Date(2026, 11, 1, 18, 40).toISOString(), est_max_kg: kg(28), weekly_gain_kg: kg(0.37), capped: true },
+};

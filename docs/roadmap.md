@@ -159,7 +159,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `11-workout-summary`, using height 1050.
 - **Done when:** the summary is correct offline, "See progress" opens Exercise detail, and 11 gets PASS.
 
-### 17. Progress list and exercise detail
+### 17. Progress list and exercise detail — DONE
 
 - **Goal:**
   - the list, with est. max sparklines and plateau flags,

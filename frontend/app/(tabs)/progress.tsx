@@ -1,10 +1,3 @@
-import { Screen, Text } from '@/components';
+import { ProgressScreen } from '@/features/progress/ProgressScreen';
 
-// Placeholder until roadmap chunk 17 builds this screen.
-export default function ProgressScreen() {
-  return (
-    <Screen>
-      <Text variant="h1">Progress</Text>
-    </Screen>
-  );
-}
+export default ProgressScreen;
