@@ -21,6 +21,8 @@ from app.schemas.workout import (
     WorkoutOut,
 )
 from app.services import exercises, sync, workouts
+from app.services import stats as stats_service
+from app.stats import session_est_max
 
 router = APIRouter(tags=["workouts"])
 
@@ -70,6 +72,13 @@ async def get_last_sessions(
     """Last time (ghost) for each exercise: its sets in the most recent finished workout
     that has any. Exercises never done are left out."""
     found = await workouts.last_sessions(session, user.id, exercise_id)
+    history = await stats_service.sessions_by_exercise(session, user.id) if found else {}
+
+    def best_est_max(ex_id: uuid.UUID) -> float | None:
+        sessions = history[ex_id][1] if ex_id in history else []
+        values = [v for s in sessions if (v := session_est_max(s)) is not None]
+        return round(max(values), 3) if values else None
+
     return [
         LastSessionOut(
             exercise_id=last.exercise_id,
@@ -79,6 +88,7 @@ async def get_last_sessions(
             ended_at=last.workout.ended_at,  # type: ignore[arg-type]  # finished workouts only
             bodyweight_kg=last.workout.bodyweight_kg,
             sets=[LastSessionSet.model_validate(s, from_attributes=True) for s in last.sets],
+            best_est_max_kg=best_est_max(last.exercise_id),
         )
         for last in found
     ]
