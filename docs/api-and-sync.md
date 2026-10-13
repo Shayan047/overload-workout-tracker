@@ -212,7 +212,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 | GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
 | GET | `/workouts/{id}` | | The workout with its live exercises in order, each with its live sets in order: `{…, exercises: [{…, sets: [...]}]}`. `404` if deleted. |
 | DELETE | `/workouts/{id}` | | `204`. Also soft-deletes its exercises and their sets. |
-| GET | `/workouts/last-sessions` | `exercise_id` (repeat, up to 100) | Last time (ghost) per exercise: `[{exercise_id, workout_id, title, started_at, ended_at, bodyweight_kg, sets: [{set_number, weight_kg, reps}]}]`. Exercises never done are left out. |
+| GET | `/workouts/last-sessions` | `exercise_id` (repeat, up to 100) | Last time (ghost) per exercise: `[{exercise_id, workout_id, title, started_at, ended_at, bodyweight_kg, sets: [{set_number, weight_kg, reps}], best_est_max_kg}]`. Exercises never done are left out. `best_est_max_kg` is the best session est. max in any finished workout so far (bodyweight exercises count the snapshot plus the added weight), so the workout summary can flag new bests offline. |
 | PUT | `/workout-exercises/{id}` | `{workout_id, exercise_id, position, status?, source?, rest_seconds}` | `status` is `planned` (default), `done` or `skipped`; `source` is `split` (default), `added` or `swapped`. |
 | GET | `/workout-exercises` | `updated_since?` | `[{workout_id, exercise_id, position, status, source, rest_seconds}]` |
 | DELETE | `/workout-exercises/{id}` | | `204`. Also soft-deletes its sets. |
@@ -278,6 +278,14 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   with sound when `rest_alert_sound` is on. In the foreground it shows no banner and only
   plays its sound, so no audio library is needed. Android has two channels (with and without
   sound), since a channel's sound can't change. Permission is asked at the first rest.
+- **Summary** (chunk 16, `summary.ts`, 11): worked out on the phone when the workout
+  finishes, against last time as it was cached before it: minutes, sets, volume (weight ×
+  reps; bodyweight exercises count the snapshot plus the added weight), total reps per
+  exercise against last time, "Ahead on N of M", and new bests. A new best is a session
+  est. max above `best_est_max_kg` (the best so far, not just last time); a first time
+  ever is not a new best. The cached last-time data then takes today's sessions with the
+  raised best. The summary is kept in memory; "See … progress" opens Exercise detail for
+  the biggest new best (else the biggest gain).
 - **Last time for a new set of exercises** (a swap, an add, another day) starts from what
   the other cached last-time queries know, so it shows offline too.
 - **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies

@@ -45,6 +45,8 @@ function Routes() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="workout" />
           <Stack.Screen name="pick-exercise" />
+          <Stack.Screen name="summary" />
+          <Stack.Screen name="exercise/[exerciseId]" />
           <Stack.Screen name="profile" />
           <Stack.Screen name="dev-sync" />
         </Stack.Protected>

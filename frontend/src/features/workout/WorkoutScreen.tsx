@@ -183,8 +183,8 @@ export function WorkoutScreen() {
 
   const finish = async () => {
     if (!anySets) return setDiscarding(true);
-    goBack();
     await actions.finish();
+    router.replace('/summary');
   };
 
   const targetRow = target ? state.exercises.find((e) => e.id === target.rowId) : undefined;

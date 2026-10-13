@@ -6,6 +6,7 @@
 import type { Preset, SplitDraft } from '@/features/splits/draft';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
 import type { Rest } from '@/features/workout/rest';
+import { summarize, type Summary } from '@/features/workout/summary';
 import type { ActiveWorkout } from '@/features/workout/workout';
 import type { Exercise } from '@/lib/exercises';
 
@@ -147,6 +148,9 @@ const lastSession = (exerciseId: string, lb: number, reps: number[]): LastSessio
   ended_at: new Date(2026, 9, 6, 18, 47).toISOString(),
   bodyweight_kg: kg(172),
   sets: reps.map((r, i) => ({ set_number: i + 1, weight_kg: kg(lb), reps: r })),
+  // The best so far was this session's first set (chin-ups count bodyweight).
+  best_est_max_kg:
+    Math.round((kg(lb) + (exerciseId === 'rv-chinup' ? kg(172) : 0)) * (1 + reps[0] / 30) * 1000) / 1000,
 });
 
 export const sampleLastSessions: LastSession[] = [
@@ -208,3 +212,37 @@ export const sampleActiveWorkout: { state: ActiveWorkout; focusId: string | null
   // 08's timer card: 0:47 of 1:30 at 18:05.
   rest: { rowId: 'rv-active-2', endsAt: new Date(2026, 9, 9, 18, 5, 47).toISOString(), totalSeconds: 90 },
 };
+
+/** The summary on 11: Shoulders & Arms from 6:12 to 6:59 PM, against Tuesday. */
+export function sampleSummary(): Summary {
+  const today: [number, number[]][] = [
+    [75, [8, 8, 7, 6]],
+    [20, [13, 12, 10]],
+    [20, [7, 6, 6, 5]],
+    [25, [9, 8, 7]],
+    [50, [12, 11, 10]],
+    [10, [8, 7, 6]],
+  ];
+  const state: ActiveWorkout = {
+    workout: {
+      id: 'rv-finished',
+      split_day_id: SAMPLE_DAY_ID,
+      title: 'Shoulders & Arms',
+      started_at: new Date(2026, 9, 9, 18, 12).toISOString(),
+      bodyweight_kg: kg(172),
+    },
+    exercises: activeRows.map((row) => ({ ...row, id: `rv-finished-${row.position}`, status: 'done' })),
+    sets: today.flatMap(([lb, reps], row) =>
+      reps.map((r, i) => ({
+        id: `rv-finished-${row}-set-${i + 1}`,
+        workout_exercise_id: `rv-finished-${row}`,
+        set_number: i + 1,
+        weight_kg: kg(lb),
+        reps: r,
+        logged_at: new Date(2026, 9, 9, 18, 14 + row * 7 + i * 2).toISOString(),
+      })),
+    ),
+    extraRows: {},
+  };
+  return summarize(state, new Date(2026, 9, 9, 18, 59).toISOString(), sampleLastSessions, new Set(['rv-chinup']));
+}

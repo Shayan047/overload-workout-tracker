@@ -152,7 +152,7 @@ Every UI chunk's "Done when" also requires:
   - the notification fires with the phone locked,
   - 08 and 09 get PASS.
 
-### 16. Workout summary
+### 16. Workout summary — DONE
 
 - **Goal:** duration, sets, volume, per-exercise comparison with last time, and new bests.
 - **Design:** 11.

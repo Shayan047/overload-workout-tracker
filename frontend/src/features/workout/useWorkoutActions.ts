@@ -6,7 +6,8 @@ import { useMemo } from 'react';
 
 import { useSync } from '@/api/AppProviders';
 import { BODYWEIGHT_KEY, type BodyweightEntry } from '@/api/bodyweight';
-import { type LastSession, WORKOUTS_KEY, type WorkoutSummary } from '@/api/workouts';
+import { cachedLastSessions, type LastSession, WORKOUTS_KEY, type WorkoutSummary } from '@/api/workouts';
+import { useExercises } from '@/api/splits';
 import { todayOverride } from '@/features/today/overrideStore';
 import { newId } from '@/lib/ids';
 import { isReviewMode, now } from '@/review/reviewMode';
@@ -29,7 +30,9 @@ import {
   updateRow,
   type Write,
 } from './workout';
+import { finishedWorkout } from './finishedStore';
 import { adjustRest, startRest } from './rest';
+import { bestsAfter, type Summary, summarize } from './summary';
 import { activeWorkout, inProgress, type Saved } from './workoutStore';
 
 type Day = { id: string; name: string; exercises: { exercise_id: string; rest_seconds: number }[] };
@@ -64,6 +67,9 @@ function cacheFinished(queryClient: QueryClient, workout: WorkoutSummary, sessio
 export function useWorkoutActions() {
   const { write } = useSync();
   const queryClient = useQueryClient();
+  const exercises = useExercises();
+  // A string, so the actions only change when the list does.
+  const bodyweightKey = (exercises.data ?? []).filter((e) => e.kind === 'bodyweight').map((e) => e.id).join(',');
 
   return useMemo(() => {
     const commit = async (next: Saved | null, writes: Write[]) => {
@@ -179,15 +185,28 @@ export function useWorkoutActions() {
         return commit({ ...saved, state }, writes);
       },
 
-      /** Finishes the workout: saved as done on the phone and in the outbox, the cached
-       * history and last-time data updated, and "Do a different day" cleared. */
-      async finish(): Promise<WorkoutSummary> {
+      /** Finishes the workout: saved as done on the phone and in the outbox, its summary
+       * worked out against last time as it stood before, the cached history and last-time
+       * data updated, and "Do a different day" cleared. */
+      async finish(): Promise<Summary> {
         const saved = require();
         const { workout, writes } = finishWorkout(saved.state, now());
         const bodyweightKg = workout.bodyweight_kg ?? latestBodyweightKg(queryClient) ?? 0;
-        const summary: WorkoutSummary = { ...workout, bodyweight_kg: bodyweightKg };
-        if (!isReviewMode) cacheFinished(queryClient, summary, sessionsFrom(saved.state, workout.ended_at, bodyweightKg));
+        const state = { ...saved.state, workout: { ...saved.state.workout, bodyweight_kg: bodyweightKg } };
+        const ids = state.exercises.map((e) => e.exercise_id);
+        const before = isReviewMode ? [] : (cachedLastSessions(queryClient, ids) ?? []);
+        const bodyweightIds = new Set(bodyweightKey.split(',').filter((id) => ids.includes(id)));
+        const summary = summarize(state, workout.ended_at, before, bodyweightIds);
+        if (!isReviewMode) {
+          const best = bestsAfter(summary);
+          const sessions = sessionsFrom(state, workout.ended_at, bodyweightKg).map((s) => ({
+            ...s,
+            best_est_max_kg: best.get(s.exercise_id) ?? null,
+          }));
+          cacheFinished(queryClient, { ...workout, bodyweight_kg: bodyweightKg }, sessions);
+        }
         todayOverride.set('', null);
+        finishedWorkout.set(summary);
         await commit(null, writes);
         return summary;
       },
@@ -198,5 +217,5 @@ export function useWorkoutActions() {
         return commit(null, [{ method: 'DELETE', path: `/workouts/${saved.state.workout.id}` }]);
       },
     };
-  }, [queryClient, write]);
+  }, [queryClient, write, bodyweightKey]);
 }

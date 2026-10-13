@@ -22,6 +22,8 @@ export type LastSession = {
   ended_at: string;
   bodyweight_kg: number;
   sets: { set_number: number; weight_kg: number; reps: number }[];
+  /** The best session est. max so far (chunk 16); missing in data cached before it. */
+  best_est_max_kg?: number | null;
 };
 
 const WORKOUT_PATH = /^\/workouts\/([^/?]+)$/;

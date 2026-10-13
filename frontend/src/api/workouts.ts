@@ -25,7 +25,8 @@ export function useWorkouts() {
   });
 }
 
-function fromOtherQueries(queryClient: QueryClient, ids: readonly string[]): LastSession[] | undefined {
+/** Last time for `ids`, from every cached last-time query (offline-safe). */
+export function cachedLastSessions(queryClient: QueryClient, ids: readonly string[]): LastSession[] | undefined {
   const wanted = new Set(ids);
   const known = queryClient
     .getQueriesData<LastSession[]>({ queryKey: ['last-sessions'] })
@@ -54,7 +55,7 @@ export function useLastSessions(exerciseIds: readonly string[]) {
     enabled: signedIn && ids.length > 0 && !isReviewMode,
     // A new set of exercises (a swap, an added exercise, another day) starts from what other
     // cached queries know, so last time shows offline; it's refreshed right away when online.
-    initialData: isReviewMode ? sampleLastSessions : () => fromOtherQueries(queryClient, ids),
+    initialData: isReviewMode ? sampleLastSessions : () => cachedLastSessions(queryClient, ids),
     initialDataUpdatedAt: 0,
   });
 }
