@@ -55,7 +55,12 @@ async function startServices(): Promise<Services> {
 
   const outbox = await Outbox.open({
     storage: deviceStorage,
-    send: (entry) => sendEntry(entry, token.current),
+    // No account yet (onboarding queues writes before sign-up): wait as if signed out,
+    // without sending anything. Signing up resumes the outbox.
+    send: (entry) =>
+      token.current
+        ? sendEntry(entry, token.current)
+        : Promise.resolve({ ok: false, kind: 'http', status: 401 } as const),
     connection: () => connectionFor(network, syncWifiOnly()),
     setTimer: (fn, ms) => {
       const timer = setTimeout(fn, ms);
@@ -87,6 +92,10 @@ type AuthValue = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, displayName: string | null) => Promise<void>;
   signOut: () => Promise<void>;
+  /** "Get started": a new account begins. Clears any previous user's data on the phone
+   * first, so onboarding writes (queued before the account exists) are never mixed up with
+   * someone else's. */
+  beginOnboarding: () => Promise<void>;
 };
 
 type SyncValue = {
@@ -177,6 +186,12 @@ function Providers({ services, children }: { services: Services; children: React
         await clearQueryCache(queryClient, deviceStorage);
         await forgetUser();
         await endSession();
+      },
+      beginOnboarding: async () => {
+        if (!(await lastUserId())) return;
+        await outbox.clear();
+        await clearQueryCache(queryClient, deviceStorage);
+        await forgetUser();
       },
     }),
     [user, startSession, endSession, outbox, queryClient],

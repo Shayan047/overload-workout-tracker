@@ -40,6 +40,11 @@ How it's built (chunk 9, `frontend/src/api/`):
 - **Status copy** (the pill on Today, 07): nothing waiting → hidden; on mobile data with
   Wi-Fi only → "N waiting for Wi-Fi"; signed out → "Sign in to sync"; otherwise (offline,
   sending, retrying) → "Saved on this phone".
+- **Before the account exists** (onboarding, chunk 10): writes are queued as usual, but
+  nothing is sent while there is no token; the outbox waits as if signed out and sign-up
+  resumes it. "Get started" clears any previous user's data on the phone first.
+- **Local changes win until sent:** a read whose answer would overwrite a change still in
+  the outbox keeps the local value (`outbox.hasPending(path)`; settings so far).
 - **Cache** (`cache.ts`): TanStack Query results marked `meta: { persist: true }` are saved
   in AsyncStorage (`overload.cache.v1`) and restored before the first screen renders.
 - **Tests:** `outbox.test.ts` covers the rules with a fake network and server.

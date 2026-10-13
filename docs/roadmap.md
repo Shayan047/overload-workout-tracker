@@ -97,7 +97,7 @@ Every UI chunk's "Done when" also requires:
   - a write made in airplane mode shows "Saved on this phone", is sent once Wi-Fi returns, and replaying the outbox is harmless,
   - the auth screens get PASS.
 
-### 10. Onboarding
+### 10. Onboarding — DONE
 
 - **Goal:** welcome, units and bodyweight.
 - **Design:** 01, 02.

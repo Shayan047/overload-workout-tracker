@@ -112,6 +112,12 @@ export class Outbox {
     return this.queue;
   }
 
+  /** Whether a write to `path` is still waiting to be sent. Reads use this so a server
+   * response never overwrites a local change the server hasn't received yet. */
+  hasPending(path: string): boolean {
+    return this.queue.some((entry) => entry.path === path);
+  }
+
   subscribe(listener: Listener): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);

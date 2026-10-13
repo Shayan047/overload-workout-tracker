@@ -63,4 +63,122 @@ export const type = {
     fontSize: 11,
     lineHeight: lineHeight(11, body.lineHeight),
   },
+  /** The 16 px muted line under a title (01, 02, sign-in, sign-up). */
+  lead: {
+    ...font(body.weight),
+    fontSize: 16,
+    lineHeight: 16 * body.lineHeight,
+  },
+  /** 14 px notes and info-box text (02). */
+  note: {
+    ...font(body.weight),
+    fontSize: 14,
+    lineHeight: 14 * body.lineHeight,
+  },
+  /** The big title on Welcome (01). */
+  display: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 42,
+    lineHeight: lineHeight(42, 1.1),
+    letterSpacing: em(42, -0.01),
+  },
+  /** The unit after a big number, like "lb" on 02. */
+  unitSuffix: {
+    ...font(600),
+    fontSize: 20,
+    lineHeight: lineHeight(20, 1.3),
+  },
+  /** Field and section labels (.label), and small emphasis like "Today" on 01. */
+  label: {
+    ...font(600),
+    fontSize: tokens.font.small.size,
+    lineHeight: 18,
+  },
+  /** Text typed into a field (.field). */
+  field: {
+    ...font(600),
+    fontSize: 17,
+  },
+  /** Primary button label: 17 px (.btn on 07–11) or 16 px (`buttonMedium`, .btn on 01–02). */
+  button: {
+    ...font(650),
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  buttonMedium: {
+    ...font(650),
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  /** Secondary and text button labels (.btn2). */
+  buttonSecondary: {
+    ...font(600),
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  /** Chip labels (.chip). */
+  chip: {
+    ...font(550),
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  /** Segmented control labels (.seg): 15 px, or 17 px on 52 px segments (02). */
+  segment: {
+    ...font(600),
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  segmentLarge: {
+    ...font(650),
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  /** The sync status pill on Today (07). */
+  pill: {
+    ...font(600),
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  /** The "Overload" wordmark next to the mark (01). */
+  wordmark: {
+    ...font(750, 80),
+    fontSize: 20,
+    lineHeight: 28,
+    letterSpacing: 0.2,
+  },
 } as const;
+
+/**
+ * A big number in the number face (`.num`): line height 1, so it sits tight against its
+ * label. `tracking` is the design's letter-spacing in em (01 and 02 use -0.005), resolved at
+ * this size; pass `trackingSize` to resolve it at another size, as CSS does for a nested
+ * span (the "×" on 01 inherits the number's tracking).
+ */
+export function figure(size: number, tracking = 0, trackingSize = size) {
+  return {
+    ...type.number,
+    fontSize: size,
+    lineHeight: size,
+    letterSpacing: em(trackingSize, tracking),
+  };
+}
+
+/** The design's number tracking (01, 02): letter-spacing -0.005em. */
+export const NUMBER_TRACKING = -0.005;
+
+/** The light "×" between a weight and its reps ("20 × 6"), at `size`, inside a number of
+ * `numberSize` whose tracking it inherits. */
+export function figureTimes(size: number, numberSize: number) {
+  return { ...figure(size, NUMBER_TRACKING, numberSize), ...font(300, 68) };
+}
+
+/** Sizes of the big numbers in the designs. `times*` place the "×" (01: 52 px raised 8 px
+ * beside 80 px numbers, 72 px raised 12 px beside 120 px ones). */
+export const figures = {
+  welcomeLastTime: { size: 80, timesSize: 52, timesGap: 8, timesRaise: 8 },
+  welcomeToday: { size: 120, timesSize: 72, timesGap: 10, timesRaise: 12 },
+  /** The bodyweight input on 02. */
+  bodyweight: 64,
+} as const;
+
+export type SetFigureSize = (typeof figures)['welcomeLastTime' | 'welcomeToday'];

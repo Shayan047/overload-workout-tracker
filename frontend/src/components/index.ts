@@ -4,6 +4,7 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { Chip } from './Chip';
 export { IconButton } from './IconButton';
+export { Label } from './Label';
 export { useFrameInsets } from './layout';
 export { ListRow, Separator } from './ListRow';
 export { Notice } from './Notice';

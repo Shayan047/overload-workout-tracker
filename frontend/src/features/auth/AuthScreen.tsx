@@ -32,7 +32,7 @@ export function AuthScreen({ header, title, subtitle, fields, error, actions }: 
         <Text variant="h1" accessibilityRole="header" style={styles.title}>
           {title}
         </Text>
-        <Text color="textMuted" style={styles.subtitle}>
+        <Text variant="lead" color="textMuted" style={styles.subtitle}>
           {subtitle}
         </Text>
         <View style={styles.fields}>{fields}</View>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, paddingHorizontal: 24 },
   header: { minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { marginTop: 28 },
-  subtitle: { marginTop: 10, maxWidth: 320, fontSize: 16, lineHeight: 22 },
+  subtitle: { marginTop: 10, maxWidth: 320 },
   fields: { marginTop: 36, gap: 20 },
   error: { marginTop: 20 },
   spacer: { flexGrow: 1, minHeight: 32 },

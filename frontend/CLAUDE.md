@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** plumbing (roadmap chunk 9): API client, sign-in/sign-up, offline outbox and cache, sync status.
+**Status:** onboarding (roadmap chunk 10): Welcome (01), Units and bodyweight (02), then sign-up.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -31,11 +31,11 @@ src/theme/            built from ../design/tokens.json (Metro watches ../design)
 src/components/       shared UI: Text, Button, Chip, Card, ListRow, Separator,
                       BottomSheet, SegmentedControl, Switch, Screen, TabBar, icons
 src/review/           review mode: ?review=1 flag, fixed clock, sample data
-src/features/<name>/  feature screens, hooks and logic (auth/, dev/ so far)
+src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
                       (Wi-Fi rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
-src/lib/              small pure helpers (units, dates, formatting)
+src/lib/              small pure helpers: ids, units (kg ⇄ lb, bodyweight input), dates
 assets/fonts/         generated Archivo instances + OFL.txt
 scripts/              make-fonts.py, screenshot.mjs
 review/               screenshots (git-ignored)
@@ -90,6 +90,22 @@ indicator. Use `useFrameInsets()` and add the rest: 07's `padding-top: 52px` is 
 02's `padding-bottom: 36px` is `bottom + 2`. Phones get their real safe area, and review
 screenshots line up with the designs.
 
+## Text styles
+
+Font settings (family, weight, width), sizes, line heights and letter spacing are written
+**only** in `src/theme/index.ts`. Components and screens use named styles:
+
+- `<Text variant=…>` or `type.<name>`: `body`, `small`, `lead` (the 16 px line under a
+  title), `note` (14 px), `label`, `h1`, `h2`, `display` (01's 42 px title), `field`,
+  `button`, `buttonMedium`, `buttonSecondary`, `chip`, `segment`, `segmentLarge`, `pill`,
+  `unitSuffix`, `wordmark`, `tabLabel`.
+- Big numbers: `figure(figures.<name>…, NUMBER_TRACKING)` (the `.num` face at line height 1
+  with the designs' tracking) and `figureTimes` for the light "×" between weight and reps.
+
+Need something new? Add a named style to the theme; never write a font size, weight or
+`font(…)` call in a component or screen. (`grep -rn "fontSize\|font(" src app` outside
+`src/theme` should find nothing.)
+
 ## Fonts
 
 - The designs use Archivo's variable width axis, which React Native can't use. So
@@ -111,6 +127,7 @@ screenshots line up with the designs.
 - Review mode is signed in as a sample user, shows "1 waiting for Wi-Fi" like 07, makes no
   API calls, and also opens the sign-in and sign-up screens (`sign-in`, `sign-up` routes).
 - The auth screens have no design number; their screenshots are `00-sign-in` and `00-sign-up`.
+- Signed-out users land on Welcome (`welcome`); Units is `units`.
 
 ## Checking sync by hand
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 
-import { colors, font, radius } from '@/theme';
+import { colors, radius, type } from '@/theme';
 
+import { Label } from './Label';
 import { Text } from './Text';
 
 type Props = Omit<TextInputProps, 'style'> & {
@@ -18,9 +19,9 @@ export function TextField({ label, hint, labelGap = 8, onFocus, onBlur, ...rest 
   const [focused, setFocused] = useState(false);
   return (
     <View>
-      <Text style={[styles.label, { marginBottom: labelGap }]} nativeID={`label-${label}`}>
+      <Label gap={labelGap} nativeID={`label-${label}`}>
         {label}
-      </Text>
+      </Label>
       <TextInput
         accessibilityLabel={label}
         accessibilityLabelledBy={`label-${label}`}
@@ -48,7 +49,6 @@ export function TextField({ label, hint, labelGap = 8, onFocus, onBlur, ...rest 
 }
 
 const styles = StyleSheet.create({
-  label: { ...font(600), fontSize: 13, lineHeight: 18, color: colors.textMuted },
   field: {
     height: 52,
     paddingHorizontal: 16,
@@ -57,8 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.input,
     backgroundColor: colors.surface,
     color: colors.text,
-    ...font(600),
-    fontSize: 17,
+    ...type.field,
   },
   focused: { borderColor: colors.ring },
   hint: { marginTop: 8 },

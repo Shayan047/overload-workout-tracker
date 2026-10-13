@@ -30,6 +30,7 @@ INSTANCES = [
     (100, 650),
     (100, 700),
     (100, 750),
+    (68, 300),  # the multiplication sign between numbers (01)
     (68, 800),  # numbers
     (72, 700),
     (72, 800),
@@ -105,6 +106,7 @@ def main(variable_font: str) -> None:
         rename(font, name)
         if width <= TABULAR_MAX_WIDTH:
             freeze_tabular_figures(font)
+        font.recalcTimestamp = False  # same input, same bytes: reruns don't churn git
         font.save(OUT_DIR / f"{name}.ttf")
         lines.append(f"  '{name}': require('../../assets/fonts/{name}.ttf'),")
         print(f"{name}.ttf")

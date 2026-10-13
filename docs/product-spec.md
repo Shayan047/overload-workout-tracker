@@ -131,6 +131,11 @@ Screen numbers match `design/screens/`.
 **First launch**
 
 - Welcome (01) → Units and bodyweight (02) → Pick a split (03) → Edit split (04).
+- The account is created at the end of onboarding (after Save split; until chunk 11 builds
+  03–04, straight after 02). What the user picks before that is saved on the phone and sent
+  as soon as the account exists. "I already have an account" on 01 goes to sign-in, then Today.
+- Bodyweight must be a plausible adult weight: 45–660 lb or 20–300 kg. Switching the unit on
+  02 converts what was typed.
 - From Edit split, tapping a day opens Edit a day (05), whose Add exercise button opens Add exercises (06).
 - Save split goes to Today (07).
 

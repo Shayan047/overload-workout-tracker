@@ -297,6 +297,18 @@ describe('Outbox', () => {
     expect(seen).toEqual(['offline:1', 'sending:1', 'idle:0']);
   });
 
+  test('hasPending tells reads a local change is still unsent', async () => {
+    const { outbox, setConnection } = await setup();
+    await outbox.add({ method: 'PUT', path: '/settings', body: { unit: 'kg' } });
+
+    expect(outbox.hasPending('/settings')).toBe(true);
+    expect(outbox.hasPending('/sets/set-1')).toBe(false);
+
+    setConnection(WIFI);
+    await outbox.flush();
+    expect(outbox.hasPending('/settings')).toBe(false);
+  });
+
   test('clear() forgets everything, for signing out', async () => {
     const { outbox, storage } = await setup();
     await outbox.add(putSet(1));
