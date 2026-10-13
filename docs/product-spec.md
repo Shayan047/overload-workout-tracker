@@ -131,13 +131,29 @@ Screen numbers match `design/screens/`.
 **First launch**
 
 - Welcome (01) → Units and bodyweight (02) → Pick a split (03) → Edit split (04).
-- The account is created at the end of onboarding (after Save split; until chunk 11 builds
-  03–04, straight after 02). What the user picks before that is saved on the phone and sent
-  as soon as the account exists. "I already have an account" on 01 goes to sign-in, then Today.
+- The account is created at the end of onboarding, after Save split on 04. What the user
+  picks before that (unit, bodyweight, split) is saved on the phone and sent as soon as the
+  account exists. "I already have an account" on 01 goes to sign-in, then Today.
 - Bodyweight must be a plausible adult weight: 45–660 lb or 20–300 kg. Switching the unit on
   02 converts what was typed.
 - From Edit split, tapping a day opens Edit a day (05), whose Add exercise button opens Add exercises (06).
 - Save split goes to Today (07).
+
+**Splits (chunk 11)**
+
+- Picking a preset or "Build my own" (one empty "Day 1") opens Edit split (04) with a copy.
+  Nothing is saved until "Save split", which also makes it the active split.
+- Days and exercises reorder by dragging the handle (screen readers: move up/down).
+- On Edit a day (05), "…" opens the exercise's rest length (−15/+15 s, 0–60 min) and Remove;
+  the pencil renames the day, sets its weekday (set weekdays mode) and removes it.
+- Switching to "Set weekdays" spreads days without a weekday over the week (3 days: Mon,
+  Wed, Fri). Each day needs its own weekday to save.
+- Add exercises (06) searches the library on the phone (same rules as the API), filters by
+  muscle group (the design's chips plus Core), marks exercises already in the day, and adds
+  the selected ones with a 1:30 rest. "Can't find it?" creates a custom exercise (name,
+  main muscle, bodyweight or not).
+- The Splits tab shows the active split in Edit split, with "Pick another" instead of a back
+  button; with no active split it shows Pick a split.
 
 **Returning users**
 

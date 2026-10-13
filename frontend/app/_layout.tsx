@@ -49,6 +49,11 @@ function Routes() {
         <Stack.Screen name="sign-up" />
         <Stack.Screen name="sign-in" />
       </Stack.Protected>
+      {/* Splits (03-06): onboarding (before the account exists) and the app share them. */}
+      <Stack.Screen name="pick-split" />
+      <Stack.Screen name="edit-split" />
+      <Stack.Screen name="edit-day/[dayId]" />
+      <Stack.Screen name="add-exercises/[dayId]" />
     </Stack>
   );
 }

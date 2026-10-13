@@ -29,8 +29,24 @@ async def names(client: AsyncClient, who: SignedIn, **params: str) -> list[str]:
     return [e["name"] for e in response.json()]
 
 
-async def test_list_requires_sign_in(client: AsyncClient) -> None:
-    assert (await client.get("/exercises")).status_code == 401
+async def test_signed_out_users_get_the_library_only(
+    client: AsyncClient, signed_in: SignedIn, library: None
+) -> None:
+    # Onboarding picks a split before the account exists, so the library is public.
+    custom = await client.put(f"/exercises/{uuid.uuid4()}", headers=signed_in.headers, json=CUSTOM)
+    assert custom.status_code == 200
+
+    response = await client.get("/exercises")
+    assert response.status_code == 200
+    assert len(response.json()) == 739
+    assert custom.json()["id"] not in {e["id"] for e in response.json()}
+    assert not any(e["is_custom"] for e in response.json())
+
+
+async def test_a_bad_token_is_still_rejected(client: AsyncClient) -> None:
+    # A token that is sent but invalid (expired, forged) means "sign in again", not "public".
+    response = await client.get("/exercises", headers={"Authorization": "Bearer not-a-jwt"})
+    assert response.status_code == 401
 
 
 async def test_list_returns_the_whole_library(

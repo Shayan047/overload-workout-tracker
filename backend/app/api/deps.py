@@ -29,3 +29,18 @@ async def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+async def get_optional_user(
+    session: SessionDep,
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)],
+) -> User | None:
+    """For public reads that show more when signed in. No token: None. A token that is sent
+    but invalid is still a 401, so an expired session asks for sign-in instead of quietly
+    returning less."""
+    if credentials is None:
+        return None
+    return await get_current_user(session, credentials)
+
+
+OptionalUser = Annotated[User | None, Depends(get_optional_user)]

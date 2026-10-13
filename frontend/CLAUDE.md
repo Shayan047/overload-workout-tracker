@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** onboarding (roadmap chunk 10): Welcome (01), Units and bodyweight (02), then sign-up.
+**Status:** splits UI (roadmap chunk 11): Pick a split (03), Edit split (04), Edit a day (05), Add exercises (06), the Splits tab.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -31,11 +31,12 @@ src/theme/            built from ../design/tokens.json (Metro watches ../design)
 src/components/       shared UI: Text, Button, Chip, Card, ListRow, Separator,
                       BottomSheet, SegmentedControl, Switch, Screen, TabBar, icons
 src/review/           review mode: ?review=1 flag, fixed clock, sample data
-src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, dev/)
+src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
                       (Wi-Fi rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
-src/lib/              small pure helpers: ids, units (kg ⇄ lb, bodyweight input), dates
+src/lib/              small pure helpers: ids, units (kg ⇄ lb, bodyweight input), dates,
+                      exercises (search, labels, rest format)
 assets/fonts/         generated Archivo instances + OFL.txt
 scripts/              make-fonts.py, screenshot.mjs
 review/               screenshots (git-ignored)
@@ -82,6 +83,20 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
 backend allows that origin; see "CORS" in `../docs/api-and-sync.md`). Differences from a
 phone: the token is kept in localStorage, and "Sync on Wi-Fi only" is ignored because
 browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
+
+## Splits screens
+
+- `features/splits/draft.ts`: the split being edited and pure edits on it (tested).
+  `draftStore.ts` holds it in memory for 04, 05 and 06; nothing is written until Save.
+- `plan.ts` turns "saved" + "draft" into the minimal outbox writes (tested). `useSaveSplit`
+  sends them, updates the cached split and sets `active_split_id`.
+- Routes 03–06 live at the root (`pick-split`, `edit-split`, `edit-day/[dayId]`,
+  `add-exercises/[dayId]`) so onboarding (signed out) and the app share them. After sign-in
+  or sign-up the history is cleared and the app opens on Today.
+- `ReorderableList` gives drag-to-reorder with React Native's own touch handling.
+- Review routes: `pick-split?mode=onboarding`, `edit-split?mode=onboarding`,
+  `edit-day/rv-day-shoulders`, `add-exercises/rv-day-shoulders` (sample data in
+  `src/review/sampleData.ts`).
 
 ## Layout and safe areas
 

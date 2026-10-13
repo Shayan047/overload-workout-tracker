@@ -139,6 +139,47 @@ export const type = {
     fontSize: 12,
     lineHeight: 16,
   },
+  /** Small text sitting in a 15 px line, so its line is body height (04's "6 exercises"). */
+  smallInBody: {
+    ...font(body.weight),
+    fontSize: tokens.font.small.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** Screen titles in a header row (04, 06): 24 px. */
+  h1Small: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 24,
+    lineHeight: lineHeight(24, 1.1),
+    letterSpacing: em(24, -0.01),
+  },
+  /** Card and row titles: 18 px (03, 04), 16 px (`rowTitle`, 06). 17 px is `h2` (05). */
+  cardTitle: {
+    ...font(650, 92),
+    fontSize: 18,
+    lineHeight: 18 * 1.25,
+  },
+  rowTitle: {
+    ...font(650, 92),
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  /** Small tags: day names (03), muscle and equipment (05), rest (05). */
+  tag: {
+    ...font(550),
+    fontSize: 12,
+    lineHeight: 12 * body.lineHeight,
+  },
+  /** The search field on 06. */
+  search: {
+    ...font(body.weight),
+    fontSize: 17,
+  },
+  /** A stepper button label, like −15 / +15 (.tbtn). */
+  stepper: {
+    ...font(650),
+    fontSize: 15,
+    lineHeight: 20,
+  },
   /** The "Overload" wordmark next to the mark (01). */
   wordmark: {
     ...font(750, 80),
@@ -179,6 +220,10 @@ export const figures = {
   welcomeToday: { size: 120, timesSize: 72, timesGap: 10, timesRaise: 12 },
   /** The bodyweight input on 02. */
   bodyweight: 64,
+  /** The day number in its circle on 04. */
+  dayStep: 17,
+  /** The rest length in the exercise options sheet. */
+  restValue: 32,
 } as const;
 
 export type SetFigureSize = (typeof figures)['welcomeLastTime' | 'welcomeToday'];
