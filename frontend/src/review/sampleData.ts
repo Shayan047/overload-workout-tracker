@@ -5,6 +5,7 @@
 
 import type { Preset, SplitDraft } from '@/features/splits/draft';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
+import type { ActiveWorkout } from '@/features/workout/workout';
 import type { Exercise } from '@/lib/exercises';
 
 const LB = 0.45359237;
@@ -168,3 +169,39 @@ export const bicepCurlSessions = [
   { date: '2026-10-09', weightKg: kg(20), reps: [7, 6, 6, 5] },
 ];
 
+/** The workout in progress on 08 and 09: started 17:22:42, so it reads 42:18 at 18:05.
+ * Overhead press and lateral raise are done (+1 rep, +2 reps on last time); bicep curl is on
+ * set 3 after 20 × 7 and 20 × 6. */
+const activeRows = sampleSplitDraft.days[1].exercises.map((e, position) => ({
+  id: `rv-active-${position}`,
+  exercise_id: e.exerciseId,
+  position,
+  status: position < 2 ? ('done' as const) : ('planned' as const),
+  source: 'split' as const,
+  rest_seconds: e.restSeconds,
+}));
+const activeSets = (row: number, lb: number, reps: number[], minute: number) =>
+  reps.map((r, i) => ({
+    id: `rv-active-${row}-set-${i + 1}`,
+    workout_exercise_id: `rv-active-${row}`,
+    set_number: i + 1,
+    weight_kg: kg(lb),
+    reps: r,
+    logged_at: new Date(2026, 9, 9, 17, minute + i * 3).toISOString(),
+  }));
+
+export const sampleActiveWorkout: { state: ActiveWorkout; focusId: string | null } = {
+  state: {
+    workout: {
+      id: 'rv-active',
+      split_day_id: SAMPLE_DAY_ID,
+      title: 'Shoulders & Arms',
+      started_at: new Date(2026, 9, 9, 17, 22, 42).toISOString(),
+      bodyweight_kg: kg(172),
+    },
+    exercises: activeRows,
+    sets: [...activeSets(0, 75, [8, 8, 7, 6], 25), ...activeSets(1, 20, [13, 12, 10], 38), ...activeSets(2, 20, [7, 6], 58)],
+    extraRows: {},
+  },
+  focusId: null,
+};

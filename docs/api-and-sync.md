@@ -237,6 +237,34 @@ How the phone drives a workout (all through the outbox):
 4. **Finish:** `PUT /workouts/{id}` again with `ended_at`.
 5. **Resume:** after a restart, `GET /workouts/in-progress` (or the phone's own cache).
 
+How the app does it (chunk 13, `frontend/src/features/workout/`):
+
+- **The workout in progress lives on the phone** (`workoutStore.ts`): the workout, its rows,
+  its sets, extra "Add set" rows and the exercise in focus, saved in AsyncStorage
+  (`overload.workout.active.v1`) on every change and loaded before the first screen. The
+  logic is pure (`workout.ts`): each change returns the new state and its writes; the
+  state is saved first, then the writes go to the outbox. Killing the app loses nothing:
+  on the next launch Today opens the workout again, and shows "Resume workout" while one is
+  in progress. The phone's copy is used; `GET /workouts/in-progress` isn't needed yet.
+- **Bodyweight snapshot:** the latest bodyweight entry cached on the phone, else the last
+  workout's snapshot, else omitted so the server copies its latest entry.
+- **Set rows:** as many as last time (3 with no last time), plus "Add set" rows. Logging the
+  last planned row marks the exercise `done` and the next planned one comes up. Tapping a
+  later exercise moves to it (the one left counts as done if it has sets); tapping a done
+  one reopens it. Editing a set rewrites the same id; deleting renumbers the sets after it.
+- **Log a set** (09): the weight starts at the previous set today, else last time's set with
+  the same number; the keypad's first key replaces it. Steppers move 2.5 lb or 1 kg.
+- **Ghost** (`ghost.ts`, computed on the phone from the cached last session): your reps
+  through the sets logged so far against last time's reps through the same sets. Hidden,
+  with the last-time column and row, when ghost mode is off.
+- **Finish:** the `ended_at` PUT goes to the outbox, and the cached history and last-time
+  data are updated on the phone, so Today moves on and the next ghost is right offline.
+  Finishing with no sets logged offers to discard the workout (`DELETE /workouts/{id}`).
+  Until chunk 16's summary, finishing returns to Today.
+- **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies
+  workout PUTs and DELETEs still in the outbox, and last-time data keeps a session finished
+  on the phone while its writes are unsent (per exercise, the later `ended_at` wins).
+
 Rules:
 
 - **Bodyweight snapshot (rule 3):** if `bodyweight_kg` is omitted when a workout is created,

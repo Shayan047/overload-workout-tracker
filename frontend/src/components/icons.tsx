@@ -187,3 +187,30 @@ export function PlayIcon({ color, size = 18 }: IconProps) {
     </Svg>
   );
 }
+
+/** Minimize the workout (08). */
+export function ChevronDownIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 9l7 7 7-7" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+export function MinusIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 12h14" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** The keypad's delete key (09). */
+export function BackspaceIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M9 6h10a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 18H9l-5.5-6z" stroke={color} {...stroke} />
+      <Path d="M12 10l4 4M16 10l-4 4" stroke={color} {...stroke} />
+    </Svg>
+  );
+}

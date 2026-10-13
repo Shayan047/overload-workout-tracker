@@ -120,7 +120,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `07-today`.
 - **Done when:** Today shows the correct next day for both repeat modes, works offline from the cache, and gets PASS.
 
-### 13. Active workout, log a set, and ghost
+### 13. Active workout, log a set, and ghost — DONE
 
 - **Goal:** active workout screen, log-a-set sheet, elapsed time, the ghost/last-time comparison, and resume after restart.
 - **Design:** 08, 09.

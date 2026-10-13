@@ -6,17 +6,19 @@ import { colors, radius } from '@/theme';
 type Props = {
   accessibilityLabel: string;
   onPress: () => void;
+  /** `raised` on a sheet, which is already `surface` (09's Close). */
+  tone?: 'surface' | 'raised';
   children: ReactNode;
 };
 
 /** The round 44 px icon button (.icon in the designs), e.g. Back on 02. */
-export function IconButton({ accessibilityLabel, onPress, children }: Props) {
+export function IconButton({ accessibilityLabel, onPress, tone = 'surface', children }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={onPress}
-      style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.button, tone === 'raised' && styles.raised, pressed && (tone === 'raised' ? styles.raisedPressed : styles.pressed)]}
     >
       {children}
     </Pressable>
@@ -33,4 +35,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   pressed: { backgroundColor: colors.surfaceRaised },
+  raised: { backgroundColor: colors.surfaceRaised },
+  raisedPressed: { backgroundColor: colors.surfaceRaisedHover },
 });

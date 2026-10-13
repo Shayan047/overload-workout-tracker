@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { useSettings } from '@/api/settings';
 import { treeFromDraft, useExercises, useSplitTree } from '@/api/splits';
@@ -13,8 +13,15 @@ import { isReviewMode, now } from '@/review/reviewMode';
 import { sampleSplitDraft } from '@/review/sampleData';
 import { colors, figure, figures } from '@/theme';
 
+import { useWorkoutActions } from '@/features/workout/useWorkoutActions';
+import { activeWorkout, useActiveWorkout } from '@/features/workout/workoutStore';
+
 import { useTodayOverride, todayOverride } from './overrideStore';
 import { bestSetText, dateHeading, relativeDay, type StripItem, todayPlan } from './today';
+
+// The app opened with a workout in progress (it was killed mid-workout): go straight back
+// to it, once per launch.
+let checkedForWorkout = false;
 
 const exerciseCount = (n: number) => `${n} ${n === 1 ? 'exercise' : 'exercises'}`;
 
@@ -115,6 +122,14 @@ export function TodayScreen() {
   const exercises = useExercises();
   const override = useTodayOverride(localDate(today));
   const [picking, setPicking] = useState(false);
+  const inProgress = useActiveWorkout();
+  const actions = useWorkoutActions();
+
+  useEffect(() => {
+    if (checkedForWorkout) return;
+    checkedForWorkout = true;
+    if (activeWorkout.get()) router.push('/workout');
+  }, []);
 
   const plan = split ? todayPlan(split, workouts.data ?? [], today, override) : null;
   const day = plan?.kind === 'train' ? plan.day : null;
@@ -236,13 +251,24 @@ export function TodayScreen() {
         </View>
 
         <View style={styles.start}>
-          <Button
-            title="Start workout"
-            icon={<PlayIcon color={colors.onAccent} />}
-            onPress={() => router.push({ pathname: '/workout', params: { dayId: plan.day.id } })}
-          />
+          {inProgress ? (
+            <Button
+              title="Resume workout"
+              icon={<PlayIcon color={colors.onAccent} />}
+              onPress={() => router.push('/workout')}
+            />
+          ) : (
+            <Button
+              title="Start workout"
+              icon={<PlayIcon color={colors.onAccent} />}
+              onPress={() => {
+                void actions.start(plan.day);
+                router.push('/workout');
+              }}
+            />
+          )}
         </View>
-        <Button title="Do a different day" variant="text" onPress={() => setPicking(true)} />
+        {inProgress ? null : <Button title="Do a different day" variant="text" onPress={() => setPicking(true)} />}
       </>
     );
   };
