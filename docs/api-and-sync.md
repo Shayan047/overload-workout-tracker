@@ -140,14 +140,14 @@ Set `CORS_ORIGINS=""` in production unless a web client is deployed.
 | POST | `/auth/sign-in` | none | `{email, password}` → `200 {access_token, token_type, user}`; `401` on bad credentials |
 | GET | `/me` | bearer | `{id, email, display_name}` |
 
-Every endpoint below needs a bearer token. Synced rows always include `id`, `created_at`,
+Every endpoint below needs a bearer token, except the public `GET /exercises` and `GET /presets`. Synced rows always include `id`, `created_at`,
 `updated_at` and `deleted_at`.
 
 ### Exercises
 
 | Method | Path | Body / query | Response |
 |---|---|---|---|
-| GET | `/exercises` | `q?`, `muscle_group?`, `equipment?`, `kind?`, `updated_since?` | The library plus the user's custom exercises, as `[{name, primary_muscle, muscle_group, secondary_muscles, equipment, kind, is_custom}]`. `q` matches every word of the name, ignoring case and hyphens; exact and prefix matches come first, then A–Z. |
+| GET | `/exercises` | `q?`, `muscle_group?`, `equipment?`, `kind?`, `updated_since?` | **Public** (onboarding picks a split before the account exists): without a token, the library only; with one, the library plus the user's custom exercises (a token that is sent but invalid is still `401`), as `[{name, primary_muscle, muscle_group, secondary_muscles, equipment, kind, is_custom}]`. `q` matches every word of the name, ignoring case and hyphens; exact and prefix matches come first, then A–Z. |
 | PUT | `/exercises/{id}` | `{name, primary_muscle, secondary_muscles?, equipment?, kind}` | Creates or updates the user's custom exercise. Library exercises are read-only (`404`). |
 | DELETE | `/exercises/{id}` | | `204`. Soft-deletes the user's custom exercise. |
 
@@ -169,7 +169,7 @@ Vocabulary (validated on custom exercises, `422` otherwise; defined in
 
 | Method | Path | Body / query | Response |
 |---|---|---|---|
-| GET | `/presets` | | `[{key, name, summary, repeat_mode, days: [{name, weekday, exercises: [{exercise_id, rest_seconds}]}]}]` |
+| GET | `/presets` | | **Public.** `[{key, name, summary, repeat_mode, days: [{name, weekday, exercises: [{exercise_id, rest_seconds}]}]}]` |
 | POST | `/splits/{id}/from-preset` | `{preset}` | Creates the split at `id` from a preset and returns it like `GET /splits/{id}`. Idempotent: if the split exists, nothing changes. Day ids are `uuid5(split_id, "day:{i}")` and day exercise ids `uuid5(split_id, "day:{i}:exercise:{j}")` (0-based), so the phone can create a split from a preset offline and keep editing it before it syncs. |
 | GET | `/splits` | `updated_since?` | `[{name, repeat_mode}]` |
 | GET | `/splits/{id}` | | The split with its live days in order, each with its live exercises in order: `{name, repeat_mode, days: [{name, position, weekday, exercises: [{exercise_id, position, rest_seconds}]}]}`. `404` if deleted. |

@@ -61,8 +61,10 @@ EQUIPMENT = (
 KINDS = ("weighted", "bodyweight")
 
 
-def visible_to(user_id: uuid.UUID) -> ColumnElement[bool]:
-    """The library plus the user's own custom exercises."""
+def visible_to(user_id: uuid.UUID | None) -> ColumnElement[bool]:
+    """The library plus the user's own custom exercises (just the library when signed out)."""
+    if user_id is None:
+        return Exercise.owner_user_id.is_(None)
     return or_(Exercise.owner_user_id.is_(None), Exercise.owner_user_id == user_id)
 
 
@@ -88,7 +90,7 @@ def _like_escape(text: str) -> str:
 
 async def list_exercises(
     session: AsyncSession,
-    user_id: uuid.UUID,
+    user_id: uuid.UUID | None,
     *,
     q: str | None = None,
     muscle_group: str | None = None,

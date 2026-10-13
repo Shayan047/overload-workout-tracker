@@ -42,10 +42,9 @@ async def detail(client: AsyncClient, who: SignedIn, split_id: str) -> dict[str,
     return response.json()
 
 
-async def test_presets_are_listed_with_library_exercises(
-    client: AsyncClient, signed_in: SignedIn
-) -> None:
-    response = await client.get("/presets", headers=signed_in.headers)
+async def test_presets_are_listed_with_library_exercises(client: AsyncClient) -> None:
+    # Public: onboarding shows them before the account exists.
+    response = await client.get("/presets")
 
     assert response.status_code == 200
     presets = {p["key"]: p for p in response.json()}
