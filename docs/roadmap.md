@@ -104,7 +104,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `01-welcome`, `02-units`.
 - **Done when:** a new user completes onboarding, their unit and bodyweight are saved, and both screens get PASS.
 
-### 11. Splits UI
+### 11. Splits UI — DONE
 
 - **Goal:** pick a split, edit a split, edit a day, add exercises.
 - **Design:** 03, 04, 05, 06.

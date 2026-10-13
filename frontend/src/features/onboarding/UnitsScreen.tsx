@@ -56,8 +56,7 @@ export function UnitsScreen() {
     setSaving(true);
     await updateSettings({ unit });
     await logBodyweight(parsed.value, unit);
-    // Until Pick a split (03) exists (chunk 11), onboarding ends by creating the account.
-    router.push('/sign-up');
+    router.push({ pathname: '/pick-split', params: { mode: 'onboarding' } });
     setSaving(false);
   };
 

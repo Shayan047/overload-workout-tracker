@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/api/AppProviders';
 import { BrandMark, Button, TextField } from '@/components';
 
+import { goToTodayAfterAuth } from './afterAuth';
 import { AuthScreen } from './AuthScreen';
 import { authErrorMessage, checkSignIn } from './messages';
 
@@ -21,6 +22,7 @@ export function SignInScreen() {
     setError(null);
     try {
       await signIn(email.trim(), password);
+      goToTodayAfterAuth();
     } catch (e) {
       setError(authErrorMessage(e));
       setBusy(false);

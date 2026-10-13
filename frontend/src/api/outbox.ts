@@ -118,6 +118,16 @@ export class Outbox {
     return this.queue.some((entry) => entry.path === path);
   }
 
+  /** Whether any write under `prefix` (e.g. "/split") is still waiting. */
+  hasPendingUnder(prefix: string): boolean {
+    return this.queue.some((entry) => entry.path.startsWith(prefix));
+  }
+
+  /** Paths of waiting writes, oldest first. */
+  pendingPaths(): string[] {
+    return this.queue.map((entry) => entry.path);
+  }
+
   subscribe(listener: Listener): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
