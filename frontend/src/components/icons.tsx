@@ -168,3 +168,22 @@ export function TimerIcon({ color, size = 12 }: IconProps) {
     </Svg>
   );
 }
+
+/** Profile (07's header). */
+export function PersonIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={12} cy={8.5} r={3.5} stroke={color} {...stroke} />
+      <Path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Start workout (07): a filled triangle. */
+export function PlayIcon({ color, size = 18 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M7 4.5v15l12-7.5z" fill={color} />
+    </Svg>
+  );
+}

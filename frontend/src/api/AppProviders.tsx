@@ -1,5 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
-import { onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { focusManager, onlineManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   createContext,
   type ReactNode,
@@ -82,6 +82,14 @@ async function startServices(): Promise<Services> {
     onlineManager.setEventListener((setOnline) =>
       NetInfo.addEventListener((state) => setOnline(!!state.isConnected)),
     );
+    // Coming back to the app refreshes data that has gone stale (TanStack Query's
+    // "window focus" for React Native).
+    if (Platform.OS !== 'web') {
+      focusManager.setEventListener((setFocused) => {
+        const subscription = AppState.addEventListener('change', (state) => setFocused(state === 'active'));
+        return () => subscription.remove();
+      });
+    }
   }
   return { queryClient, outbox, session, token };
 }
