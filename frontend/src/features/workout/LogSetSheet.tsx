@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { BottomSheet, Button, IconButton, Text } from '@/components';
 import { BackspaceIcon, CloseIcon, GhostIcon, MinusIcon, PlusIcon } from '@/components/icons';
+import { formatRest } from '@/lib/exercises';
 import { formatWeight, fromKg, toKg, type Unit } from '@/lib/units';
 import { colors, figure, figures, radius } from '@/theme';
 
@@ -30,6 +31,8 @@ type Props = {
   unit: Unit;
   /** Last time's set with the same number; null without one or with ghost mode off. */
   lastSet: { set_number: number; weight_kg: number; reps: number } | null;
+  /** The rest that saving starts; 0 when it starts none (editing a set). */
+  restSeconds: number;
   onSave: (weightKg: number, reps: number) => void;
   onDelete: () => void;
   onClose: () => void;
@@ -66,6 +69,7 @@ function SetForm({
   bodyweight,
   unit,
   lastSet,
+  restSeconds,
   onSave,
   onDelete,
   onClose,
@@ -216,6 +220,11 @@ function SetForm({
         />
       </View>
       {target.setId ? <Button title="Delete set" variant="text" onPress={onDelete} /> : null}
+      {restSeconds > 0 ? (
+        <Text variant="small" color="textFaint" style={styles.restNote}>
+          Saving starts your {formatRest(restSeconds)} rest timer.
+        </Text>
+      ) : null}
     </>
   );
 }
@@ -277,4 +286,5 @@ const styles = StyleSheet.create({
   },
   keyPressed: { backgroundColor: colors.surfaceRaisedHover },
   save: { marginTop: 14 },
+  restNote: { marginTop: 10, textAlign: 'center' },
 });

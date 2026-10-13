@@ -5,6 +5,7 @@
 
 import type { Preset, SplitDraft } from '@/features/splits/draft';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
+import type { Rest } from '@/features/workout/rest';
 import type { ActiveWorkout } from '@/features/workout/workout';
 import type { Exercise } from '@/lib/exercises';
 
@@ -190,7 +191,7 @@ const activeSets = (row: number, lb: number, reps: number[], minute: number) =>
     logged_at: new Date(2026, 9, 9, 17, minute + i * 3).toISOString(),
   }));
 
-export const sampleActiveWorkout: { state: ActiveWorkout; focusId: string | null } = {
+export const sampleActiveWorkout: { state: ActiveWorkout; focusId: string | null; rest: Rest } = {
   state: {
     workout: {
       id: 'rv-active',
@@ -204,4 +205,6 @@ export const sampleActiveWorkout: { state: ActiveWorkout; focusId: string | null
     extraRows: {},
   },
   focusId: null,
+  // 08's timer card: 0:47 of 1:30 at 18:05.
+  rest: { rowId: 'rv-active-2', endsAt: new Date(2026, 9, 9, 18, 5, 47).toISOString(), totalSeconds: 90 },
 };

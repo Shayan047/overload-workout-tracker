@@ -17,6 +17,7 @@ import { colors, figure, figures, radius } from '@/theme';
 import { aheadText, elapsedText, exerciseDelta, ghost, ghostDate, lastTimeText, setText } from './ghost';
 import { ChangeExerciseSheet, type ChangeTarget } from './ChangeExerciseSheet';
 import { LogSetSheet, type SetTarget } from './LogSetSheet';
+import { RestTimerCard } from './RestTimerCard';
 import { useWorkoutActions } from './useWorkoutActions';
 import {
   afterName,
@@ -119,6 +120,7 @@ export function WorkoutScreen() {
   const { status } = useSync();
   const elapsed = useElapsed(saved?.state.workout.started_at);
   const [discarding, setDiscarding] = useState(false);
+  const [footerHeight, setFooterHeight] = useState(100);
 
   const rows = saved ? [...saved.state.exercises].filter((e) => e.status !== 'skipped').sort((a, b) => a.position - b.position) : [];
   const lastSessions = useLastSessions(rows.map((r) => r.exercise_id));
@@ -359,7 +361,7 @@ export function WorkoutScreen() {
 
   return (
     <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: 130 + bottom }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: footerHeight + 30 }]}>
         <View style={styles.header}>
           <IconButton accessibilityLabel="Minimize workout" onPress={goBack}>
             <ChevronDownIcon color={colors.text} />
@@ -506,7 +508,24 @@ export function WorkoutScreen() {
         )}
       </ScrollView>
 
-      <View style={[styles.footer, { paddingBottom: bottom - 4 }]}>
+      <View
+        style={[styles.footer, { paddingBottom: bottom - 4 }]}
+        onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
+      >
+        {saved.rest ? (
+          <RestTimerCard
+            rest={saved.rest}
+            label={
+              current && current.id === saved.rest.rowId
+                ? `Rest, then set ${nextSetNumber}`
+                : current
+                  ? `Rest, then ${info(current).name.toLowerCase()}`
+                  : 'Rest'
+            }
+            onAdjust={(delta) => void actions.adjustRest(delta)}
+            onSkip={() => void actions.skipRest()}
+          />
+        ) : null}
         {current ? (
           <Button title={`Log set ${nextSetNumber}`} onPress={() => openNext('reps')} />
         ) : (
@@ -520,6 +539,7 @@ export function WorkoutScreen() {
         bodyweight={targetInfo?.bodyweight ?? false}
         unit={unit}
         lastSet={targetLastSet}
+        restSeconds={target && !target.setId ? (targetRow?.rest_seconds ?? 0) : 0}
         onClose={() => setTarget(null)}
         onSave={(weightKg, reps) => {
           if (!target) return;

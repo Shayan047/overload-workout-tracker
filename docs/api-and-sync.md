@@ -268,6 +268,16 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   position. Skip sets `skipped`; skipped exercises are listed under "Skipped today" with
   Undo. Once a set is logged, Swap and Skip give way to "Done for today" (marks it `done`
   with the sets so far). Each is one PUT to the workout's row; the split is never written.
+- **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
+  set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
+  progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives
+  backgrounding and the app being killed. −15/+15 move the end and the total; −15 with 15 s
+  or less left ends it. It never reaches the API (rule 5). While the app is open, a haptic at
+  10 s left and at the end. For a locked phone, a local notification is scheduled for the end
+  (fixed identifier, so it's replaced on ±15 and cancelled on skip, finish or sign-out),
+  with sound when `rest_alert_sound` is on. In the foreground it shows no banner and only
+  plays its sound, so no audio library is needed. Android has two channels (with and without
+  sound), since a channel's sound can't change. Permission is asked at the first rest.
 - **Last time for a new set of exercises** (a swap, an add, another day) starts from what
   the other cached last-time queries know, so it shows offline too.
 - **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies

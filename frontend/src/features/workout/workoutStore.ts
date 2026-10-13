@@ -8,6 +8,7 @@ import type { KeyValueStorage } from '@/api/storage';
 import { isReviewMode } from '@/review/reviewMode';
 import { sampleActiveWorkout } from '@/review/sampleData';
 
+import type { Rest } from './rest';
 import type { ActiveWorkout } from './workout';
 
 export const ACTIVE_WORKOUT_KEY = 'overload.workout.active.v1';
@@ -16,6 +17,8 @@ export type Saved = {
   state: ActiveWorkout;
   /** The exercise the user moved to, if not the first one still planned. */
   focusId: string | null;
+  /** The rest timer running, if any (chunk 15). Missing in workouts saved before it. */
+  rest?: Rest | null;
 };
 
 let current: Saved | null = null;

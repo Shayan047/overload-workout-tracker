@@ -140,7 +140,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `10-change-exercise`, with the sheet open.
 - **Done when:** each action works, the saved split is unchanged afterwards, and 10 gets PASS.
 
-### 15. Rest timer
+### 15. Rest timer — DONE (the locked-phone notification still needs a check on a phone)
 
 - **Goal:** auto-start when a set is saved, −15/+15/skip, haptics at 10 s and at the end, optional sound, and a local notification when the phone is locked.
 - **Design:** 08, 09 and 12.

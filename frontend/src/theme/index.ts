@@ -283,6 +283,8 @@ export const figures = {
   setLastTime: 20,
   exerciseDelta: 18,
   ghostReps: 18,
+  /** The rest timer's countdown (08). */
+  restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */
   entry: 44,
   sheetLastTime: 20,

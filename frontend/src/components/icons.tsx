@@ -159,12 +159,12 @@ export function MoreIcon({ color, size = 22 }: IconProps) {
   );
 }
 
-/** Rest length (05's rest pill). */
-export function TimerIcon({ color, size = 12 }: IconProps) {
+/** Rest length (05's rest pill) and the rest timer (08, 1.8 stroke). */
+export function TimerIcon({ color, size = 12, strokeWidth = 2 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx={12} cy={13} r={7.5} stroke={color} {...stroke} strokeWidth={2} />
-      <Path d="M12 9.5V13l2 1.5M10 3h4" stroke={color} {...stroke} strokeWidth={2} />
+      <Circle cx={12} cy={13} r={7.5} stroke={color} {...stroke} strokeWidth={strokeWidth} />
+      <Path d="M12 9.5V13l2 1.5M10 3h4" stroke={color} {...stroke} strokeWidth={strokeWidth} />
     </Svg>
   );
 }

@@ -29,6 +29,7 @@ import {
   updateRow,
   type Write,
 } from './workout';
+import { adjustRest, startRest } from './rest';
 import { activeWorkout, inProgress, type Saved } from './workoutStore';
 
 type Day = { id: string; name: string; exercises: { exercise_id: string; rest_seconds: number }[] };
@@ -88,13 +89,27 @@ export function useWorkoutActions() {
       },
 
       /** Logs a new set, or edits one with `setId`. Completing the planned sets marks the
-       * exercise done, and the next one comes up. */
+       * exercise done, and the next one comes up. A new set starts the rest timer with the
+       * exercise's rest length. */
       logSet(input: { rowId: string; setId?: string; weightKg: number; reps: number; plannedSets?: number }) {
         const saved = require();
         const { state, writes } = logSet(saved.state, { ...input, now: now(), makeId: newId });
-        const finishedRow = state.exercises.find((e) => e.id === input.rowId)?.status === 'done';
-        const focusId = finishedRow && saved.focusId === input.rowId ? null : saved.focusId;
-        return commit({ state, focusId }, writes);
+        const row = state.exercises.find((e) => e.id === input.rowId);
+        const focusId = row?.status === 'done' && saved.focusId === input.rowId ? null : saved.focusId;
+        const rest = !input.setId && row && row.rest_seconds > 0 ? startRest(row.id, row.rest_seconds, now()) : saved.rest;
+        return commit({ state, focusId, rest }, writes);
+      },
+
+      /** −15 / +15 on the rest timer. */
+      adjustRest(deltaSeconds: number) {
+        const saved = require();
+        if (!saved.rest) return Promise.resolve();
+        return commit({ ...saved, rest: adjustRest(saved.rest, deltaSeconds, now()) }, []);
+      },
+
+      skipRest() {
+        const saved = require();
+        return commit({ ...saved, rest: null }, []);
       },
 
       deleteSet(setId: string) {
@@ -127,7 +142,7 @@ export function useWorkoutActions() {
           state = result.state;
           writes.push(...result.writes);
         }
-        return commit({ state, focusId: rowId }, writes);
+        return commit({ ...saved, state, focusId: rowId }, writes);
       },
 
       // Today-only changes (10). The exercise in focus loses focus when it's changed, so the
@@ -140,7 +155,7 @@ export function useWorkoutActions() {
       skip(rowId: string) {
         const saved = require();
         const { state, writes } = skipExercise(saved.state, rowId);
-        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+        return commit({ ...saved, state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
       },
       restore(rowId: string) {
         const saved = require();
@@ -150,13 +165,13 @@ export function useWorkoutActions() {
       moveToEnd(rowId: string) {
         const saved = require();
         const { state, writes } = moveToEnd(saved.state, rowId);
-        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+        return commit({ ...saved, state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
       },
       /** "Done for today": stops an exercise with the sets logged so far. */
       markDone(rowId: string) {
         const saved = require();
         const { state, writes } = markDone(saved.state, rowId);
-        return commit({ state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
+        return commit({ ...saved, state, focusId: saved.focusId === rowId ? null : saved.focusId }, writes);
       },
       add(exerciseIds: readonly string[]) {
         const saved = require();

@@ -30,7 +30,7 @@ const config: ExpoConfig = {
     output: 'single',
     favicon: './assets/favicon.png',
   },
-  plugins: ['expo-router', 'expo-font'],
+  plugins: ['expo-router', 'expo-font', 'expo-notifications'],
   experiments: {
     typedRoutes: true,
   },
