@@ -15,7 +15,7 @@ import { colors, figure, figures, radius } from '@/theme';
 
 import { estMaxChart } from './chart';
 import { EstMaxChart } from './EstMaxChart';
-import { estMaxText, sessionSets, sessionTitle, sinceFirstText, whenText } from './progressText';
+import { estMaxText, sessionSets, sessionTitle, sinceFirstText, weightLabel, whenText } from './progressText';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const shortDate = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Date(iso).getDate()}`;
@@ -54,7 +54,7 @@ export function ExerciseDetailScreen() {
   const name = exercise?.name ?? 'Exercise';
   const data = stats.data;
   const bodyweight = data?.includes_bodyweight ?? exercise?.kind === 'bodyweight';
-  const weight = (kg: number) => `${bodyweight && kg > 0 ? '+' : ''}${formatWeight(fromKg(kg, unit))} ${unit}`;
+  const weight = (kg: number) => weightLabel(kg, unit, bodyweight);
   const setValue = (s: { weight_kg: number; reps: number }) =>
     bodyweight ? `${s.weight_kg > 0 ? `BW+${formatWeight(fromKg(s.weight_kg, unit))}` : 'BW'} × ${s.reps}` : `${formatWeight(fromKg(s.weight_kg, unit))} × ${s.reps}`;
   const openFrontier = () => router.push({ pathname: '/frontier', params: { exerciseId } });

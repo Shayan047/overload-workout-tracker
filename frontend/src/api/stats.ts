@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { isReviewMode } from '@/review/reviewMode';
-import { sampleExerciseStats, sampleProgress } from '@/review/sampleData';
+import { sampleExerciseStats, sampleOneWeight, sampleProgress } from '@/review/sampleData';
 
 import { useAuth, useSync } from './AppProviders';
 
@@ -43,6 +43,29 @@ export type ExerciseStats = {
   projection: (EstMaxPoint & { weekly_gain_kg: number; capped: boolean }) | null;
 };
 
+/** One session's sets at one weight, in the order they were done (15, 16). */
+export type WeightSession = {
+  workout_id: string;
+  at: string;
+  reps: number[];
+  total: number;
+  average: number;
+  /** Last set's reps ÷ first set's (0.79 = 79%). Null under two sets. */
+  retention: number | null;
+};
+
+/** GET /stats/exercises/{id}/weights/{weight_kg}: 15 and 16. Sessions oldest first. */
+export type OneWeightStats = {
+  exercise_id: string;
+  weight_kg: number;
+  sessions: WeightSession[];
+  total_change: number | null;
+  first_retention: number | null;
+  latest_retention: number | null;
+  /** When a heavier weight was first used, after this one. */
+  moved_up_on: string | null;
+};
+
 export const PROGRESS_WEEKS = 8;
 
 export function useProgress() {
@@ -66,5 +89,18 @@ export function useExerciseStats(exerciseId: string | undefined) {
     meta: { persist: true },
     enabled: signedIn && !!exerciseId && !isReviewMode,
     initialData: isReviewMode && exerciseId === sampleExerciseStats.exercise_id ? sampleExerciseStats : undefined,
+  });
+}
+
+export function useOneWeightStats(exerciseId: string | undefined, weightKg: number | undefined) {
+  const { request } = useSync();
+  const { signedIn } = useAuth();
+  const ready = !!exerciseId && weightKg !== undefined && Number.isFinite(weightKg);
+  return useQuery({
+    queryKey: ['stats', 'exercise', exerciseId, 'weight', weightKg],
+    queryFn: () => request<OneWeightStats>('GET', `/stats/exercises/${exerciseId}/weights/${weightKg}`),
+    meta: { persist: true },
+    enabled: signedIn && ready && !isReviewMode,
+    initialData: isReviewMode && ready ? sampleOneWeight(exerciseId, weightKg) : undefined,
   });
 }

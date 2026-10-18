@@ -254,6 +254,18 @@ export const type = {
     fontSize: 11,
     lineHeight: 14,
   },
+  /** Reps inside a stacked bar (15): 11 px at 700. */
+  chartInner: {
+    ...font(700),
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  /** A stacked bar's total above it (15): 14 px, 800 at 72% width. */
+  chartTotal: {
+    ...font(800, 72),
+    fontSize: 14,
+    lineHeight: 14,
+  },
   /** The "Overload" wordmark next to the mark (01). */
   wordmark: {
     ...font(750, 80),
@@ -318,6 +330,10 @@ export const figures = {
   estMax: 76,
   record: 22,
   pace: 19,
+  /** One weight (15, 16): the headline number and each session's total, average or
+   * retention in the table. */
+  oneWeightHero: 56,
+  oneWeightRow: 19,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */

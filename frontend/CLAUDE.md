@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** Today (roadmap chunk 12) on top of the splits UI (chunk 11).
+**Status:** through roadmap chunk 18 (one-weight views). See `../docs/roadmap.md`.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -105,6 +105,18 @@ browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
 - Data: settings → active split tree, `GET /workouts` (last day done) and
   `GET /workouts/last-sessions` (best sets), all persisted for offline use. Cached data is
   fresh for 30 s; returning to the app refreshes anything stale.
+
+## Progress screens
+
+- `features/progress/`: Progress (13), Exercise detail (14) and One weight (15, 16). Chart
+  geometry and copy are pure and tested (`chart.ts`, `progressText.ts`, `oneWeight.ts`), in
+  the designs' SVG coordinates, so positions can be checked against the HTML.
+- Stats come from the API (`src/api/stats.ts`) as persisted queries, so they open offline.
+- One weight is `one-weight?exerciseId=…&weightKg=…[&view=fingerprint]`; the chips and the
+  Progress/Fingerprint toggle change the params in place, and "All weights" goes back.
+- Review routes: `progress`, `exercise/rv-curl`,
+  `one-weight?exerciseId=rv-curl&weightKg=4.536` (add `&view=fingerprint` for 16). Quote
+  routes with `&` in the shell.
 
 ## Layout and safe areas
 

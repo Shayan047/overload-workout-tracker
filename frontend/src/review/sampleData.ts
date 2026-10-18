@@ -6,7 +6,7 @@
 import type { Preset, SplitDraft } from '@/features/splits/draft';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
 import type { Rest } from '@/features/workout/rest';
-import type { ExerciseStats, ProgressItem } from '@/api/stats';
+import type { ExerciseStats, OneWeightStats, ProgressItem } from '@/api/stats';
 import { summarize, type Summary } from '@/features/workout/summary';
 import type { ActiveWorkout } from '@/features/workout/workout';
 import type { Exercise } from '@/lib/exercises';
@@ -343,3 +343,33 @@ export const sampleExerciseStats: ExerciseStats = {
   plateau: null,
   projection: { at: new Date(2026, 11, 1, 18, 40).toISOString(), est_max_kg: kg(28), weekly_gain_kg: kg(0.37), capped: true },
 };
+
+/** 15 and 16: bicep curl at one weight, as GET /stats/exercises/{id}/weights/{kg} answers. */
+export function sampleOneWeight(exerciseId: string, weightKg: number): OneWeightStats | undefined {
+  if (exerciseId !== sampleExerciseStats.exercise_id) return undefined;
+  const same = (a: number) => Math.abs(a - weightKg) < 0.0005;
+  const at = curlSeries.filter((s) => s.sets.some((x) => same(x.weight_kg)));
+  if (!at.length) return undefined;
+  const sessions = at.map((s) => {
+    const reps = s.sets.filter((x) => same(x.weight_kg)).map((x) => x.reps);
+    const total = reps.reduce((a, b) => a + b, 0);
+    return {
+      workout_id: s.workout_id,
+      at: s.at,
+      reps,
+      total,
+      average: Math.round((total / reps.length) * 100) / 100,
+      retention: reps.length > 1 ? Math.round((reps[reps.length - 1] / reps[0]) * 10000) / 10000 : null,
+    };
+  });
+  const movedUp = curlSeries.find((s) => s.at > at[0].at && s.sets.some((x) => x.weight_kg > weightKg + 0.0005));
+  return {
+    exercise_id: exerciseId,
+    weight_kg: weightKg,
+    sessions,
+    total_change: sessions.length > 1 ? sessions[sessions.length - 1].total - sessions[0].total : null,
+    first_retention: sessions[0].retention,
+    latest_retention: sessions[sessions.length - 1].retention,
+    moved_up_on: movedUp?.at ?? null,
+  };
+}

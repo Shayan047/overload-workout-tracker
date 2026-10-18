@@ -33,12 +33,13 @@ const sameDay = (a: Date, b: Date) =>
 const shortDate = (date: Date) => `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 const time = (iso: string) => new Date(iso).getTime();
 
-/** The smallest "nice" step that covers lo–hi in at most four intervals. */
-function niceTicks(lo: number, hi: number): number[] {
+/** Gridline values, highest first: the smallest "nice" step that covers lo–hi in at most
+ * `maxIntervals` intervals (four on 14 and 16, five on 15). */
+export function niceTicks(lo: number, hi: number, maxIntervals = MAX_INTERVALS): number[] {
   for (const step of NICE_STEPS) {
     const start = Math.floor(lo / step) * step;
     const end = Math.max(Math.ceil(hi / step) * step, start + step);
-    if ((end - start) / step <= MAX_INTERVALS) {
+    if ((end - start) / step <= maxIntervals) {
       return Array.from({ length: Math.round((end - start) / step) + 1 }, (_, i) => end - i * step);
     }
   }

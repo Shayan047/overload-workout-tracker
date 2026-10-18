@@ -168,7 +168,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `13-progress` and `14-exercise-detail` (height 1240). Chart lines, dots, bands and labels must match in position and color.
 - **Done when:** both screens render from the stats API and from the cache when offline, and both get PASS.
 
-### 18. One-weight views
+### 18. One-weight views — DONE
 
 - **Goal:** Progress (stacked reps per set) and Fingerprint (reps by set number, plus retention).
 - **Design:** 15, 16.

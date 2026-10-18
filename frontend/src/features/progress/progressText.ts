@@ -81,6 +81,13 @@ export function sinceFirstText(estMaxKg: number, first: { at: string; est_max_kg
   };
 }
 
+/** A weight chip or a weight in a sentence: "10 lb"; bodyweight exercises "+10 lb", or
+ * "bodyweight" with nothing added. */
+export function weightLabel(kg: number, unit: Unit, bodyweight: boolean): string {
+  if (bodyweight && kg <= 0) return 'bodyweight';
+  return `${bodyweight ? '+' : ''}${formatWeight(fromKg(kg, unit))} ${unit}`;
+}
+
 /** "Today", "Tue, Oct 6". */
 export function sessionTitle(iso: string, now: Date): string {
   if (daysAgo(iso, now) === 0) return 'Today';
