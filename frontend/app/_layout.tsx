@@ -50,6 +50,7 @@ function Routes() {
           <Stack.Screen name="one-weight" />
           <Stack.Screen name="frontier" />
           <Stack.Screen name="profile" />
+          <Stack.Screen name="bodyweight" />
           <Stack.Screen name="dev-sync" />
         </Stack.Protected>
         {/* Signed out: onboarding first (Welcome is where they land), then the account. */}

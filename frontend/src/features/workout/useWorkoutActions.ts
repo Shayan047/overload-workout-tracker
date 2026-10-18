@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 
 import { useSync } from '@/api/AppProviders';
 import { BODYWEIGHT_KEY, type BodyweightEntry } from '@/api/bodyweight';
+import { cacheHistoryRecap } from '@/api/history';
 import { cachedLastSessions, type LastSession, WORKOUTS_KEY, type WorkoutSummary } from '@/api/workouts';
 import { useExercises } from '@/api/splits';
 import { todayOverride } from '@/features/today/overrideStore';
@@ -50,11 +51,12 @@ function latestBodyweightKg(queryClient: QueryClient): number | null {
 
 /** A finished workout, put into the cached history and last-time data, so Today moves on to
  * the next day and the next ghost is right, even before the server has it. */
-function cacheFinished(queryClient: QueryClient, workout: WorkoutSummary, sessions: LastSession[]) {
+function cacheFinished(queryClient: QueryClient, workout: WorkoutSummary, sessions: LastSession[], summary: Summary) {
   queryClient.setQueryData<WorkoutSummary[]>(WORKOUTS_KEY, (old = []) => [
     ...old.filter((w) => w.id !== workout.id),
     workout,
   ]);
+  cacheHistoryRecap(queryClient, workout, { sets: summary.sets, ahead: summary.ahead, compared: summary.compared });
   for (const query of queryClient.getQueryCache().findAll({ queryKey: ['last-sessions'] })) {
     const ids = new Set(query.queryKey.slice(1));
     const done = sessions.filter((s) => ids.has(s.exercise_id));
@@ -203,7 +205,7 @@ export function useWorkoutActions() {
             ...s,
             best_est_max_kg: best.get(s.exercise_id) ?? null,
           }));
-          cacheFinished(queryClient, { ...workout, bodyweight_kg: bodyweightKg }, sessions);
+          cacheFinished(queryClient, { ...workout, bodyweight_kg: bodyweightKg }, sessions, summary);
         }
         todayOverride.set('', null);
         finishedWorkout.set(summary);

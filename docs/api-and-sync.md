@@ -209,6 +209,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 |---|---|---|---|
 | PUT | `/workouts/{id}` | `{split_day_id?, title, started_at, ended_at?, bodyweight_kg?}` | Start (no `ended_at`), edit, or finish (with `ended_at`). `409 {detail: {message, in_progress_workout_id}}` if another workout is in progress; `422` if `ended_at` is before `started_at`, or if `bodyweight_kg` is omitted on create and the user has no bodyweight entry. |
 | GET | `/workouts` | `updated_since?` | `[{split_day_id, title, started_at, ended_at, bodyweight_kg}]` |
+| GET | `/workouts/history` | | History (18): finished, live workouts, newest first, as `GET /workouts` plus `{sets, ahead, compared}`. `ahead` counts exercises whose total reps beat their previous session (the summary's rule, 11), out of `compared` that had one. Computed by `app/stats/history.py`. |
 | GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
 | GET | `/workouts/{id}` | | The workout with its live exercises in order, each with its live sets in order: `{…, exercises: [{…, sets: [...]}]}`. `404` if deleted. |
 | DELETE | `/workouts/{id}` | | `204`. Also soft-deletes its exercises and their sets. |
@@ -291,6 +292,23 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
 - **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies
   workout PUTs and DELETEs still in the outbox, and last-time data keeps a session finished
   on the phone while its writes are unsent (per exercise, the later `ended_at` wins).
+- **History, profile and bodyweight** (chunk 20, `features/history/`, `features/profile/`):
+  - `GET /workouts/history` and `GET /bodyweight-entries` are persisted queries. Finishing a
+    workout adds its recap (sets, ahead, compared, from the summary) to the cached history,
+    and it stays there until the server has the workout; entries logged on the phone stay
+    until sent (the local value wins meanwhile). Deletes still in the outbox hide rows.
+  - A workout is "Waiting for Wi-Fi" (or "Saved on this phone") while a `/workouts/{id}`
+    write is in the outbox; the finish is its last write and the outbox is FIFO, so after
+    that the whole workout has been sent ("Synced"). Profile counts those workouts.
+  - The calendar marks days with a finished workout; tapping a day lists that day's
+    workouts instead of the four most recent. The line under it counts this month's
+    workouts and its rest days before today, counted from the first workout ever.
+  - Profile writes every setting through `PUT /settings` (the outbox). Bodyweight logs one
+    entry per day: logging again the same day rewrites that day's entry (same id). Workouts
+    keep their own snapshot (rule 3), so neither changes old workouts.
+  - Bodyweight's chart spaces entries evenly (as 20 draws them), with 1 lb (0.5 kg) of room
+    above and below before choosing gridlines. Ranges: 1 month, 3 months (default), 1 year,
+    all.
 
 Rules:
 

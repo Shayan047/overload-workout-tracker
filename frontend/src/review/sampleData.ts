@@ -4,6 +4,7 @@
 // once they exist (chunks 10–20).
 
 import type { Preset, SplitDraft } from '@/features/splits/draft';
+import type { BodyweightEntry, WorkoutHistoryItem } from '@/api/pendingWrites';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
 import type { Rest } from '@/features/workout/rest';
 import type { ExerciseStats, OneWeightStats, ProgressItem } from '@/api/stats';
@@ -58,6 +59,10 @@ export const sampleExercises: Exercise[] = [
   ex('rv-leg-press', 'Leg press', 'quadriceps', 'machine'),
   ex('rv-leg-curl', 'Leg curl', 'hamstrings', 'machine'),
   ex('rv-calf', 'Calf raise', 'calves', 'machine'),
+  // Profile (19) counts three custom exercises.
+  { ...ex('rv-custom-landmine', 'Landmine press', 'shoulders', 'other'), is_custom: true },
+  { ...ex('rv-custom-wrist', 'Wrist roller', 'forearms', 'other'), is_custom: true },
+  { ...ex('rv-custom-crunch', 'Cable crunch', 'abdominals', 'cable'), is_custom: true },
 ];
 
 const row = (day: string, i: number, exerciseId: string, restSeconds: number) => ({
@@ -393,3 +398,56 @@ export function sampleOneWeight(exerciseId: string, weightKg: number): OneWeight
     moved_up_on: movedUp?.at ?? null,
   };
 }
+
+/** History (18) and Profile (19): 46 workouts since Monday, August 3. October as 18 draws
+ * it (Sunday the 4th off); the two latest are still waiting for Wi-Fi. */
+export const sampleHistory = (() => {
+  const titles = ['Chest & Back', 'Shoulders & Arms', 'Legs'];
+  const drawn: Record<string, [number, number, number, number]> = {
+    // date: minutes, sets, ahead, compared
+    '9-6': [45, 20, 3, 6],
+    '9-7': [52, 18, 3, 5],
+    '9-8': [58, 24, 5, 6],
+    '9-9': [47, 20, 4, 6],
+  };
+  const days: Date[] = [];
+  for (let d = new Date(2026, 7, 3); d <= new Date(2026, 8, 30); d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)) {
+    const weekday = d.getDay();
+    const augustWednesday = weekday === 3 && (d.getMonth() === 7 || d.getDate() === 2);
+    if (weekday !== 0 && weekday !== 6 && !augustWednesday) days.push(d);
+  }
+  for (const date of [1, 2, 3, 5, 6, 7, 8, 9]) days.push(new Date(2026, 9, date));
+
+  const workouts: WorkoutHistoryItem[] = days.map((d, i) => {
+    const [minutes, sets, ahead, compared] = drawn[`${d.getMonth()}-${d.getDate()}`] ?? [50, 18 + (i % 4) * 2, (i % 3) + 2, 6];
+    const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, d.getMonth() === 9 && d.getDate() === 9 ? 12 : 0);
+    return {
+      id: `rv-history-${i}`,
+      split_day_id: null,
+      // The rotation ends on Shoulders & Arms today.
+      title: titles[(i + 1) % 3],
+      started_at: start.toISOString(),
+      ended_at: new Date(start.getTime() + minutes * 60_000).toISOString(),
+      bodyweight_kg: kg(172),
+      sets,
+      ahead,
+      compared,
+    };
+  });
+  workouts.reverse();
+  return { workouts, pendingIds: workouts.slice(0, 2).map((w) => w.id) };
+})();
+
+/** Bodyweight (20): weekly from Monday, August 10, then today. */
+export const sampleBodyweight: BodyweightEntry[] = [
+  ['2026-08-10', 168.4],
+  ['2026-08-17', 168.9],
+  ['2026-08-24', 169.6],
+  ['2026-08-31', 169.8],
+  ['2026-09-07', 170.5],
+  ['2026-09-14', 170.4],
+  ['2026-09-21', 171.1],
+  ['2026-09-28', 171.6],
+  ['2026-10-05', 171.8],
+  ['2026-10-09', 172.0],
+].map(([measured_on, lb], i) => ({ id: `rv-bodyweight-${i}`, weight_kg: kg(lb as number), measured_on: measured_on as string }));

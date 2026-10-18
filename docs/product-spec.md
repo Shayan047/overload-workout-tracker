@@ -188,7 +188,11 @@ Screen numbers match `design/screens/`.
 
 **History**
 
-- History (18): the calendar and the list of recent workouts.
+- History (18): the calendar and the list of recent workouts. Tapping a day lists that day's
+  workouts; tapping it again goes back to the recent ones.
+- Profile (19): Units and Rest timer alerts open sheets, Bodyweight opens Bodyweight (20),
+  Current split opens the Splits tab, Custom exercises lists them (they're made from Add
+  exercises' "Can't find it?").
 
 ## Sample data for stats tests
 

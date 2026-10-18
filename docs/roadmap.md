@@ -182,7 +182,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `17-frontier`.
 - **Done when:** the sample data shows 20 × 7, 15 × 12 and 10 × 14, and 17 gets PASS.
 
-### 20. History, profile and bodyweight
+### 20. History, profile and bodyweight — DONE
 
 - **Goal:** the history calendar and recent list, profile settings, and the bodyweight log.
 - **Design:** 18, 19, 20.

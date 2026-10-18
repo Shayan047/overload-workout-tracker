@@ -6,19 +6,28 @@ import { colors, radius } from '@/theme';
 type Props = {
   accessibilityLabel: string;
   onPress: () => void;
-  /** `raised` on a sheet, which is already `surface` (09's Close). */
-  tone?: 'surface' | 'raised';
+  /** `raised` on a sheet, which is already `surface` (09's Close); `clear` inside a card
+   * (18's month arrows). */
+  tone?: 'surface' | 'raised' | 'clear';
+  disabled?: boolean;
   children: ReactNode;
 };
 
 /** The round 44 px icon button (.icon in the designs), e.g. Back on 02. */
-export function IconButton({ accessibilityLabel, onPress, tone = 'surface', children }: Props) {
+export function IconButton({ accessibilityLabel, onPress, tone = 'surface', disabled, children }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled: !!disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.button, tone === 'raised' && styles.raised, pressed && (tone === 'raised' ? styles.raisedPressed : styles.pressed)]}
+      style={({ pressed }) => [
+        styles.button,
+        tone === 'raised' && styles.raised,
+        tone === 'clear' && styles.clear,
+        pressed && (tone === 'raised' ? styles.raisedPressed : tone === 'clear' ? styles.clearPressed : styles.pressed),
+      ]}
     >
       {children}
     </Pressable>
@@ -37,4 +46,6 @@ const styles = StyleSheet.create({
   pressed: { backgroundColor: colors.surfaceRaised },
   raised: { backgroundColor: colors.surfaceRaised },
   raisedPressed: { backgroundColor: colors.surfaceRaisedHover },
+  clear: { backgroundColor: 'transparent' },
+  clearPressed: { backgroundColor: colors.surfaceHover },
 });

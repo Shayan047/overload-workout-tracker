@@ -183,6 +183,18 @@ export const type = {
     lineHeight: lineHeight(24, 1.1),
     letterSpacing: em(24, -0.01),
   },
+  /** Today's date in the History calendar (18): 15 px at 750, on amber. */
+  calendarToday: {
+    ...font(750),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** The user's name on Profile (19): 19 px at 650. */
+  profileName: {
+    ...font(650),
+    fontSize: 19,
+    lineHeight: lineHeight(19, 1.25),
+  },
   /** A screen title with a subtitle under it (17): 22 px. */
   h1Compact: {
     ...font(headings.weight, headings.widthPercent),
@@ -343,6 +355,9 @@ export const figures = {
   oneWeightRow: 19,
   /** A next target on the frontier (17): "20 × 8". */
   frontierTarget: 24,
+  /** Bodyweight (20): the latest weight, and each entry in the list. */
+  bodyweightNow: 68,
+  bodyweightRow: 20,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */

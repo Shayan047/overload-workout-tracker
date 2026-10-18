@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** through roadmap chunk 19 (frontier). See `../docs/roadmap.md`.
+**Status:** through roadmap chunk 20 (history, profile and bodyweight). See `../docs/roadmap.md`.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -31,7 +31,8 @@ src/theme/            built from ../design/tokens.json (Metro watches ../design)
 src/components/       shared UI: Text, Button, Chip, Card, ListRow, Separator,
                       BottomSheet, SegmentedControl, Switch, Screen, TabBar, icons
 src/review/           review mode: ?review=1 flag, fixed clock, sample data
-src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, today/, dev/)
+src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, today/,
+                      workout/, progress/, history/, profile/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
                       (Wi-Fi rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
@@ -119,6 +120,14 @@ browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
   `one-weight?exerciseId=rv-curl&weightKg=4.536` (add `&view=fingerprint` for 16),
   `frontier?exerciseId=rv-curl`. Quote
   routes with `&` in the shell.
+
+## History, profile and bodyweight
+
+- `features/history/history.ts` and `features/profile/bodyweight.ts` hold the calendar, its
+  line, and the bodyweight chart and ranges (tested). Data: `api/history.ts` and
+  `api/bodyweight.ts`, both persisted and merged with writes still in the outbox.
+- Review routes: `history` (18, height 880), `profile` (19, height 940) and `bodyweight` (20).
+  Profile has no "Export workouts" row: CSV export was dropped.
 
 ## Layout and safe areas
 
