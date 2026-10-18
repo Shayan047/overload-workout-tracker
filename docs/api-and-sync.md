@@ -332,7 +332,7 @@ How the app shows them (chunk 17, `frontend/src/features/progress/`):
   projection date (or the last session), y has gridlines at a "nice" step (at most four
   intervals). Weight bands follow the best set's weight; a band changes halfway between the
   last session at one weight and the first at the next. The weight chips open the
-  one-weight views and the frontier card opens the frontier (chunk 19).
+  one-weight views and the frontier card opens the frontier.
 - **One weight (15, 16; chunk 18):** `GET /stats/exercises/{id}/weights/{weight_kg}`, cached
   like 14. Progress stacks the latest six sessions' reps per set (set 1 at the bottom, sets
   past the fourth share the darkest shade) on a "nice" step with at most five intervals;
@@ -341,3 +341,11 @@ How the app shows them (chunk 17, `frontend/src/features/progress/`):
   session, newest first. "You moved up to 15 lb" takes the heaviest weight above this one in
   the session at `moved_up_on`, from the cached exercise detail. Headline copy and geometry
   live in `oneWeight.ts` (tested).
+- **Frontier (17; chunk 19):** today's frontier is the `frontier` field of
+  `GET /stats/exercises/{id}` (already cached); "Compare with" fetches
+  `GET /stats/exercises/{id}/frontier?as_of=<session time>`, also cached. The two dates are
+  the session nearest the middle of the history (the later on a tie, as 14's middle label)
+  and the first session. The next targets are worked out on the phone: one rep past the best
+  at the heaviest weight, and a first set one step heavier (the gap between the two heaviest
+  weights; 5 lb or 2.5 kg with only one), with the reps the best est. max predicts by Epley,
+  at least 3. `frontier.ts` (tested).

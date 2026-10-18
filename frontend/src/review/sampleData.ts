@@ -327,6 +327,25 @@ const curlWeight = (lb: number) => {
   return { weight_kg: kg(lb), sessions: sessions.length, first_at: sessions[0].at };
 };
 
+/** The frontier as GET /stats/exercises/{id}/frontier answers: the most reps at each weight,
+ * without points another matches or beats on both (rule 8). Lightest first. */
+function curlFrontier(asOf?: string) {
+  const best = new Map<number, { weight_kg: number; reps: number; at: string }>();
+  for (const s of curlSeries) {
+    if (asOf && s.at > asOf) break;
+    for (const set of s.sets) {
+      const seen = best.get(set.weight_kg);
+      if (!seen || set.reps > seen.reps) best.set(set.weight_kg, { weight_kg: set.weight_kg, reps: set.reps, at: s.at });
+    }
+  }
+  const points = [...best.values()].sort((a, b) => a.weight_kg - b.weight_kg);
+  return points.filter((p) => !points.some((q) => q !== p && q.weight_kg >= p.weight_kg && q.reps >= p.reps));
+}
+
+export function sampleFrontier(exerciseId: string, asOf: string) {
+  return exerciseId === 'rv-curl' ? { points: curlFrontier(asOf) } : undefined;
+}
+
 /** 14: bicep curl, up from 14.0 lb on Aug 18 to 24.7 today, about 28 lb by Dec 1. */
 export const sampleExerciseStats: ExerciseStats = {
   exercise_id: 'rv-curl',
@@ -342,6 +361,7 @@ export const sampleExerciseStats: ExerciseStats = {
   heaviest: { weight_kg: kg(20), first_at: curlSeries[13].at },
   plateau: null,
   projection: { at: new Date(2026, 11, 1, 18, 40).toISOString(), est_max_kg: kg(28), weekly_gain_kg: kg(0.37), capped: true },
+  frontier: curlFrontier(),
 };
 
 /** 15 and 16: bicep curl at one weight, as GET /stats/exercises/{id}/weights/{kg} answers. */

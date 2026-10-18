@@ -175,7 +175,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `15-one-weight-progress` and `16-one-weight-fingerprint`, both at height 920.
 - **Done when:** the sample bicep curl data renders with the expected totals (34, 38, 40, 44, 48) and retention (58%, 67%, 75%, 77%, 79%), and both screens get PASS.
 
-### 19. Frontier
+### 19. Frontier — DONE
 
 - **Goal:** the rep-weight frontier chart.
 - **Design:** 17.

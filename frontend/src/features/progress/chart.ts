@@ -35,8 +35,8 @@ const time = (iso: string) => new Date(iso).getTime();
 
 /** Gridline values, highest first: the smallest "nice" step that covers lo–hi in at most
  * `maxIntervals` intervals (four on 14 and 16, five on 15). */
-export function niceTicks(lo: number, hi: number, maxIntervals = MAX_INTERVALS): number[] {
-  for (const step of NICE_STEPS) {
+export function niceTicks(lo: number, hi: number, maxIntervals = MAX_INTERVALS, steps = NICE_STEPS): number[] {
+  for (const step of steps) {
     const start = Math.floor(lo / step) * step;
     const end = Math.max(Math.ceil(hi / step) * step, start + step);
     if ((end - start) / step <= maxIntervals) {

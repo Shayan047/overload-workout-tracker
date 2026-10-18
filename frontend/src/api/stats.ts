@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { isReviewMode } from '@/review/reviewMode';
-import { sampleExerciseStats, sampleOneWeight, sampleProgress } from '@/review/sampleData';
+import { sampleExerciseStats, sampleFrontier, sampleOneWeight, sampleProgress } from '@/review/sampleData';
 
 import { useAuth, useSync } from './AppProviders';
 
@@ -26,6 +26,10 @@ export type ProgressItem = {
   sparkline: EstMaxPoint[];
 };
 
+/** A point of the rep-weight frontier: the most reps at that weight (added weight for
+ * bodyweight exercises), first reached `at`. */
+export type FrontierPoint = { weight_kg: number; reps: number; at: string };
+
 /** GET /stats/exercises/{id}: 14. */
 export type ExerciseStats = {
   exercise_id: string;
@@ -41,6 +45,8 @@ export type ExerciseStats = {
   heaviest: { weight_kg: number; first_at: string } | null;
   plateau: Plateau | null;
   projection: (EstMaxPoint & { weekly_gain_kg: number; capped: boolean }) | null;
+  /** Today's frontier, lightest first. */
+  frontier: FrontierPoint[];
 };
 
 /** One session's sets at one weight, in the order they were done (15, 16). */
@@ -102,5 +108,21 @@ export function useOneWeightStats(exerciseId: string | undefined, weightKg: numb
     meta: { persist: true },
     enabled: signedIn && ready && !isReviewMode,
     initialData: isReviewMode && ready ? sampleOneWeight(exerciseId, weightKg) : undefined,
+  });
+}
+
+/** GET /stats/exercises/{id}/frontier?as_of=…: the frontier as it stood at `asOf` (17's
+ * "Compare with"). Today's frontier comes with the exercise's stats. */
+export function useFrontierAsOf(exerciseId: string | undefined, asOf: string | undefined) {
+  const { request } = useSync();
+  const { signedIn } = useAuth();
+  const ready = !!exerciseId && !!asOf;
+  return useQuery({
+    queryKey: ['stats', 'exercise', exerciseId, 'frontier', asOf],
+    queryFn: () =>
+      request<{ points: FrontierPoint[] }>('GET', `/stats/exercises/${exerciseId}/frontier?as_of=${encodeURIComponent(asOf!)}`),
+    meta: { persist: true },
+    enabled: signedIn && ready && !isReviewMode,
+    initialData: isReviewMode && ready ? sampleFrontier(exerciseId, asOf) : undefined,
   });
 }

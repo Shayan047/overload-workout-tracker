@@ -1,6 +1,6 @@
 # Frontend (Expo app)
 
-**Status:** through roadmap chunk 18 (one-weight views). See `../docs/roadmap.md`.
+**Status:** through roadmap chunk 19 (frontier). See `../docs/roadmap.md`.
 
 Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
@@ -108,14 +108,16 @@ browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
 
 ## Progress screens
 
-- `features/progress/`: Progress (13), Exercise detail (14) and One weight (15, 16). Chart
-  geometry and copy are pure and tested (`chart.ts`, `progressText.ts`, `oneWeight.ts`), in
+- `features/progress/`: Progress (13), Exercise detail (14), One weight (15, 16) and the
+  frontier (17). Chart geometry and copy are pure and tested (`chart.ts`, `progressText.ts`,
+  `oneWeight.ts`, `frontier.ts`), in
   the designs' SVG coordinates, so positions can be checked against the HTML.
 - Stats come from the API (`src/api/stats.ts`) as persisted queries, so they open offline.
 - One weight is `one-weight?exerciseId=…&weightKg=…[&view=fingerprint]`; the chips and the
   Progress/Fingerprint toggle change the params in place, and "All weights" goes back.
 - Review routes: `progress`, `exercise/rv-curl`,
-  `one-weight?exerciseId=rv-curl&weightKg=4.536` (add `&view=fingerprint` for 16). Quote
+  `one-weight?exerciseId=rv-curl&weightKg=4.536` (add `&view=fingerprint` for 16),
+  `frontier?exerciseId=rv-curl`. Quote
   routes with `&` in the shell.
 
 ## Layout and safe areas

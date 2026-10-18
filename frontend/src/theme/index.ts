@@ -183,6 +183,13 @@ export const type = {
     lineHeight: lineHeight(24, 1.1),
     letterSpacing: em(24, -0.01),
   },
+  /** A screen title with a subtitle under it (17): 22 px. */
+  h1Compact: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.1),
+    letterSpacing: em(22, -0.01),
+  },
   /** Card and row titles: 18 px (03, 04), 16 px (`rowTitle`, 06). 17 px is `h2` (05). */
   cardTitle: {
     ...font(650, 92),
@@ -334,6 +341,8 @@ export const figures = {
    * retention in the table. */
   oneWeightHero: 56,
   oneWeightRow: 19,
+  /** A next target on the frontier (17): "20 × 8". */
+  frontierTarget: 24,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */
