@@ -17,12 +17,13 @@ from app.schemas.workout import (
     WorkoutExerciseDetail,
     WorkoutExerciseIn,
     WorkoutExerciseOut,
+    WorkoutHistoryOut,
     WorkoutIn,
     WorkoutOut,
 )
 from app.services import exercises, sync, workouts
 from app.services import stats as stats_service
-from app.stats import session_est_max
+from app.stats import session_est_max, workout_recaps
 
 router = APIRouter(tags=["workouts"])
 
@@ -54,6 +55,33 @@ async def list_workouts(
         .order_by(Workout.started_at, Workout.id)
     )
     return [WorkoutOut.model_validate(row) for row in rows]
+
+
+@router.get("/workouts/history")
+async def workout_history(user: CurrentUser, session: SessionDep) -> list[WorkoutHistoryOut]:
+    """Finished workouts, newest first, each with its set count and how many exercises beat
+    their previous session's total reps (History, 18)."""
+    rows = await session.scalars(
+        select(Workout)
+        .where(
+            Workout.user_id == user.id, Workout.ended_at.is_not(None), Workout.deleted_at.is_(None)
+        )
+        .order_by(Workout.started_at.desc(), Workout.id)
+    )
+    by_exercise = await stats_service.sessions_by_exercise(session, user.id)
+    recaps = workout_recaps(sessions for _, sessions in by_exercise.values())
+    result = []
+    for row in rows:
+        recap = recaps.get(row.id)
+        result.append(
+            WorkoutHistoryOut(
+                **WorkoutOut.model_validate(row).model_dump(),
+                sets=recap.sets if recap else 0,
+                ahead=recap.ahead if recap else 0,
+                compared=recap.compared if recap else 0,
+            )
+        )
+    return result
 
 
 @router.get("/workouts/in-progress")
