@@ -386,6 +386,45 @@ async def test_last_sessions_return_the_latest_finished_workout_per_exercise(
     ]
 
 
+async def test_last_sessions_carry_the_all_time_best_est_max(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    """The workout summary (11) flags a new best offline, so it needs the best so far, not
+    just last time's: here the best is older than the ghost, and in-progress sets never count.
+    Bodyweight exercises count the snapshot plus the added weight (rule 2)."""
+
+    async def workout(
+        started: str, ended: str | None, exercise: str, sets: list[tuple[float, int]]
+    ) -> None:
+        outbox = Outbox(client, signed_in)
+        workout_id = str(uuid.uuid4())
+        await outbox.put(
+            f"/workouts/{workout_id}", {"title": "Arms", "started_at": started, "ended_at": ended}
+        )
+        row = await outbox.put(
+            f"/workout-exercises/{uuid.uuid4()}",
+            {"workout_id": workout_id, "exercise_id": exercise, "position": 0, "rest_seconds": 90},
+        )
+        for number, (weight, reps) in enumerate(sets, start=1):
+            await log_set(outbox, row, number, weight, reps)
+
+    await workout("2026-09-28T18:00:00Z", "2026-09-28T19:00:00Z", CURL, [(TWENTY_LB, 8)])
+    await workout(
+        "2026-10-06T18:00:00Z", "2026-10-06T19:00:00Z", CURL, [(TWENTY_LB, 6), (TWENTY_LB, 5)]
+    )
+    await workout("2026-10-07T18:00:00Z", "2026-10-07T19:00:00Z", CHIN_UP, [(0, 10)])
+    await workout("2026-10-09T18:00:00Z", None, CURL, [(TWENTY_LB, 12)])  # in progress
+
+    response = await client.get(
+        "/workouts/last-sessions",
+        headers=signed_in.headers,
+        params=[("exercise_id", CURL), ("exercise_id", CHIN_UP)],
+    )
+
+    best = {s["exercise_id"]: s["best_est_max_kg"] for s in response.json()}
+    assert best == {CURL: 11.491, CHIN_UP: 104.024}  # 9.072 × (1 + 8/30); 78.018 × (1 + 10/30)
+
+
 async def test_workout_rows_are_validated_and_scoped(
     client: AsyncClient, signed_in: SignedIn, other_user: SignedIn, arnold: dict[str, Any]
 ) -> None:

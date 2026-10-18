@@ -212,7 +212,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 | GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
 | GET | `/workouts/{id}` | | The workout with its live exercises in order, each with its live sets in order: `{…, exercises: [{…, sets: [...]}]}`. `404` if deleted. |
 | DELETE | `/workouts/{id}` | | `204`. Also soft-deletes its exercises and their sets. |
-| GET | `/workouts/last-sessions` | `exercise_id` (repeat, up to 100) | Last time (ghost) per exercise: `[{exercise_id, workout_id, title, started_at, ended_at, bodyweight_kg, sets: [{set_number, weight_kg, reps}]}]`. Exercises never done are left out. |
+| GET | `/workouts/last-sessions` | `exercise_id` (repeat, up to 100) | Last time (ghost) per exercise: `[{exercise_id, workout_id, title, started_at, ended_at, bodyweight_kg, sets: [{set_number, weight_kg, reps}], best_est_max_kg}]`. Exercises never done are left out. `best_est_max_kg` is the best session est. max in any finished workout so far (bodyweight exercises count the snapshot plus the added weight), so the workout summary can flag new bests offline. |
 | PUT | `/workout-exercises/{id}` | `{workout_id, exercise_id, position, status?, source?, rest_seconds}` | `status` is `planned` (default), `done` or `skipped`; `source` is `split` (default), `added` or `swapped`. |
 | GET | `/workout-exercises` | `updated_since?` | `[{workout_id, exercise_id, position, status, source, rest_seconds}]` |
 | DELETE | `/workout-exercises/{id}` | | `204`. Also soft-deletes its sets. |
@@ -236,6 +236,61 @@ How the phone drives a workout (all through the outbox):
    `source: "added"` and its own `rest_seconds`.
 4. **Finish:** `PUT /workouts/{id}` again with `ended_at`.
 5. **Resume:** after a restart, `GET /workouts/in-progress` (or the phone's own cache).
+
+How the app does it (chunk 13, `frontend/src/features/workout/`):
+
+- **The workout in progress lives on the phone** (`workoutStore.ts`): the workout, its rows,
+  its sets, extra "Add set" rows and the exercise in focus, saved in AsyncStorage
+  (`overload.workout.active.v1`) on every change and loaded before the first screen. The
+  logic is pure (`workout.ts`): each change returns the new state and its writes; the
+  state is saved first, then the writes go to the outbox. Killing the app loses nothing:
+  on the next launch Today opens the workout again, and shows "Resume workout" while one is
+  in progress. The phone's copy is used; `GET /workouts/in-progress` isn't needed yet.
+- **Bodyweight snapshot:** the latest bodyweight entry cached on the phone, else the last
+  workout's snapshot, else omitted so the server copies its latest entry.
+- **Set rows:** as many as last time (3 with no last time), plus "Add set" rows. Logging the
+  last planned row marks the exercise `done` and the next planned one comes up. Tapping a
+  later exercise moves to it (the one left counts as done if it has sets); tapping a done
+  one reopens it. Editing a set rewrites the same id; deleting renumbers the sets after it.
+- **Log a set** (09): the weight starts at the previous set today, else last time's set with
+  the same number; the keypad's first key replaces it. Steppers move 2.5 lb or 1 kg.
+- **Ghost** (`ghost.ts`, computed on the phone from the cached last session): your reps
+  through the sets logged so far against last time's reps through the same sets. Hidden,
+  with the last-time column and row, when ghost mode is off.
+- **Finish:** the `ended_at` PUT goes to the outbox, and the cached history and last-time
+  data are updated on the phone, so Today moves on and the next ghost is right offline.
+  Finishing with no sets logged offers to discard the workout (`DELETE /workouts/{id}`).
+  Until chunk 16's summary, finishing returns to Today.
+- **Today-only changes** (chunk 14, 10): every "…" opens Change exercise. Swap and Add use
+  the 06 picker (`ExercisePicker`, route `/pick-exercise`). Swap picks one exercise and
+  starts on the same muscle group's filter ("pick a similar one"). Add picks several,
+  which go to the end with the default 1:30 rest. Move to the end gives the row the next
+  position. Skip sets `skipped`; skipped exercises are listed under "Skipped today" with
+  Undo. Once a set is logged, Swap and Skip give way to "Done for today" (marks it `done`
+  with the sets so far). Each is one PUT to the workout's row; the split is never written.
+- **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
+  set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
+  progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives
+  backgrounding and the app being killed. −15/+15 move the end and the total; −15 with 15 s
+  or less left ends it. It never reaches the API (rule 5). While the app is open, a haptic at
+  10 s left and at the end. For a locked phone, a local notification is scheduled for the end
+  (fixed identifier, so it's replaced on ±15 and cancelled on skip, finish or sign-out),
+  with sound when `rest_alert_sound` is on. In the foreground it shows no banner and only
+  plays its sound, so no audio library is needed. Android has two channels (with and without
+  sound), since a channel's sound can't change. Permission is asked at the first rest.
+- **Summary** (chunk 16, `summary.ts`, 11): worked out on the phone when the workout
+  finishes, against last time as it was cached before it: minutes, sets, volume (weight ×
+  reps; bodyweight exercises count the snapshot plus the added weight), total reps per
+  exercise against last time, "Ahead on N of M", and new bests. A new best is a session
+  est. max above `best_est_max_kg` (the best so far, not just last time); a first time
+  ever is not a new best. The cached last-time data then takes today's sessions with the
+  raised best. The summary is kept in memory; "See … progress" opens Exercise detail for
+  the biggest new best (else the biggest gain).
+- **Last time for a new set of exercises** (a swap, an add, another day) starts from what
+  the other cached last-time queries know, so it shows offline too.
+- **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies
+  workout PUTs and DELETEs still in the outbox, and last-time data keeps a session finished
+  on the phone while its writes are unsent (per exercise, the later `ended_at` wins).
 
 Rules:
 
@@ -262,3 +317,20 @@ The app caches responses for offline viewing.
 | GET | `/stats/exercises/{id}` | | Exercise detail (14): `{includes_bodyweight, est_max_kg, latest_at, first: {at, est_max_kg}, is_new_best, series: [{workout_id, at, est_max_kg, best_set, sets: [{weight_kg, reps}]}], weights: [{weight_kg, sessions, first_at}], best_set, most_reps, heaviest: {weight_kg, first_at}, plateau, projection: {at, est_max_kg, weekly_gain_kg, capped}, frontier}`. Empty values for an exercise never done; `404` for an exercise the user can't see. |
 | GET | `/stats/exercises/{id}/weights/{weight_kg}` | | One-weight views (15, 16): `{weight_kg, sessions: [{workout_id, at, reps: [...], total, average, retention}], total_change, first_retention, latest_retention, moved_up_on}`. The weight is rounded to the gram before matching, like stored weights, so 10 lb can be sent as 4.5359237. |
 | GET | `/stats/exercises/{id}/frontier` | `as_of?` | Frontier (17): `{as_of, points: [{weight_kg, reps, at}]}`, lightest first. `as_of` gives the frontier as it stood then ("compare with"). |
+
+How the app shows them (chunk 17, `frontend/src/features/progress/`):
+
+- **Cache:** `GET /stats/progress?weeks=8` and `GET /stats/exercises/{id}` are cached on the
+  phone (persisted queries), so Progress and Exercise detail open offline with the last
+  answer. A workout finished offline shows up there once it has synced and the stats are
+  fetched again; until then its numbers are on the summary (11).
+- **Progress (13):** today's new bests first, then plateaus, then the rest in the API's
+  order (most recently trained first). Values have one decimal under 100 and none above.
+  The chips filter by the active split's days. Sparklines run from the window's first
+  session to its last, with the lowest est. max at the bottom.
+- **Exercise detail (14):** the chart's x axis runs from the first session to the
+  projection date (or the last session), y has gridlines at a "nice" step (at most four
+  intervals). Weight bands follow the best set's weight; a band changes halfway between the
+  last session at one weight and the first at the next. The weight chips open the
+  one-weight views (chunk 18) and the frontier card opens the frontier (chunk 19); both are
+  placeholders until then.

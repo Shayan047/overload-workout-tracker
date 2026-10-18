@@ -120,7 +120,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `07-today`.
 - **Done when:** Today shows the correct next day for both repeat modes, works offline from the cache, and gets PASS.
 
-### 13. Active workout, log a set, and ghost
+### 13. Active workout, log a set, and ghost — DONE
 
 - **Goal:** active workout screen, log-a-set sheet, elapsed time, the ghost/last-time comparison, and resume after restart.
 - **Design:** 08, 09.
@@ -133,14 +133,14 @@ Every UI chunk's "Done when" also requires:
   - killing the app resumes the workout,
   - both screens get PASS.
 
-### 14. Change an exercise for today
+### 14. Change an exercise for today — DONE
 
 - **Goal:** swap, skip, move to end, and add.
 - **Design:** 10, and 06 for swap.
 - **Review:** `10-change-exercise`, with the sheet open.
 - **Done when:** each action works, the saved split is unchanged afterwards, and 10 gets PASS.
 
-### 15. Rest timer
+### 15. Rest timer — DONE (the locked-phone notification still needs a check on a phone)
 
 - **Goal:** auto-start when a set is saved, −15/+15/skip, haptics at 10 s and at the end, optional sound, and a local notification when the phone is locked.
 - **Design:** 08, 09 and 12.
@@ -152,14 +152,14 @@ Every UI chunk's "Done when" also requires:
   - the notification fires with the phone locked,
   - 08 and 09 get PASS.
 
-### 16. Workout summary
+### 16. Workout summary — DONE
 
 - **Goal:** duration, sets, volume, per-exercise comparison with last time, and new bests.
 - **Design:** 11.
 - **Review:** `11-workout-summary`, using height 1050.
 - **Done when:** the summary is correct offline, "See progress" opens Exercise detail, and 11 gets PASS.
 
-### 17. Progress list and exercise detail
+### 17. Progress list and exercise detail — DONE
 
 - **Goal:**
   - the list, with est. max sparklines and plateau flags,

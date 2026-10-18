@@ -145,6 +145,12 @@ export const type = {
     fontSize: tokens.font.small.size,
     lineHeight: lineHeight(body.size, body.lineHeight),
   },
+  /** `label` sitting in a 15 px line: 13's "New best today". */
+  labelInBody: {
+    ...font(600),
+    fontSize: tokens.font.small.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
   /** Body text at 600: the date on Today (07). */
   bodyStrong: {
     ...font(600),
@@ -157,6 +163,12 @@ export const type = {
     fontSize: 38,
     lineHeight: lineHeight(38, 1.1),
     letterSpacing: em(38, -0.01),
+  },
+  /** Body text at 650: the Finish pill (08). */
+  bodyHeavy: {
+    ...font(650),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
   },
   /** 13 px at 650: today's day in the rotation strip (07). */
   labelHeavy: {
@@ -198,6 +210,49 @@ export const type = {
     ...font(650),
     fontSize: 15,
     lineHeight: 20,
+  },
+  /** The exercise being done (08, 09): 22 px at 85% width. */
+  exerciseTitle: {
+    ...font(650, 85),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.25),
+  },
+  /** Keypad keys (09). */
+  key: {
+    ...font(700, 72),
+    fontSize: 26,
+    lineHeight: 32,
+  },
+  /** The dash in an empty number cell (08). */
+  emptyValue: {
+    ...font(body.weight),
+    fontSize: 20,
+    lineHeight: 28,
+  },
+  /** Small text buttons: "Add set" (08). */
+  smallButton: {
+    ...font(600),
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  /** A tab's page title: "Progress" (13), 36 px. */
+  pageTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 36,
+    lineHeight: lineHeight(36, 1.1),
+    letterSpacing: em(36, -0.01),
+  },
+  /** The unit beside the big est. max (14): "lb", 22 px. */
+  estMaxUnit: {
+    ...font(600),
+    fontSize: 22,
+    lineHeight: 26,
+  },
+  /** Chart axis and band labels (14), 11 px. */
+  chartLabel: {
+    ...font(body.weight),
+    fontSize: 11,
+    lineHeight: 14,
   },
   /** The "Overload" wordmark next to the mark (01). */
   wordmark: {
@@ -245,6 +300,29 @@ export const figures = {
   dayStep: 17,
   /** The rest length in the exercise options sheet. */
   restValue: 32,
+  /** The active workout (08): elapsed time, set number, weight and reps, last time's set,
+   * a finished exercise against last time, and the ghost's rep counts. */
+  elapsed: 26,
+  setNumber: 18,
+  setValue: 28,
+  setLastTime: 20,
+  exerciseDelta: 18,
+  ghostReps: 18,
+  /** The workout summary (11): the three stats, today / last reps, and a new best set. */
+  summaryStat: 34,
+  summaryReps: 19,
+  summaryBest: 26,
+  /** Progress (13): each lift's est. max. Exercise detail (14): the big est. max, records,
+   * the pace note's projection and each recent session's est. max. */
+  progressValue: 22,
+  estMax: 76,
+  record: 22,
+  pace: 19,
+  /** The rest timer's countdown (08). */
+  restCountdown: 40,
+  /** Weight and reps being typed on Log a set (09), and last time's set beside them. */
+  entry: 44,
+  sheetLastTime: 20,
 } as const;
 
 export type SetFigureSize = (typeof figures)['welcomeLastTime' | 'welcomeToday'];

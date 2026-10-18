@@ -98,6 +98,10 @@ class LastSessionOut(BaseModel):
     ended_at: AwareDatetime
     bodyweight_kg: KgOut
     sets: list[LastSessionSet]
+    best_est_max_kg: float | None = Field(
+        description="The best session est. max in any finished workout, so far (rounded to "
+        "the gram). Bodyweight exercises count the snapshot plus the added weight."
+    )
 
 
 class BodyweightIn(BaseModel):

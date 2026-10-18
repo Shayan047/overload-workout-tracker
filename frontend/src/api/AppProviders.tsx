@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { AppState, Platform } from 'react-native';
 
+import { activeWorkout } from '@/features/workout/workoutStore';
 import { isReviewMode } from '@/review/reviewMode';
 
 import { clearQueryCache, hydrateQueryCache, persistQueryCache } from './cache';
@@ -45,6 +46,8 @@ async function startServices(): Promise<Services> {
   });
   await hydrateQueryCache(queryClient, deviceStorage);
   persistQueryCache(queryClient, deviceStorage);
+  // A workout in progress survives the app being killed.
+  await activeWorkout.load(deviceStorage);
 
   const session = await loadSession();
   const token = { current: session?.token ?? null };
@@ -151,6 +154,7 @@ function Providers({ services, children }: { services: Services; children: React
         // Someone else's unsent writes and cached data must never reach this account.
         await outbox.clear();
         await clearQueryCache(queryClient, deviceStorage);
+        await activeWorkout.clear();
       }
       await saveSession({ token: response.access_token, user: response.user });
       token.current = response.access_token;
@@ -192,6 +196,7 @@ function Providers({ services, children }: { services: Services; children: React
       signOut: async () => {
         await outbox.clear();
         await clearQueryCache(queryClient, deviceStorage);
+        await activeWorkout.clear();
         await forgetUser();
         await endSession();
       },
@@ -199,6 +204,7 @@ function Providers({ services, children }: { services: Services; children: React
         if (!(await lastUserId())) return;
         await outbox.clear();
         await clearQueryCache(queryClient, deviceStorage);
+        await activeWorkout.clear();
         await forgetUser();
       },
     }),

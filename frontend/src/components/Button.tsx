@@ -9,8 +9,9 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   title: string;
   /** primary: the main action (amber). secondary: outlined. text: a plain text button. */
   variant?: 'primary' | 'secondary' | 'text';
-  /** Primary buttons are 56 px (large) or 54 px (medium) tall in the designs. */
-  size?: 'large' | 'medium';
+  /** Primary buttons are 56 px (large) or 54 px (medium) tall in the designs. Secondary
+   * buttons are 50 px, or 52 px in a sheet (`sheet`, 10's Cancel). */
+  size?: 'large' | 'medium' | 'sheet';
   icon?: ReactNode;
 };
 
@@ -23,7 +24,7 @@ export function Button({ title, variant = 'primary', size = 'large', icon, disab
       style={({ pressed }) => [
         styles.base,
         variant === 'primary' && [styles.primary, size === 'medium' && styles.primaryMedium],
-        variant === 'secondary' && styles.secondary,
+        variant === 'secondary' && [styles.secondary, size === 'sheet' && styles.secondarySheet],
         variant === 'text' && styles.text,
         pressed && pressedStyles[variant],
         disabled && disabledStyles[variant],
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: 'transparent',
   },
+  secondarySheet: { height: 52 },
   text: { height: 44, backgroundColor: 'transparent' },
   labelMedium: type.buttonMedium,
 });

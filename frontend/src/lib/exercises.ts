@@ -46,6 +46,11 @@ export const MUSCLE_GROUPS: Record<string, readonly string[]> = {
   neck: ['neck'],
 };
 
+/** The group (filter chip) a muscle belongs to, or null. */
+export function muscleGroupOf(muscle: string): string | null {
+  return Object.entries(MUSCLE_GROUPS).find(([, muscles]) => muscles.includes(muscle))?.[0] ?? null;
+}
+
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 export function muscleLabel(muscle: string): string {

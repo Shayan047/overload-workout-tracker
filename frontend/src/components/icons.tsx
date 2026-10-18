@@ -159,12 +159,12 @@ export function MoreIcon({ color, size = 22 }: IconProps) {
   );
 }
 
-/** Rest length (05's rest pill). */
-export function TimerIcon({ color, size = 12 }: IconProps) {
+/** Rest length (05's rest pill) and the rest timer (08, 1.8 stroke). */
+export function TimerIcon({ color, size = 12, strokeWidth = 2 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Circle cx={12} cy={13} r={7.5} stroke={color} {...stroke} strokeWidth={2} />
-      <Path d="M12 9.5V13l2 1.5M10 3h4" stroke={color} {...stroke} strokeWidth={2} />
+      <Circle cx={12} cy={13} r={7.5} stroke={color} {...stroke} strokeWidth={strokeWidth} />
+      <Path d="M12 9.5V13l2 1.5M10 3h4" stroke={color} {...stroke} strokeWidth={strokeWidth} />
     </Svg>
   );
 }
@@ -184,6 +184,107 @@ export function PlayIcon({ color, size = 18 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Path d="M7 4.5v15l12-7.5z" fill={color} />
+    </Svg>
+  );
+}
+
+/** Minimize the workout (08). */
+export function ChevronDownIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 9l7 7 7-7" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+export function MinusIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 12h14" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** The keypad's delete key (09). */
+export function BackspaceIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M9 6h10a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19 18H9l-5.5-6z" stroke={color} {...stroke} />
+      <Path d="M12 10l4 4M16 10l-4 4" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Swap for another exercise (10). */
+export function SwapIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M7 7h12l-3-3M17 17H5l3 3" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Move to the end (10). */
+export function ArrowDownIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 5v14M6 13l6 6 6-6" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Skip today (10). */
+export function SkipIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M6 6l9 6-9 6V6zM18 6v12" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Information (10's note). */
+export function InfoIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={12} cy={12} r={8.5} stroke={color} {...stroke} />
+      <Path d="M12 11v5M12 8h.01" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** New bests (11). */
+export function StarIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** A plateau (13): level, going on. */
+export function ArrowRightIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 12h16M16 8l4 4-4 4" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Up since the first session (14). */
+export function ArrowUpIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 19V5M6 11l6-6 6 6" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** The pace note (14). */
+export function TrendIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 18l6-6 4 4 6-8" stroke={color} {...stroke} />
+      <Path d="M15 8h5v5" stroke={color} {...stroke} />
     </Svg>
   );
 }
