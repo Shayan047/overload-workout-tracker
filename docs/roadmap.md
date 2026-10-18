@@ -60,7 +60,7 @@ Backend first, since PostgreSQL is the source of truth.
 
 ## How UI chunks are reviewed
 
-Chunks 8–23 build screens. They follow the review loop in CLAUDE.md and use the `design-reviewer` subagent (`.claude/agents/design-reviewer.md`).
+Chunks 8–23 build screens. Chunk 21 (CSV export) was dropped; 22 and 23 keep their numbers. They follow the review loop in CLAUDE.md and use the `design-reviewer` subagent (`.claude/agents/design-reviewer.md`).
 
 For each screen, take a screenshot with `npm run shot -- <route> <NN-name> [height]`. It's saved as `frontend/review/NN-name.png`, at 390 px wide and 2x, with the design's sample data.
 
@@ -186,27 +186,20 @@ Every UI chunk's "Done when" also requires:
 
 - **Goal:** the history calendar and recent list, profile settings, and the bodyweight log.
 - **Design:** 18, 19, 20.
-- **Review:** `18-history` (height 880), `19-profile` (height 940) and `20-bodyweight`.
+- **Review:** `18-history` (height 880), `19-profile` (height 940) and `20-bodyweight`. CSV export was dropped, so Profile leaves out the "Export workouts" row and the reviewer ignores it.
 - **Done when:**
   - all settings persist and sync,
   - changing bodyweight doesn't change old workouts,
   - all three screens get PASS.
 
-### 21. CSV export
-
-- **Goal:** export the user's workouts and sets as CSV from Profile.
-- **Design:** 19, where the export row is the entry point.
-- **Review:** re-review `19-profile` only if it changed.
-- **Done when:** the exported file opens in a spreadsheet with one row per set, and weights are in the user's unit.
-
-### 22. Lock-screen timer
+### 22. Lock-screen timer — ON HOLD (to be decided)
 
 - **Goal:** an iOS Live Activity and an Android ongoing notification for the rest timer.
 - **Design:** 12.
 - **Review:** a web screenshot can't capture the lock screen. Take simulator or emulator screenshots instead (`xcrun simctl io booted screenshot` on iOS, `adb exec-out screencap -p` on Android), then have the design-reviewer compare each against `12-rest-timer-lock-screen` for content and colors. The system frame and layout will differ.
 - **Done when:** the rest countdown is visible on the lock screen on both platforms, and both screenshots get PASS for content and colors.
 
-### 23. Release prep
+### 23. Release prep — ON HOLD (to be decided)
 
 - **Goal:** accessibility pass, a final design pass, and store builds.
 - **Design:** all.

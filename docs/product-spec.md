@@ -118,11 +118,11 @@ Formulas:
 
 - History calendar and a list of recent workouts.
 - Bodyweight log.
-- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, sync on Wi-Fi only, custom exercises, CSV export.
+- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, sync on Wi-Fi only, custom exercises.
 
 ### Out of scope for now
 
-Social features, AI features, muscle heatmap, rest-time statistics.
+Social features, AI features, muscle heatmap, rest-time statistics, CSV export (dropped from the roadmap).
 
 ## User flow
 

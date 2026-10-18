@@ -36,7 +36,7 @@ The mockups use Archivo's variable width axis (`font-stretch` 68% for numbers, 8
 | 16-one-weight-fingerprint.png | One weight: fingerprint | 18 |
 | 17-frontier.png | Rep-weight frontier | 19 |
 | 18-history.png | History | 20 |
-| 19-profile.png | Profile | 20 |
+| 19-profile.png | Profile (without the "Export workouts" row: CSV export was dropped) | 20 |
 | 20-bodyweight.png | Bodyweight | 20 |
 
 Each PNG has a matching `source/NN-name.html`.
