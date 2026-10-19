@@ -44,8 +44,9 @@ New migrations: generate with `--autogenerate`, then read and fix the file by ha
 
 ## Deploying
 
-Production is a Render free web service (`../render.yaml`, Singapore) with a Neon free
-Postgres database (Singapore). Render builds `backend/Dockerfile` from `main`.
+Production is a Render free web service (`../render.yaml`, Ohio) with a Neon free
+Postgres database in the same place (AWS `us-east-2`, Ohio). Keep them together: one
+screen can make several queries, so a database far from the API makes everything slow. Render builds `backend/Dockerfile` from `main`.
 
 - **Every start** runs `alembic upgrade head`, then `python -m app.seed`, then uvicorn on
   `$PORT`. Both are no-ops when nothing changed, so a deploy with a new migration applies
