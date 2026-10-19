@@ -15,6 +15,15 @@ COPY . .
 
 ENV PATH="/app/.venv/bin:$PATH"
 
+# Don't run as root.
+RUN useradd --create-home --uid 10001 appuser
+USER appuser
+
+# Hosts say which port to listen on through $PORT (Render does); locally it's 8000.
+# Every start applies pending migrations and refreshes the exercise library (both no-ops
+# when nothing changed), since Render's free plan has no pre-deploy step. The server
+# doesn't start if either fails. Behind Render's proxy, trust its forwarded headers.
+ENV PORT=8000
 EXPOSE 8000
 
-CMD ["sh", "-c", "alembic upgrade head && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && python -m app.seed && exec uvicorn app.main:app --host 0.0.0.0 --port \"$PORT\" --proxy-headers --forwarded-allow-ips='*'"]
