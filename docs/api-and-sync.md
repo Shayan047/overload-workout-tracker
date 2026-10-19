@@ -125,8 +125,8 @@ Implemented once in `backend/app/services/sync.py` and used by every synced reso
 
 ## Deployment
 
-The API runs on Render's free plan (Singapore) from `render.yaml`, with Neon free Postgres
-(Singapore). It sleeps after 15 minutes idle and takes about a minute to wake; no keep-alive
+The API runs on Render's free plan (Ohio) from `render.yaml`, with Neon free Postgres
+(AWS us-east-2, Ohio), close to the user in the US. It sleeps after 15 minutes idle and takes about a minute to wake; no keep-alive
 ping is used, since the app is offline first. Details: "Deploying" in `backend/CLAUDE.md`.
 
 ## CORS

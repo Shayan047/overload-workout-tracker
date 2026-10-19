@@ -1,5 +1,5 @@
 # Render Blueprint: the production API (see backend/CLAUDE.md, "Deploying").
-# Free plan, Singapore, next to the Neon database. It sleeps after 15 minutes idle and
+# Free plan, Ohio, next to the Neon database (AWS us-east-2). It sleeps after 15 minutes idle and
 # takes about a minute to wake; the app is offline first, so that's fine.
 #
 # Deploys automatically on every merge to `main` that touches backend/.
@@ -10,7 +10,7 @@ services:
     name: overload-api
     runtime: docker
     plan: free
-    region: singapore
+    region: ohio
     branch: main
     autoDeployTrigger: commit
     dockerfilePath: ./backend/Dockerfile
