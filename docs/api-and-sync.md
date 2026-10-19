@@ -123,6 +123,12 @@ Implemented once in `backend/app/services/sync.py` and used by every synced reso
   them too.
 - Every query is scoped to the current user.
 
+## Deployment
+
+The API runs on Render's free plan (Singapore) from `render.yaml`, with Neon free Postgres
+(Singapore). It sleeps after 15 minutes idle and takes about a minute to wake; no keep-alive
+ping is used, since the app is offline first. Details: "Deploying" in `backend/CLAUDE.md`.
+
 ## CORS
 
 Phones don't need CORS. The browser does, for the Expo web dev server (`npm run web`), so

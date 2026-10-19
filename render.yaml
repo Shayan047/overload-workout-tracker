@@ -1,0 +1,33 @@
+# Render Blueprint: the production API (see backend/CLAUDE.md, "Deploying").
+# Free plan, Singapore, next to the Neon database. It sleeps after 15 minutes idle and
+# takes about a minute to wake; the app is offline first, so that's fine.
+#
+# Deploys automatically on every merge to `main` that touches backend/.
+# Values marked `sync: false` are secrets: Render asks for them when the Blueprint is first
+# created, and they live only in Render's dashboard.
+services:
+  - type: web
+    name: overload-api
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: main
+    autoDeployTrigger: commit
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    buildFilter:
+      paths:
+        - backend/**
+    healthCheckPath: /health
+    envVars:
+      # Neon connection string, pasted as Neon shows it (the API adapts it for asyncpg).
+      - key: DATABASE_URL
+        sync: false
+      # Signs access tokens; Render generates a random one once.
+      - key: JWT_SECRET
+        generateValue: true
+      # Phones don't need CORS; no browser client is deployed.
+      - key: CORS_ORIGINS
+        value: ""
+      - key: ACCESS_TOKEN_TTL_DAYS
+        value: "30"
