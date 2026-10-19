@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, type PressableProps, StyleSheet, View } from 'react-native';
 
-import { colors, font, radius } from '@/theme';
+import { colors, radius, type } from '@/theme';
 
 import { Text } from './Text';
 
@@ -9,8 +9,9 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   title: string;
   /** primary: the main action (amber). secondary: outlined. text: a plain text button. */
   variant?: 'primary' | 'secondary' | 'text';
-  /** Primary buttons are 56 px (large) or 54 px (medium) tall in the designs. */
-  size?: 'large' | 'medium';
+  /** Primary buttons are 56 px (large) or 54 px (medium) tall in the designs. Secondary
+   * buttons are 50 px, or 52 px in a sheet (`sheet`, 10's Cancel). */
+  size?: 'large' | 'medium' | 'sheet';
   icon?: ReactNode;
 };
 
@@ -23,7 +24,7 @@ export function Button({ title, variant = 'primary', size = 'large', icon, disab
       style={({ pressed }) => [
         styles.base,
         variant === 'primary' && [styles.primary, size === 'medium' && styles.primaryMedium],
-        variant === 'secondary' && styles.secondary,
+        variant === 'secondary' && [styles.secondary, size === 'sheet' && styles.secondarySheet],
         variant === 'text' && styles.text,
         pressed && pressedStyles[variant],
         disabled && disabledStyles[variant],
@@ -61,14 +62,15 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: 'transparent',
   },
+  secondarySheet: { height: 52 },
   text: { height: 44, backgroundColor: 'transparent' },
-  labelMedium: { fontSize: 16 },
+  labelMedium: type.buttonMedium,
 });
 
 const labels = StyleSheet.create({
-  primary: { ...font(650), fontSize: 17, lineHeight: 22, color: colors.onAccent },
-  secondary: { ...font(600), fontSize: 15, lineHeight: 20, color: colors.text },
-  text: { ...font(600), fontSize: 15, lineHeight: 20, color: colors.textSecondary },
+  primary: { ...type.button, color: colors.onAccent },
+  secondary: { ...type.buttonSecondary, color: colors.text },
+  text: { ...type.buttonSecondary, color: colors.textSecondary },
 });
 
 const pressedStyles = StyleSheet.create({

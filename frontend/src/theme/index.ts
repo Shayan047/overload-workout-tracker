@@ -63,4 +63,306 @@ export const type = {
     fontSize: 11,
     lineHeight: lineHeight(11, body.lineHeight),
   },
+  /** The 16 px muted line under a title (01, 02, sign-in, sign-up). */
+  lead: {
+    ...font(body.weight),
+    fontSize: 16,
+    lineHeight: 16 * body.lineHeight,
+  },
+  /** 14 px notes and info-box text (02). */
+  note: {
+    ...font(body.weight),
+    fontSize: 14,
+    lineHeight: 14 * body.lineHeight,
+  },
+  /** The big title on Welcome (01). */
+  display: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 42,
+    lineHeight: lineHeight(42, 1.1),
+    letterSpacing: em(42, -0.01),
+  },
+  /** The unit after a big number, like "lb" on 02. */
+  unitSuffix: {
+    ...font(600),
+    fontSize: 20,
+    lineHeight: lineHeight(20, 1.3),
+  },
+  /** Field and section labels (.label), and small emphasis like "Today" on 01. */
+  label: {
+    ...font(600),
+    fontSize: tokens.font.small.size,
+    lineHeight: 18,
+  },
+  /** Text typed into a field (.field). */
+  field: {
+    ...font(600),
+    fontSize: 17,
+  },
+  /** Primary button label: 17 px (.btn on 07–11) or 16 px (`buttonMedium`, .btn on 01–02). */
+  button: {
+    ...font(650),
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  buttonMedium: {
+    ...font(650),
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  /** Secondary and text button labels (.btn2). */
+  buttonSecondary: {
+    ...font(600),
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  /** Chip labels (.chip). */
+  chip: {
+    ...font(550),
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  /** Segmented control labels (.seg): 15 px, or 17 px on 52 px segments (02). */
+  segment: {
+    ...font(600),
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  segmentLarge: {
+    ...font(650),
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  /** The sync status pill on Today (07). */
+  pill: {
+    ...font(600),
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  /** Small text sitting in a 15 px line, so its line is body height (04's "6 exercises"). */
+  smallInBody: {
+    ...font(body.weight),
+    fontSize: tokens.font.small.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** `label` sitting in a 15 px line: 13's "New best today". */
+  labelInBody: {
+    ...font(600),
+    fontSize: tokens.font.small.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** Body text at 600: the date on Today (07). */
+  bodyStrong: {
+    ...font(600),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** Today's day name (07): 38 px. */
+  dayTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 38,
+    lineHeight: lineHeight(38, 1.1),
+    letterSpacing: em(38, -0.01),
+  },
+  /** Body text at 650: the Finish pill (08). */
+  bodyHeavy: {
+    ...font(650),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** 13 px at 650: today's day in the rotation strip (07). */
+  labelHeavy: {
+    ...font(650),
+    fontSize: tokens.font.small.size,
+    lineHeight: 18,
+  },
+  /** Screen titles in a header row (04, 06): 24 px. */
+  h1Small: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 24,
+    lineHeight: lineHeight(24, 1.1),
+    letterSpacing: em(24, -0.01),
+  },
+  /** Today's date in the History calendar (18): 15 px at 750, on amber. */
+  calendarToday: {
+    ...font(750),
+    fontSize: body.size,
+    lineHeight: lineHeight(body.size, body.lineHeight),
+  },
+  /** The user's name on Profile (19): 19 px at 650. */
+  profileName: {
+    ...font(650),
+    fontSize: 19,
+    lineHeight: lineHeight(19, 1.25),
+  },
+  /** A screen title with a subtitle under it (17): 22 px. */
+  h1Compact: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.1),
+    letterSpacing: em(22, -0.01),
+  },
+  /** Card and row titles: 18 px (03, 04), 16 px (`rowTitle`, 06). 17 px is `h2` (05). */
+  cardTitle: {
+    ...font(650, 92),
+    fontSize: 18,
+    lineHeight: 18 * 1.25,
+  },
+  rowTitle: {
+    ...font(650, 92),
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  /** Small tags: day names (03), muscle and equipment (05), rest (05). */
+  tag: {
+    ...font(550),
+    fontSize: 12,
+    lineHeight: 12 * body.lineHeight,
+  },
+  /** The search field on 06. */
+  search: {
+    ...font(body.weight),
+    fontSize: 17,
+  },
+  /** A stepper button label, like −15 / +15 (.tbtn). */
+  stepper: {
+    ...font(650),
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  /** The exercise being done (08, 09): 22 px at 85% width. */
+  exerciseTitle: {
+    ...font(650, 85),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.25),
+  },
+  /** Keypad keys (09). */
+  key: {
+    ...font(700, 72),
+    fontSize: 26,
+    lineHeight: 32,
+  },
+  /** The dash in an empty number cell (08). */
+  emptyValue: {
+    ...font(body.weight),
+    fontSize: 20,
+    lineHeight: 28,
+  },
+  /** Small text buttons: "Add set" (08). */
+  smallButton: {
+    ...font(600),
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  /** A tab's page title: "Progress" (13), 36 px. */
+  pageTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 36,
+    lineHeight: lineHeight(36, 1.1),
+    letterSpacing: em(36, -0.01),
+  },
+  /** The unit beside the big est. max (14): "lb", 22 px. */
+  estMaxUnit: {
+    ...font(600),
+    fontSize: 22,
+    lineHeight: 26,
+  },
+  /** Chart axis and band labels (14), 11 px. */
+  chartLabel: {
+    ...font(body.weight),
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  /** Reps inside a stacked bar (15): 11 px at 700. */
+  chartInner: {
+    ...font(700),
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  /** A stacked bar's total above it (15): 14 px, 800 at 72% width. */
+  chartTotal: {
+    ...font(800, 72),
+    fontSize: 14,
+    lineHeight: 14,
+  },
+  /** The "Overload" wordmark next to the mark (01). */
+  wordmark: {
+    ...font(750, 80),
+    fontSize: 20,
+    lineHeight: 28,
+    letterSpacing: 0.2,
+  },
 } as const;
+
+/**
+ * A big number in the number face (`.num`): line height 1, so it sits tight against its
+ * label. `tracking` is the design's letter-spacing in em (01 and 02 use -0.005), resolved at
+ * this size; pass `trackingSize` to resolve it at another size, as CSS does for a nested
+ * span (the "×" on 01 inherits the number's tracking).
+ */
+export function figure(size: number, tracking = 0, trackingSize = size) {
+  return {
+    ...type.number,
+    fontSize: size,
+    lineHeight: size,
+    letterSpacing: em(trackingSize, tracking),
+  };
+}
+
+/** The design's number tracking (01, 02): letter-spacing -0.005em. */
+export const NUMBER_TRACKING = -0.005;
+
+/** The light "×" between a weight and its reps ("20 × 6"), at `size`, inside a number of
+ * `numberSize` whose tracking it inherits. */
+export function figureTimes(size: number, numberSize: number) {
+  return { ...figure(size, NUMBER_TRACKING, numberSize), ...font(300, 68) };
+}
+
+/** Sizes of the big numbers in the designs. `times*` place the "×" (01: 52 px raised 8 px
+ * beside 80 px numbers, 72 px raised 12 px beside 120 px ones). */
+export const figures = {
+  welcomeLastTime: { size: 80, timesSize: 52, timesGap: 8, timesRaise: 8 },
+  welcomeToday: { size: 120, timesSize: 72, timesGap: 10, timesRaise: 12 },
+  /** The bodyweight input on 02. */
+  bodyweight: 64,
+  /** Best set last time on Today (07). */
+  lastTime: 20,
+  /** The day number in its circle on 04. */
+  dayStep: 17,
+  /** The rest length in the exercise options sheet. */
+  restValue: 32,
+  /** The active workout (08): elapsed time, set number, weight and reps, last time's set,
+   * a finished exercise against last time, and the ghost's rep counts. */
+  elapsed: 26,
+  setNumber: 18,
+  setValue: 28,
+  setLastTime: 20,
+  exerciseDelta: 18,
+  ghostReps: 18,
+  /** The workout summary (11): the three stats, today / last reps, and a new best set. */
+  summaryStat: 34,
+  summaryReps: 19,
+  summaryBest: 26,
+  /** Progress (13): each lift's est. max. Exercise detail (14): the big est. max, records,
+   * the pace note's projection and each recent session's est. max. */
+  progressValue: 22,
+  estMax: 76,
+  record: 22,
+  pace: 19,
+  /** One weight (15, 16): the headline number and each session's total, average or
+   * retention in the table. */
+  oneWeightHero: 56,
+  oneWeightRow: 19,
+  /** A next target on the frontier (17): "20 × 8". */
+  frontierTarget: 24,
+  /** Bodyweight (20): the latest weight, and each entry in the list. */
+  bodyweightNow: 68,
+  bodyweightRow: 20,
+  /** The rest timer's countdown (08). */
+  restCountdown: 40,
+  /** Weight and reps being typed on Log a set (09), and last time's set beside them. */
+  entry: 44,
+  sheetLastTime: 20,
+} as const;
+
+export type SetFigureSize = (typeof figures)['welcomeLastTime' | 'welcomeToday'];

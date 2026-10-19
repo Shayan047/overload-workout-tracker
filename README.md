@@ -13,7 +13,7 @@ overload/
 └── backend/           FastAPI + PostgreSQL API
 ```
 
-Status: backend done through roadmap chunk 7; frontend skeleton done (chunk 8). Build follows docs/roadmap.md.
+Status: backend done through roadmap chunk 7; frontend through chunk 12 (Today). Build follows docs/roadmap.md.
 
 ## Designs
 

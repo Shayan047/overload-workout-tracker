@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Response, status
 from pydantic import AwareDatetime
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.deps import CurrentUser, OptionalUser, SessionDep
 from app.models import Exercise
 from app.schemas.exercise import Equipment, ExerciseIn, ExerciseOut, Kind, MuscleGroup
 from app.services import exercises, sync
@@ -13,7 +13,7 @@ router = APIRouter(tags=["exercises"])
 
 @router.get("/exercises")
 async def list_exercises(
-    user: CurrentUser,
+    user: OptionalUser,
     session: SessionDep,
     q: str | None = None,
     muscle_group: MuscleGroup | None = None,
@@ -21,10 +21,11 @@ async def list_exercises(
     kind: Kind | None = None,
     updated_since: AwareDatetime | None = None,
 ) -> list[ExerciseOut]:
-    """The library plus the user's custom exercises. `q` matches every word of the name."""
+    """The library, plus the user's custom exercises when signed in. Public, because
+    onboarding picks a split before the account exists. `q` matches every word of the name."""
     rows = await exercises.list_exercises(
         session,
-        user.id,
+        user.id if user else None,
         q=q,
         muscle_group=muscle_group,
         equipment=equipment,

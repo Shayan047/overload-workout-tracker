@@ -60,7 +60,7 @@ Backend first, since PostgreSQL is the source of truth.
 
 ## How UI chunks are reviewed
 
-Chunks 8–23 build screens. They follow the review loop in CLAUDE.md and use the `design-reviewer` subagent (`.claude/agents/design-reviewer.md`).
+Chunks 8–23 build screens. Chunk 21 (CSV export) was dropped; 22 and 23 keep their numbers. They follow the review loop in CLAUDE.md and use the `design-reviewer` subagent (`.claude/agents/design-reviewer.md`).
 
 For each screen, take a screenshot with `npm run shot -- <route> <NN-name> [height]`. It's saved as `frontend/review/NN-name.png`, at 390 px wide and 2x, with the design's sample data.
 
@@ -88,7 +88,7 @@ Every UI chunk's "Done when" also requires:
 - **Review:** screenshot the Today tab shell and compare only the tab bar and background against 07.
 - **Done when:** the themed tabs run on a phone, `npm run shot` produces a 780 px wide PNG, and the tab bar gets PASS.
 
-### 9. Plumbing
+### 9. Plumbing — DONE
 
 - **Goal:** API client, sign-in and sign-up screens, offline outbox and cache, the Wi-Fi rule, and the sync status UI.
 - **Design:** none dedicated. Follow `tokens.json` and the style of 01–02.
@@ -97,14 +97,14 @@ Every UI chunk's "Done when" also requires:
   - a write made in airplane mode shows "Saved on this phone", is sent once Wi-Fi returns, and replaying the outbox is harmless,
   - the auth screens get PASS.
 
-### 10. Onboarding
+### 10. Onboarding — DONE
 
 - **Goal:** welcome, units and bodyweight.
 - **Design:** 01, 02.
 - **Review:** `01-welcome`, `02-units`.
 - **Done when:** a new user completes onboarding, their unit and bodyweight are saved, and both screens get PASS.
 
-### 11. Splits UI
+### 11. Splits UI — DONE
 
 - **Goal:** pick a split, edit a split, edit a day, add exercises.
 - **Design:** 03, 04, 05, 06.
@@ -113,14 +113,14 @@ Every UI chunk's "Done when" also requires:
   - a user can pick a preset or build a custom split, edit days, exercises and rest lengths, save, and land on Today,
   - all four screens get PASS.
 
-### 12. Today screen
+### 12. Today screen — DONE
 
 - **Goal:** today's split day, its exercises, and Start workout.
 - **Design:** 07.
 - **Review:** `07-today`.
 - **Done when:** Today shows the correct next day for both repeat modes, works offline from the cache, and gets PASS.
 
-### 13. Active workout, log a set, and ghost
+### 13. Active workout, log a set, and ghost — DONE
 
 - **Goal:** active workout screen, log-a-set sheet, elapsed time, the ghost/last-time comparison, and resume after restart.
 - **Design:** 08, 09.
@@ -133,14 +133,14 @@ Every UI chunk's "Done when" also requires:
   - killing the app resumes the workout,
   - both screens get PASS.
 
-### 14. Change an exercise for today
+### 14. Change an exercise for today — DONE
 
 - **Goal:** swap, skip, move to end, and add.
 - **Design:** 10, and 06 for swap.
 - **Review:** `10-change-exercise`, with the sheet open.
 - **Done when:** each action works, the saved split is unchanged afterwards, and 10 gets PASS.
 
-### 15. Rest timer
+### 15. Rest timer — DONE (the locked-phone notification still needs a check on a phone)
 
 - **Goal:** auto-start when a set is saved, −15/+15/skip, haptics at 10 s and at the end, optional sound, and a local notification when the phone is locked.
 - **Design:** 08, 09 and 12.
@@ -152,14 +152,14 @@ Every UI chunk's "Done when" also requires:
   - the notification fires with the phone locked,
   - 08 and 09 get PASS.
 
-### 16. Workout summary
+### 16. Workout summary — DONE
 
 - **Goal:** duration, sets, volume, per-exercise comparison with last time, and new bests.
 - **Design:** 11.
 - **Review:** `11-workout-summary`, using height 1050.
 - **Done when:** the summary is correct offline, "See progress" opens Exercise detail, and 11 gets PASS.
 
-### 17. Progress list and exercise detail
+### 17. Progress list and exercise detail — DONE
 
 - **Goal:**
   - the list, with est. max sparklines and plateau flags,
@@ -168,45 +168,38 @@ Every UI chunk's "Done when" also requires:
 - **Review:** `13-progress` and `14-exercise-detail` (height 1240). Chart lines, dots, bands and labels must match in position and color.
 - **Done when:** both screens render from the stats API and from the cache when offline, and both get PASS.
 
-### 18. One-weight views
+### 18. One-weight views — DONE
 
 - **Goal:** Progress (stacked reps per set) and Fingerprint (reps by set number, plus retention).
 - **Design:** 15, 16.
 - **Review:** `15-one-weight-progress` and `16-one-weight-fingerprint`, both at height 920.
 - **Done when:** the sample bicep curl data renders with the expected totals (34, 38, 40, 44, 48) and retention (58%, 67%, 75%, 77%, 79%), and both screens get PASS.
 
-### 19. Frontier
+### 19. Frontier — DONE
 
 - **Goal:** the rep-weight frontier chart.
 - **Design:** 17.
 - **Review:** `17-frontier`.
 - **Done when:** the sample data shows 20 × 7, 15 × 12 and 10 × 14, and 17 gets PASS.
 
-### 20. History, profile and bodyweight
+### 20. History, profile and bodyweight — DONE
 
 - **Goal:** the history calendar and recent list, profile settings, and the bodyweight log.
 - **Design:** 18, 19, 20.
-- **Review:** `18-history` (height 880), `19-profile` (height 940) and `20-bodyweight`.
+- **Review:** `18-history` (height 880), `19-profile` (height 940) and `20-bodyweight`. CSV export was dropped, so Profile leaves out the "Export workouts" row and the reviewer ignores it.
 - **Done when:**
   - all settings persist and sync,
   - changing bodyweight doesn't change old workouts,
   - all three screens get PASS.
 
-### 21. CSV export
-
-- **Goal:** export the user's workouts and sets as CSV from Profile.
-- **Design:** 19, where the export row is the entry point.
-- **Review:** re-review `19-profile` only if it changed.
-- **Done when:** the exported file opens in a spreadsheet with one row per set, and weights are in the user's unit.
-
-### 22. Lock-screen timer
+### 22. Lock-screen timer — ON HOLD (to be decided)
 
 - **Goal:** an iOS Live Activity and an Android ongoing notification for the rest timer.
 - **Design:** 12.
 - **Review:** a web screenshot can't capture the lock screen. Take simulator or emulator screenshots instead (`xcrun simctl io booted screenshot` on iOS, `adb exec-out screencap -p` on Android), then have the design-reviewer compare each against `12-rest-timer-lock-screen` for content and colors. The system frame and layout will differ.
 - **Done when:** the rest countdown is visible on the lock screen on both platforms, and both screenshots get PASS for content and colors.
 
-### 23. Release prep
+### 23. Release prep — ON HOLD (to be decided)
 
 - **Goal:** accessibility pass, a final design pass, and store builds.
 - **Design:** all.

@@ -31,7 +31,8 @@ router = APIRouter(tags=["splits"])
 
 
 @router.get("/presets")
-async def list_presets(_: CurrentUser) -> list[PresetOut]:
+async def list_presets() -> list[PresetOut]:
+    """Public, like the library: onboarding shows presets before the account exists."""
     return [
         PresetOut(
             key=p.key,

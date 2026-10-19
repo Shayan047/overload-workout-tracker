@@ -2,6 +2,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
     auth,
@@ -13,7 +14,7 @@ from app.api.routes import (
     stats,
     workouts,
 )
-from app.core.config import require_jwt_secret
+from app.core.config import get_settings, require_jwt_secret
 from app.db.session import engine
 
 
@@ -25,6 +26,14 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Overload API", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_settings().cors_origin_list,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
+    # Tokens travel in the Authorization header, never in cookies.
+    allow_credentials=False,
+)
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(exercises.router)

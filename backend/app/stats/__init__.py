@@ -12,6 +12,7 @@ from app.stats.est_max import (
     set_est_max,
 )
 from app.stats.frontier import FrontierPoint, frontier
+from app.stats.history import WorkoutRecap, workout_recaps
 from app.stats.one_weight import (
     WeightSession,
     WeightUse,
@@ -32,6 +33,7 @@ __all__ = [
     "Session",
     "WeightSession",
     "WeightUse",
+    "WorkoutRecap",
     "best_set",
     "best_set_overall",
     "change_in_window",
@@ -49,4 +51,5 @@ __all__ = [
     "sessions_at_weight",
     "set_est_max",
     "weights_used",
+    "workout_recaps",
 ]

@@ -118,11 +118,11 @@ Formulas:
 
 - History calendar and a list of recent workouts.
 - Bodyweight log.
-- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, sync on Wi-Fi only, custom exercises, CSV export.
+- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, sync on Wi-Fi only, custom exercises.
 
 ### Out of scope for now
 
-Social features, AI features, muscle heatmap, rest-time statistics.
+Social features, AI features, muscle heatmap, rest-time statistics, CSV export (dropped from the roadmap).
 
 ## User flow
 
@@ -131,8 +131,42 @@ Screen numbers match `design/screens/`.
 **First launch**
 
 - Welcome (01) → Units and bodyweight (02) → Pick a split (03) → Edit split (04).
+- The account is created at the end of onboarding, after Save split on 04. What the user
+  picks before that (unit, bodyweight, split) is saved on the phone and sent as soon as the
+  account exists. "I already have an account" on 01 goes to sign-in, then Today.
+- Bodyweight must be a plausible adult weight: 45–660 lb or 20–300 kg. Switching the unit on
+  02 converts what was typed.
 - From Edit split, tapping a day opens Edit a day (05), whose Add exercise button opens Add exercises (06).
 - Save split goes to Today (07).
+
+**Splits (chunk 11)**
+
+- Picking a preset or "Build my own" (one empty "Day 1") opens Edit split (04) with a copy.
+  Nothing is saved until "Save split", which also makes it the active split.
+- Days and exercises reorder by dragging the handle (screen readers: move up/down).
+- On Edit a day (05), "…" opens the exercise's rest length (−15/+15 s, 0–60 min) and Remove;
+  the pencil renames the day, sets its weekday (set weekdays mode) and removes it.
+- Switching to "Set weekdays" spreads days without a weekday over the week (3 days: Mon,
+  Wed, Fri). Each day needs its own weekday to save.
+- Add exercises (06) searches the library on the phone (same rules as the API), filters by
+  muscle group (the design's chips plus Core), marks exercises already in the day, and adds
+  the selected ones with a 1:30 rest. "Can't find it?" creates a custom exercise (name,
+  main muscle, bodyweight or not).
+- The Splits tab shows the active split in Edit split, with "Pick another" instead of a back
+  button; with no active split it shows Pick a split.
+
+**Today (chunk 12)**
+
+- Shows the next day of the active split, worked out on the phone from cached data (the
+  same rule as the API), so it works offline.
+- The rotation strip: in order, the previous day (with a check and when it was done, if it
+  has been), today and the next day; set weekdays, the scheduled days before and after.
+- Each exercise shows its best set last time (highest est. max; bodyweight exercises as
+  "BW+10 × 8", counting the bodyweight for "best"), with the date of the latest one.
+- "Do a different day" picks another day of the split for today only (until midnight).
+- No design yet, decided here: a rest day (set weekdays, nothing today) shows "Rest day",
+  the next scheduled day and "Train anyway"; no active split shows "Pick a split".
+- Start workout and Profile open placeholders until chunks 13 and 20.
 
 **Returning users**
 
@@ -154,7 +188,11 @@ Screen numbers match `design/screens/`.
 
 **History**
 
-- History (18): the calendar and the list of recent workouts.
+- History (18): the calendar and the list of recent workouts. Tapping a day lists that day's
+  workouts; tapping it again goes back to the recent ones.
+- Profile (19): Units and Rest timer alerts open sheets, Bodyweight opens Bodyweight (20),
+  Current split opens the Splits tab, Custom exercises lists them (they're made from Add
+  exercises' "Can't find it?").
 
 ## Sample data for stats tests
 

@@ -38,6 +38,14 @@ class WorkoutOut(SyncedOut):
     bodyweight_kg: KgOut
 
 
+class WorkoutHistoryOut(WorkoutOut):
+    """A finished workout on History (18)."""
+
+    sets: int
+    ahead: int = Field(description="Exercises with more total reps than their previous session")
+    compared: int = Field(description="Exercises that had a previous session")
+
+
 class WorkoutExerciseIn(BaseModel):
     workout_id: uuid.UUID
     exercise_id: uuid.UUID
@@ -98,6 +106,10 @@ class LastSessionOut(BaseModel):
     ended_at: AwareDatetime
     bodyweight_kg: KgOut
     sets: list[LastSessionSet]
+    best_est_max_kg: float | None = Field(
+        description="The best session est. max in any finished workout, so far (rounded to "
+        "the gram). Bodyweight exercises count the snapshot plus the added weight."
+    )
 
 
 class BodyweightIn(BaseModel):
