@@ -121,38 +121,40 @@ export function ProgressScreen() {
   };
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: top + 8 }]}>
-      <Text variant="pageTitle" accessibilityRole="header" style={styles.title}>
-        Progress
-      </Text>
-      <Text color="textMuted" style={styles.subtitle}>
-        {progress.data ? progressSubtitle(items, today) : ' '}
-      </Text>
-
-      {split?.days.length ? (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroller} contentContainerStyle={styles.chips}>
-          <Chip label="All" selected={!dayId} onPress={() => setDayId(null)} />
-          {split.days.map((d) => (
-            <Chip key={d.id} label={d.name} selected={d.id === dayId} onPress={() => setDayId(d.id)} />
-          ))}
-        </ScrollView>
-      ) : null}
-
-      <View style={styles.headings}>
-        <Text variant="label" color="textFaint">
-          Last {PROGRESS_WEEKS} weeks
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8 }]}>
+        <Text variant="pageTitle" accessibilityRole="header" style={styles.title}>
+          Progress
         </Text>
-        <Text variant="label" color="textFaint">
-          Est. max, {unit}
+        <Text color="textMuted" style={styles.subtitle}>
+          {progress.data ? progressSubtitle(items, today) : ' '}
         </Text>
-      </View>
 
-      {body()}
+        {split?.days.length ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroller} contentContainerStyle={styles.chips}>
+            <Chip label="All" selected={!dayId} onPress={() => setDayId(null)} />
+            {split.days.map((d) => (
+              <Chip key={d.id} label={d.name} selected={d.id === dayId} onPress={() => setDayId(d.id)} />
+            ))}
+          </ScrollView>
+        ) : null}
 
-      <Text variant="small" color="textFaint" style={styles.footnote}>
-        Est. max is the most you could lift once, estimated from your best set: weight × (1 + reps ÷ 30).
-      </Text>
-    </ScrollView>
+        <View style={styles.headings}>
+          <Text variant="label" color="textFaint">
+            Last {PROGRESS_WEEKS} weeks
+          </Text>
+          <Text variant="label" color="textFaint">
+            Est. max, {unit}
+          </Text>
+        </View>
+
+        {body()}
+
+        <Text variant="small" color="textFaint" style={styles.footnote}>
+          Est. max is the most you could lift once, estimated from your best set: weight × (1 + reps ÷ 30).
+        </Text>
+      </ScrollView>
+    </View>
   );
 }
 

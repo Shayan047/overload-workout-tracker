@@ -73,8 +73,8 @@ export function ProfileScreen() {
         : "They sync as soon as there's a connection";
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom }]}>
         <View style={styles.header}>
           <IconButton accessibilityLabel="Back" onPress={back}>
             <BackIcon color={colors.text} />

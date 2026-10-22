@@ -171,8 +171,8 @@ export function BodyweightScreen() {
   };
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom - 2 }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom - 2 }]}>
         <View style={styles.header}>
           <IconButton accessibilityLabel="Back to profile" onPress={back}>
             <BackIcon color={colors.text} />
@@ -186,7 +186,12 @@ export function BodyweightScreen() {
         <Button title="Log bodyweight" onPress={open} />
       </ScrollView>
 
-      <BottomSheet visible={logging} onClose={() => setLogging(false)} accessibilityLabel="Log bodyweight">
+      <BottomSheet
+        visible={logging}
+        onClose={() => setLogging(false)}
+        accessibilityLabel="Log bodyweight"
+        avoidKeyboard
+      >
         <View style={styles.sheet}>
           <Text variant="h2">Log bodyweight</Text>
           <Text variant="small" color="textMuted">

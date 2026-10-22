@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Notice, Text, useFrameInsets } from '@/components';
 import { colors } from '@/theme';
@@ -20,13 +20,10 @@ type Props = {
 export function AuthScreen({ header, title, subtitle, fields, error, actions }: Props) {
   const { top, bottom } = useFrameInsets();
   return (
-    <KeyboardAvoidingView
-      style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={[styles.screen, { paddingTop: top }]} behavior="padding">
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom + 2 }]}
+        contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom + 2 }]}
       >
         <View style={styles.header}>{header}</View>
         <Text variant="h1" accessibilityRole="header" style={styles.title}>

@@ -131,6 +131,27 @@ export function SearchIcon({ color, size = 22 }: IconProps) {
   );
 }
 
+/** Show password (sign-in, sign-up). Not in the designs; drawn in their stroke style. */
+export function EyeIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke={color} {...stroke} />
+      <Circle cx={12} cy={12} r={3} stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
+/** Hide password: the eye, struck through. */
+export function EyeOffIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke={color} {...stroke} />
+      <Circle cx={12} cy={12} r={3} stroke={color} {...stroke} />
+      <Path d="M4 4l16 16" stroke={color} {...stroke} />
+    </Svg>
+  );
+}
+
 /** Rename (05). */
 export function PencilIcon({ color, size = 22 }: IconProps) {
   return (

@@ -360,8 +360,8 @@ export function WorkoutScreen() {
   };
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: footerHeight + 30 }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: footerHeight + 30 }]}>
         <View style={styles.header}>
           <IconButton accessibilityLabel="Minimize workout" onPress={goBack}>
             <ChevronDownIcon color={colors.text} />

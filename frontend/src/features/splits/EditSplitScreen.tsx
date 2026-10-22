@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { type ReactNode, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { useAuth } from '@/api/AppProviders';
 import { useSaveSplit } from '@/api/splits';
@@ -102,10 +102,10 @@ export function EditSplitScreen({ mode }: { mode: EditSplitMode }) {
   const last = draft.days[draft.days.length - 1];
 
   return (
-    <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={[styles.screen, { paddingTop: top }]} behavior="padding">
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom - 2 }]}
+        contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom - 2 }]}
       >
         <View style={styles.header}>
           {mode !== 'tab' ? (

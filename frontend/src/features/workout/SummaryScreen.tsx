@@ -57,148 +57,147 @@ export function SummaryScreen() {
     [...summary.exercises].sort((a, b) => (b.delta ?? -Infinity) - (a.delta ?? -Infinity))[0]?.exerciseId;
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom }]}
-    >
-      <View style={styles.header}>
-        <View style={styles.done} accessibilityLabel="Workout done">
-          <CheckIcon color={colors.accent} strokeWidth={2.4} />
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom }]}>
+        <View style={styles.header}>
+          <View style={styles.done} accessibilityLabel="Workout done">
+            <CheckIcon color={colors.accent} strokeWidth={2.4} />
+          </View>
+          <IconButton accessibilityLabel="Close" onPress={goToday}>
+            <CloseIcon color={colors.text} />
+          </IconButton>
         </View>
-        <IconButton accessibilityLabel="Close" onPress={goToday}>
-          <CloseIcon color={colors.text} />
-        </IconButton>
-      </View>
 
-      <Text variant="h1" accessibilityRole="header" style={styles.title}>
-        {summary.title} done
-      </Text>
-      <Text color="textMuted" style={styles.when}>
-        {timeRange(new Date(summary.startedAt), new Date(summary.endedAt))}
-      </Text>
+        <Text variant="h1" accessibilityRole="header" style={styles.title}>
+          {summary.title} done
+        </Text>
+        <Text color="textMuted" style={styles.when}>
+          {timeRange(new Date(summary.startedAt), new Date(summary.endedAt))}
+        </Text>
 
-      <View style={styles.stats}>
-        <View style={styles.stat}>
-          <Text style={styles.statValue}>{summary.minutes}</Text>
-          <Text variant="small" color="textMuted">
-            minutes
-          </Text>
-        </View>
-        <View style={styles.statRule} />
-        <View style={styles.stat}>
-          <Text style={styles.statValue}>{summary.sets}</Text>
-          <Text variant="small" color="textMuted">
-            sets
-          </Text>
-        </View>
-        <View style={styles.statRule} />
-        <View style={[styles.stat, styles.statWide]}>
-          <Text style={styles.statValue}>{Math.round(fromKg(summary.volumeKg, unit)).toLocaleString('en-US')}</Text>
-          <Text variant="small" color="textMuted">
-            {unit} lifted
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={styles.inline}>
-            <GhostIcon color={colors.ghost} size={18} />
-            <Text variant="bodyStrong" color="ghost">
-              {summary.lastDate ? `vs. ${ghostDate(new Date(summary.lastDate))}` : 'First time for all of these'}
+        <View style={styles.stats}>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{summary.minutes}</Text>
+            <Text variant="small" color="textMuted">
+              minutes
             </Text>
           </View>
-          {summary.compared ? (
-            <Text variant="bodyHeavy" color={summary.ahead ? 'accent' : 'textMuted'}>
-              Ahead on {summary.ahead} of {summary.compared}
+          <View style={styles.statRule} />
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{summary.sets}</Text>
+            <Text variant="small" color="textMuted">
+              sets
             </Text>
-          ) : null}
+          </View>
+          <View style={styles.statRule} />
+          <View style={[styles.stat, styles.statWide]}>
+            <Text style={styles.statValue}>{Math.round(fromKg(summary.volumeKg, unit)).toLocaleString('en-US')}</Text>
+            <Text variant="small" color="textMuted">
+              {unit} lifted
+            </Text>
+          </View>
         </View>
-        <View style={[styles.row, styles.tableHeader]}>
-          <Text variant="label" color="textFaint" style={styles.colName}>
-            Total reps
-          </Text>
-          <Text variant="label" color="textFaint" style={styles.colReps}>
-            Today / last
-          </Text>
-          <Text variant="label" color="textFaint" style={styles.colChange}>
-            Change
-          </Text>
-        </View>
-        {summary.exercises.map((e) => (
-          <View key={e.rowId}>
-            <Separator inset={16} />
-            <View style={styles.row}>
-              <Text numberOfLines={1} style={styles.colName}>
-                {name(e.exerciseId)}
+
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.inline}>
+              <GhostIcon color={colors.ghost} size={18} />
+              <Text variant="bodyStrong" color="ghost">
+                {summary.lastDate ? `vs. ${ghostDate(new Date(summary.lastDate))}` : 'First time for all of these'}
               </Text>
-              <Text style={[styles.reps, styles.colReps]}>
-                {e.today}
-                {e.last !== null ? <Text style={[styles.reps, styles.last]}> / {e.last}</Text> : null}
-              </Text>
-              {e.delta === null || e.delta === 0 ? (
-                <Text variant="note" color="textFaint" style={styles.colChange}>
-                  {e.delta === null ? 'New' : 'Even'}
-                </Text>
-              ) : (
-                <Text style={[styles.reps, styles.colChange, { color: e.delta > 0 ? colors.accent : colors.ghost }]}>
-                  {e.delta > 0 ? `+${e.delta}` : `−${-e.delta}`}
-                </Text>
-              )}
             </View>
+            {summary.compared ? (
+              <Text variant="bodyHeavy" color={summary.ahead ? 'accent' : 'textMuted'}>
+                Ahead on {summary.ahead} of {summary.compared}
+              </Text>
+            ) : null}
           </View>
-        ))}
-      </View>
-
-      {summary.bests.length ? (
-        <View style={styles.bests}>
-          <View style={styles.inline}>
-            <StarIcon color={colors.accent} size={18} />
-            <Text variant="bodyHeavy" color="accent">
-              {summary.bests.length} new {summary.bests.length === 1 ? 'best' : 'bests'}
+          <View style={[styles.row, styles.tableHeader]}>
+            <Text variant="label" color="textFaint" style={styles.colName}>
+              Total reps
+            </Text>
+            <Text variant="label" color="textFaint" style={styles.colReps}>
+              Today / last
+            </Text>
+            <Text variant="label" color="textFaint" style={styles.colChange}>
+              Change
             </Text>
           </View>
-          {summary.bests.map((b, i) => (
-            <View key={b.exerciseId} style={[styles.best, i < summary.bests.length - 1 && styles.bestRule]}>
-              <View style={styles.flex}>
-                <Text variant="h2">{name(b.exerciseId)}</Text>
-                <Text variant="small" color="textMuted">
-                  Est. max {oneDecimal(b.estMaxKg)} {unit}, up from {oneDecimal(b.previousKg)}
+          {summary.exercises.map((e) => (
+            <View key={e.rowId}>
+              <Separator inset={16} />
+              <View style={styles.row}>
+                <Text numberOfLines={1} style={styles.colName}>
+                  {name(e.exerciseId)}
                 </Text>
+                <Text style={[styles.reps, styles.colReps]}>
+                  {e.today}
+                  {e.last !== null ? <Text style={[styles.reps, styles.last]}> / {e.last}</Text> : null}
+                </Text>
+                {e.delta === null || e.delta === 0 ? (
+                  <Text variant="note" color="textFaint" style={styles.colChange}>
+                    {e.delta === null ? 'New' : 'Even'}
+                  </Text>
+                ) : (
+                  <Text style={[styles.reps, styles.colChange, { color: e.delta > 0 ? colors.accent : colors.ghost }]}>
+                    {e.delta > 0 ? `+${e.delta}` : `−${-e.delta}`}
+                  </Text>
+                )}
               </View>
-              <Text style={styles.bestSet}>
-                {setText({ ...b.set, set_number: 1 }, unit, isBodyweight(b.exerciseId))}
-              </Text>
             </View>
           ))}
         </View>
-      ) : null}
 
-      {note ? (
-        <View style={styles.note}>
-          <View style={styles.noteIcon}>
-            <CloudOffIcon color={colors.textMuted} size={18} />
+        {summary.bests.length ? (
+          <View style={styles.bests}>
+            <View style={styles.inline}>
+              <StarIcon color={colors.accent} size={18} />
+              <Text variant="bodyHeavy" color="accent">
+                {summary.bests.length} new {summary.bests.length === 1 ? 'best' : 'bests'}
+              </Text>
+            </View>
+            {summary.bests.map((b, i) => (
+              <View key={b.exerciseId} style={[styles.best, i < summary.bests.length - 1 && styles.bestRule]}>
+                <View style={styles.flex}>
+                  <Text variant="h2">{name(b.exerciseId)}</Text>
+                  <Text variant="small" color="textMuted">
+                    Est. max {oneDecimal(b.estMaxKg)} {unit}, up from {oneDecimal(b.previousKg)}
+                  </Text>
+                </View>
+                <Text style={styles.bestSet}>
+                  {setText({ ...b.set, set_number: 1 }, unit, isBodyweight(b.exerciseId))}
+                </Text>
+              </View>
+            ))}
           </View>
-          <Text variant="small" color="textMuted" style={styles.flex}>
-            {note}
-          </Text>
-        </View>
-      ) : null}
-
-      <View style={styles.actions}>
-        <Button title="Done" onPress={goToday} />
-        {featured ? (
-          <Button
-            title={`See ${name(featured).toLowerCase()} progress`}
-            variant="secondary"
-            onPress={() => {
-              goToday();
-              router.push({ pathname: '/exercise/[exerciseId]', params: { exerciseId: featured } });
-            }}
-          />
         ) : null}
-      </View>
-    </ScrollView>
+
+        {note ? (
+          <View style={styles.note}>
+            <View style={styles.noteIcon}>
+              <CloudOffIcon color={colors.textMuted} size={18} />
+            </View>
+            <Text variant="small" color="textMuted" style={styles.flex}>
+              {note}
+            </Text>
+          </View>
+        ) : null}
+
+        <View style={styles.actions}>
+          <Button title="Done" onPress={goToday} />
+          {featured ? (
+            <Button
+              title={`See ${name(featured).toLowerCase()} progress`}
+              variant="secondary"
+              onPress={() => {
+                goToday();
+                router.push({ pathname: '/exercise/[exerciseId]', params: { exerciseId: featured } });
+              }}
+            />
+          ) : null}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

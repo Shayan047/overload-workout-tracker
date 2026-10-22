@@ -144,7 +144,7 @@ function DaySheet({
   onClose: () => void;
 }) {
   return (
-    <BottomSheet visible={visible} onClose={onClose} accessibilityLabel={`Edit ${day.name}`}>
+    <BottomSheet visible={visible} onClose={onClose} accessibilityLabel={`Edit ${day.name}`} avoidKeyboard>
       <View style={styles.sheet}>
         <TextField
           label="Day name"
@@ -207,8 +207,8 @@ export function EditDayScreen() {
   const count = day.exercises.length;
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom - 2 }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom - 2 }]}>
         <View style={styles.header}>
           <IconButton accessibilityLabel="Back to split" onPress={() => router.back()}>
             <BackIcon color={colors.text} />

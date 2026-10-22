@@ -274,8 +274,8 @@ export function TodayScreen() {
   };
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8 }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8 }]}>
         {header}
         {body()}
       </ScrollView>

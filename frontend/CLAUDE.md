@@ -158,6 +158,13 @@ indicator. Use `useFrameInsets()` and add the rest: 07's `padding-top: 52px` is 
 02's `padding-bottom: 36px` is `bottom + 2`. Phones get their real safe area, and review
 screenshots line up with the designs.
 
+- Put `top` on the screen's root view and only the `+ 8` on the scroll content, so nothing
+  scrolls under the phone's clock (Android draws the app edge to edge, behind the status bar).
+- Screens with text fields wrap their content in `KeyboardAvoidingView behavior="padding"` on
+  both platforms: edge to edge, Android no longer resizes the window for the keyboard.
+- A `BottomSheet` with a text field takes `avoidKeyboard`: it's drawn inside the screen (last
+  child of the root view) instead of in a Modal, so it can rise above the keyboard.
+
 ## Text styles
 
 Font settings (family, weight, width), sizes, line heights and letter spacing are written

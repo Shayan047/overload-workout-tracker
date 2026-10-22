@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import {
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -61,13 +60,10 @@ export function UnitsScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={[styles.screen, { paddingTop: top }]} behavior="padding">
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom + 2 }]}
+        contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom + 2 }]}
       >
         <View style={styles.header}>
           <IconButton
