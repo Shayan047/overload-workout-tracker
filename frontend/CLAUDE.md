@@ -65,9 +65,14 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
 
 ## Talking to the API
 
-- `API_URL` (`src/api/config.ts`): `EXPO_PUBLIC_API_URL` if set, otherwise port 8000 on the
-  computer running the Expo dev server, so a phone on the same Wi-Fi reaches
-  `docker compose up` with no setup. On Windows, allow inbound port 8000 in the firewall.
+- `API_URL` (`src/api/config.ts`): `EXPO_PUBLIC_API_URL` if set; otherwise release builds use
+  the deployed API (`PRODUCTION_API_URL`, https://overload-api-tmv6.onrender.com) and
+  development uses port 8000 on the computer running the Expo dev server, so a phone on the
+  same Wi-Fi reaches `docker compose up` with no setup. On Windows, allow inbound port 8000
+  in the firewall.
+- Requests wait up to 75 s (`REQUEST_TIMEOUT_MS`): Render's free plan sleeps when idle and
+  takes about a minute to wake. Sign-in and sign-up buttons say "Waking the server…" after
+  5 s.
 - **Writes** go through `useSync().write({ method, path, body })` (or a hook built on it,
   like `useUpdateSettings`), never through `fetch`. Update the query cache first, so the
   screen changes at once. See "Offline" in `../docs/api-and-sync.md`.
@@ -77,6 +82,23 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
   derives too (preset days: `derivedId(splitId, 'day:0')`). Both in `@/lib/ids`.
 - A 401 anywhere sends the user back to sign-in; their unsent writes stay and go out after.
   Signing in as someone else clears the outbox and cache first.
+
+## Building the APK
+
+The Android app is shared as an APK built by EAS (project `@shayan47/overload`, linked in
+`app.config.ts`; package `com.shayan047.overload`, which never changes). From `frontend/`:
+
+```
+npx eas-cli build -p android --profile preview    # cloud build; prints a download link and QR code
+```
+
+- The `preview` profile (`eas.json`) makes an installable APK, and EAS raises the version
+  code by itself (`appVersionSource: remote`), so each new APK installs over the last one.
+- EAS uploads the whole repository (the app reads `../design/tokens.json`), minus what
+  `.gitignore` leaves out.
+- The build talks to the deployed API. Point a build elsewhere with
+  `EXPO_PUBLIC_API_URL=… npx eas-cli build …`.
+- Free EAS builds wait in a queue; a build usually takes 10–20 minutes.
 
 ## Testing on the web
 
