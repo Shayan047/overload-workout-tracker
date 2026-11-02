@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 
 import { colors, radius, type } from '@/theme';
 
 import { EyeIcon, EyeOffIcon } from './icons';
+import { RevealFocusedContext } from './revealFocused';
 import { Label } from './Label';
 import { Text } from './Text';
 
@@ -20,6 +21,7 @@ type Props = Omit<TextInputProps, 'style'> & {
 export function TextField({ label, hint, labelGap = 8, secureTextEntry, onFocus, onBlur, ...rest }: Props) {
   const [focused, setFocused] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const revealFocused = useContext(RevealFocusedContext);
   const password = !!secureTextEntry;
   return (
     <View>
@@ -36,6 +38,7 @@ export function TextField({ label, hint, labelGap = 8, secureTextEntry, onFocus,
           style={[styles.field, password && styles.withToggle, focused && styles.focused]}
           onFocus={(event) => {
             setFocused(true);
+            revealFocused?.();
             onFocus?.(event);
           }}
           onBlur={(event) => {

@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react';
+import { type ComponentRef, type ReactNode, useRef } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Notice, Text, useFrameInsets } from '@/components';
+import { RevealFocusedContext, useRevealFocused } from '@/components/revealFocused';
 import { colors } from '@/theme';
 
 type Props = {
@@ -19,12 +20,19 @@ type Props = {
  * (the 54 px `size="medium"` primary button, as 01–02). */
 export function AuthScreen({ header, title, subtitle, fields, error, actions }: Props) {
   const { top, bottom } = useFrameInsets();
+  const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
+  const content = useRef<ComponentRef<typeof View>>(null);
+  const { reveal, scrollProps } = useRevealFocused(scroll, content);
   return (
     <KeyboardAvoidingView style={[styles.screen, { paddingTop: top }]} behavior="padding">
       <ScrollView
+        ref={scroll}
+        {...scrollProps}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom + 2 }]}
       >
+        <RevealFocusedContext.Provider value={reveal}>
+        <View ref={content} style={styles.inner}>
         <View style={styles.header}>{header}</View>
         <Text variant="h1" accessibilityRole="header" style={styles.title}>
           {title}
@@ -40,6 +48,8 @@ export function AuthScreen({ header, title, subtitle, fields, error, actions }: 
         ) : null}
         <View style={styles.spacer} />
         <View style={styles.actions}>{actions}</View>
+        </View>
+        </RevealFocusedContext.Provider>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -48,6 +58,7 @@ export function AuthScreen({ header, title, subtitle, fields, error, actions }: 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   content: { flexGrow: 1, paddingHorizontal: 24 },
+  inner: { flexGrow: 1 },
   header: { minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { marginTop: 28 },
   subtitle: { marginTop: 10, maxWidth: 320 },
