@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, Text as RNText } from 'react-native';
 
 import { useSync } from '@/api/AppProviders';
 import { useSettings } from '@/api/settings';
@@ -61,13 +61,14 @@ function useElapsed(startedAt: string | undefined): string {
 function SetsFigure({ sets, unit, bodyweight, color }: { sets: LoggedSet[] | LastSession['sets']; unit: Unit; bodyweight: boolean; color: string }) {
   return (
     <Text style={[styles.ghostSets, { color }]}>
+      {/* React Native's own Text inside, so the runs inherit the number face and color. */}
       {setGroups(sets, unit, bodyweight).map((g, i) => (
-        <Text key={`${g.load}-${i}`}>
+        <RNText key={`${g.load}-${i}`}>
           {i ? ', ' : ''}
           {g.load}
-          <Text style={styles.ghostTimes}>{' × '}</Text>
+          <RNText style={styles.ghostTimes}>{' × '}</RNText>
           {g.reps.join(', ')}
-        </Text>
+        </RNText>
       ))}
     </Text>
   );

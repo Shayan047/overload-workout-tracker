@@ -375,7 +375,7 @@ export const figures = {
   progressValue: 22,
   estMax: 76,
   record: 22,
-  pace: 19,
+  pace: 18,
   /** Reps at one weight (14): the headline number. */
   oneWeightHero: 56,
   /** A next target on the frontier (17): "20 × 8". */
