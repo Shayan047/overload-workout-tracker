@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ghost states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* 08's current-exercise card, cropped to the ghost panel. */
+.card{margin-top:10px;padding:14px 8px 14px;border-radius:20px;background:#1A1D21;box-shadow:inset 0 0 0 1px #7A5418}
+.panel{padding:14px;border-radius:14px;background:#08090B}
+.top{display:flex;align-items:center;justify-content:space-between}
+.who{display:flex;align-items:center;gap:6px;color:#7FD3EA;font-weight:600}
+.bars{display:grid;grid-template-columns:62px minmax(0,1fr) 34px;align-items:center;gap:6px 10px;margin-top:12px}
+.bar{height:10px;border-radius:6px;background:#25282D;position:relative;overflow:hidden}
+.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+/* Heavier than last time: the sets themselves, side by side, instead of bars. */
+.sets{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:baseline;gap:8px 10px;margin-top:12px}
+.x{font-weight:300;font-stretch:100%;font-size:15px;margin:0 2px;position:relative;top:-2px}
+.state{margin:30px 4px 0;font-size:13px;font-weight:600;color:#88909A}
+.gr{display:grid;grid-template-columns:minmax(0,1fr) 104px 64px;align-items:center;column-gap:8px;height:44px;padding:0 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+.u{font-size:12px;font-weight:600;font-stretch:100%;color:#88909A;margin-left:2px}
+</style>
+</helmet>
+<main class="app" style="height:1060px;padding:40px 16px 0">
+  <p class="state" style="margin-top:0">Same weight as last time: reps, as now</p>
+  <div class="card"><div class="panel">
+    <div class="top">
+      <span class="small who"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>Ghost: Tue, Oct 6</span>
+      <span class="small" style="color:#FFA41B;font-weight:650">Ahead by 2 reps</span>
+    </div>
+    <div class="bars">
+      <span class="small" style="font-weight:600">You</span><span class="bar"><span style="width:65%;background:#FFA41B"></span></span><span class="num" style="font-size:18px;text-align:right;color:#FFA41B">13</span>
+      <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span><span class="bar"><span style="width:55%;background:#7FD3EA"></span></span><span class="num" style="font-size:18px;text-align:right;color:#7FD3EA">11</span>
+    </div>
+    <p class="faint small" style="margin:10px 0 0">Reps through set 2, both at 20 lb. Last time you finished with 20.</p>
+  </div></div>
+
+  <p class="state">Heavier than last time: the move up is the win</p>
+  <div class="card"><div class="panel">
+    <div class="top">
+      <span class="small who"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>Ghost: Tue, Oct 6</span>
+      <span class="small" style="color:#FFA41B;font-weight:650;display:flex;align-items:center;gap:4px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke-width:2.2"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Up 2.5 lb</span>
+    </div>
+    <div class="sets">
+      <span class="small" style="font-weight:600">You</span><span class="num" style="font-size:22px;color:#FFA41B">22.5<span class="x">×</span>8, 7</span>
+      <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span><span class="num" style="font-size:22px;color:#7FD3EA">20<span class="x">×</span>13, 11</span>
+    </div>
+    <p class="faint small" style="margin:10px 0 0">You moved up from 20 lb, so reps aren't compared. Next time they are, at 22.5.</p>
+  </div></div>
+
+  <p class="state">Lighter than last time: estimated max</p>
+  <div class="card"><div class="panel">
+    <div class="top">
+      <span class="small who"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>Ghost: Tue, Oct 6</span>
+      <span class="small muted" style="font-weight:650">Est. max 0.7 lb behind</span>
+    </div>
+    <div class="bars">
+      <span class="small" style="font-weight:600">You</span><span class="bar"><span style="width:84%;background:#FFA41B"></span></span><span class="num" style="font-size:18px;text-align:right;color:#FFA41B">23.3</span>
+      <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span><span class="bar"><span style="width:86%;background:#7FD3EA"></span></span><span class="num" style="font-size:18px;text-align:right;color:#7FD3EA">24.0</span>
+    </div>
+    <p class="faint small" style="margin:10px 0 0">17.5 lb today against 20 lb last time, so this compares est. max from your best set so far.</p>
+  </div></div>
+
+  <p class="state">Summary (11): the Change column says what was compared</p>
+  <section style="margin-top:10px;border-radius:20px;background:#16181B;padding:8px 0 6px">
+    <div class="gr faint small" style="height:28px;font-weight:600"><span>Exercise</span><span style="text-align:right">Today / last</span><span style="text-align:right">Change</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Overhead press</span><span class="num" style="font-size:19px;text-align:right">29 <span style="color:#7FD3EA">/ 28</span><span class="u">reps</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+1</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Bicep curl</span><span class="num" style="font-size:19px;text-align:right">22.5 <span style="color:#7FD3EA">/ 20</span><span class="u">lb</span></span><span class="num" style="font-size:19px;text-align:right;color:#FFA41B">+2.5 lb</span></div>
+    <div class="sep"></div>
+    <div class="gr"><span>Hammer curl</span><span class="num" style="font-size:19px;text-align:right">31.5 <span style="color:#7FD3EA">/ 32.5</span><span class="u">est.</span></span><span class="num" style="font-size:19px;text-align:right;color:#7FD3EA">−1.0</span></div>
+  </section>
+  <p class="faint small" style="margin:10px 4px 0">Same weight compares reps. A heavier weight counts as ahead. A lighter one compares est. max.</p>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
