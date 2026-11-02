@@ -274,6 +274,12 @@ export const type = {
     lineHeight: 56,
     letterSpacing: em(56, -0.015),
   },
+  /** The exercise on the rest-over screen (26): 24 px, no tracking, 1.15 line height. */
+  restOverName: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 24,
+    lineHeight: lineHeight(24, 1.15),
+  },
   /** What a summary row compares (11, 24): "reps", "lb", "est.", 12 px at 600. */
   unitTag: {
     ...font(600),

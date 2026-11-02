@@ -94,7 +94,7 @@ export function RestOverScreen() {
 
         {next ? (
           <>
-            <Text variant="h1Small" style={styles.name}>
+            <Text variant="restOverName" style={styles.name}>
               {next.name}
             </Text>
             <Text color="textMuted" style={styles.setLine}>
@@ -103,7 +103,9 @@ export function RestOverScreen() {
             </Text>
             {next.lastTime ? (
               <View style={styles.ghost}>
-                <GhostIcon color={colors.ghost} size={16} />
+                <View style={styles.ghostIcon}>
+                  <GhostIcon color={colors.ghost} size={16} />
+                </View>
                 <Text variant="label" color="ghost">
                   Last time
                 </Text>
@@ -119,7 +121,7 @@ export function RestOverScreen() {
       </View>
 
       <View style={styles.actions}>
-        <Button title={next ? `Start set ${next.setNumber}` : 'Open workout'} size="medium" onPress={start} />
+        <Button title={next ? `Start set ${next.setNumber}` : 'Open workout'} onPress={start} />
         {next ? <Button title={`+${EXTRA_REST_SECONDS} sec`} variant="secondary" onPress={() => void moreRest()} /> : null}
       </View>
     </View>
@@ -136,9 +138,10 @@ const styles = StyleSheet.create({
   track: { height: 6, marginTop: 22, borderRadius: 4, backgroundColor: colors.accent },
   name: { marginTop: 34 },
   setLine: { marginTop: 6 },
+  // "Last time" sits on the number's baseline; only the icon is centred (26).
   ghost: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'baseline',
     gap: 10,
     marginTop: 18,
     paddingVertical: 14,
@@ -146,6 +149,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.button,
     backgroundColor: colors.inset,
   },
+  ghostIcon: { alignSelf: 'center' },
   ghostSet: { ...figure(figures.restOverLast), color: colors.ghost },
   actions: { gap: 12 },
 });
