@@ -6,7 +6,7 @@ Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
 ## Stack
 
-- Expo (SDK 57) with TypeScript in strict mode. Config is `app.config.ts`, so native
+- Expo (SDK 58) with TypeScript in strict mode. Config is `app.config.ts`, so native
   colors come from the tokens.
 - Expo Router, with its required packages (react-native-screens, react-native-safe-area-context,
   expo-linking, expo-constants, expo-status-bar). Tabs: Today, Splits, Progress, History.
@@ -217,14 +217,13 @@ Development builds have a **Sync check** screen (link on the Today placeholder, 
 this phone" and "Waiting to send" is 1. Turn airplane mode off on Wi-Fi: it drops to 0. With
 "Sync on Wi-Fi only" on, mobile data shows "1 waiting for Wi-Fi" instead.
 
-## Dependency hold
+## SDK 58
 
-`expo` is held at 57.0.27 and `expo-router` at 57.0.25 (`expo.install.exclude` in
-package.json, so `npx expo install --fix` leaves them alone). Their next patches pull in
-`react-native-worklets` 0.13, which conflicts with `expo-modules-core`'s peer range (up to
-0.10). npm then nests `expo-modules-core`, and jest-expo, which requires it without declaring
-it, can't find it. Lift the hold when `npx expo install expo expo-router` leaves
-`node_modules/expo-modules-core` at the top level and `npm test` passes.
+The app moved from SDK 57 to 58 after launch (React Native 0.88, React 19.3, expo-router
+58, Jest 30). SDK 57 had to hold `expo` and `expo-router` back because of a
+`react-native-worklets` peer conflict; 58 resolves it, so nothing is held now. In
+expo-router 58 a custom tab bar gets `emitter` and `navigateToTab` instead of `navigation`
+(`TabBar.tsx`). Phones open the dev server in Expo Go for SDK 58.
 
 ## UI rules
 
