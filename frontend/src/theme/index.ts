@@ -267,6 +267,25 @@ export const type = {
     fontSize: 22,
     lineHeight: 26,
   },
+  /** "Set 1" above a set's tile on a past workout (21): 11 px at 600. */
+  tileLabel: {
+    ...font(600),
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  /** A section's title on Exercise detail (14): "Your last 3 workouts", 22 px. */
+  sectionTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.15),
+    letterSpacing: em(22, -0.01),
+  },
+  /** The line under a section title (14) and on edit (22): 14 px. */
+  sectionNote: {
+    ...font(body.weight),
+    fontSize: 14,
+    lineHeight: lineHeight(14, 1.4),
+  },
   /** Chart axis and band labels (14), 11 px. */
   chartLabel: {
     ...font(body.weight),
@@ -349,15 +368,21 @@ export const figures = {
   estMax: 76,
   record: 22,
   pace: 19,
-  /** One weight (15, 16): the headline number and each session's total, average or
-   * retention in the table. */
+  /** Reps at one weight (14): the headline number. */
   oneWeightHero: 56,
-  oneWeightRow: 19,
   /** A next target on the frontier (17): "20 × 8". */
   frontierTarget: 24,
   /** Bodyweight (20): the latest weight, and each entry in the list. */
   bodyweightNow: 68,
   bodyweightRow: 20,
+  /** A past workout (21): each set's tile, and an exercise's est. max. Editing it (22): the
+   * set number and the weight and reps fields. */
+  pastSet: 21,
+  /** A session's est. max in the list under 14's last-3 chart and on 23. */
+  sessionEstMax: 20,
+  pastEstMax: 22,
+  editSetNumber: 20,
+  editValue: 24,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */

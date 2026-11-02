@@ -1,9 +1,6 @@
 import {
-  fingerprint,
   movedUpTo,
-  percentText,
   progressHero,
-  retentionHero,
   stackedBars,
   type WeightSession,
 } from '../oneWeight';
@@ -37,7 +34,7 @@ const sessions = [
 describe('sample data: the totals and retention docs/product-spec.md expects', () => {
   test('totals 34, 38, 40, 44, 48 and retention 58%, 67%, 75%, 77%, 79%', () => {
     expect(stackedBars(sessions, NOW).bars.map((b) => b.total)).toEqual([34, 38, 40, 44, 48]);
-    expect(sessions.map((s) => percentText(s.retention!))).toEqual(['58%', '67%', '75%', '77%', '79%']);
+    expect(sessions.map((s) => `${Math.round(s.retention! * 100)}%`)).toEqual(['58%', '67%', '75%', '77%', '79%']);
   });
 });
 
@@ -118,70 +115,6 @@ describe('stacked bars (15): positions match the design', () => {
   });
 });
 
-describe('fingerprint (16): positions match the design', () => {
-  const chart = fingerprint(sessions);
-
-  test('gridlines every 2 reps from 6 to 14', () => {
-    expect(chart.ticks.map((t) => t.label)).toEqual(['14', '12', '10', '8', '6']);
-    [38.9, 76.7, 114.4, 152.2, 190].forEach((y, i) => near(chart.ticks[i].y, y));
-  });
-
-  test('the latest line in amber, earlier ones fading with age', () => {
-    expect(chart.latest.points.map((p) => [Math.round(p.x * 10) / 10, Math.round(p.y * 10) / 10])).toEqual([
-      [40, 38.9],
-      [136.7, 76.7],
-      [233.3, 95.6],
-      [330, 95.6],
-    ]);
-    expect(chart.earlier.map((l) => l.opacity)).toEqual([0.35, 0.5, 0.65, 0.85]);
-    const aug18 = chart.earlier[0].points;
-    [76.7, 152.2, 171.1, 171.1].forEach((y, i) => near(aug18[i].y, y));
-  });
-
-  test('the gain fills between the oldest and latest lines', () => {
-    const corners = chart.gain!.map((p) => [Math.round(p.x), Math.round(p.y)]);
-    expect(corners).toEqual([
-      [40, 39],
-      [137, 77],
-      [233, 96],
-      [330, 96],
-      [330, 171],
-      [233, 171],
-      [137, 152],
-      [40, 77],
-    ]);
-  });
-
-  test('labels: the latest above its line, the oldest below', () => {
-    expect(chart.latestLabel.text).toBe('Sep 1');
-    near(chart.latestLabel.x, 330);
-    near(chart.latestLabel.y, 86);
-    expect(chart.oldestLabel!.text).toBe('Aug 18');
-    near(chart.oldestLabel!.y, 187);
-  });
-
-  test('x labels by set number, the last right-aligned', () => {
-    expect(chart.xLabels.map((l) => [l.text, l.anchor])).toEqual([
-      ['Set 1', 'middle'],
-      ['Set 2', 'middle'],
-      ['Set 3', 'middle'],
-      ['Set 4', 'end'],
-    ]);
-  });
-
-  test('at most four earlier sessions', () => {
-    const lots = [session(8, 14, [12, 6, 6, 5]), ...sessions];
-    expect(fingerprint(lots).earlier).toHaveLength(4);
-  });
-
-  test('one session: no earlier lines and no gain', () => {
-    const one = fingerprint(sessions.slice(0, 1));
-    expect(one.earlier).toHaveLength(0);
-    expect(one.gain).toBeNull();
-    expect(one.oldestLabel).toBeNull();
-  });
-});
-
 describe('heroes', () => {
   test('progress: reps gained and where they came from (15)', () => {
     expect(progressHero(sessions, '10 lb', NOW)).toEqual({
@@ -222,25 +155,6 @@ describe('heroes', () => {
     );
   });
 
-  test('fingerprint: latest retention against the first (16)', () => {
-    expect(retentionHero(sessions, NOW)).toEqual({
-      value: '79%',
-      text: "of your first set's reps held through your last set on Sep 1.",
-      muted: 'Up from 58% on Aug 18.',
-    });
-  });
-
-  test('fingerprint: down, same, today and single sessions', () => {
-    const down = [session(8, 18, [10, 9]), session(10, 9, [10, 7])];
-    expect(retentionHero(down, NOW)).toEqual({
-      value: '70%',
-      text: "of your first set's reps held through your last set today.",
-      muted: 'Down from 90% on Aug 18.',
-    });
-    expect(retentionHero([session(8, 18, [10, 8]), session(8, 21, [10, 8])], NOW)!.muted).toBe('Same as on Aug 18.');
-    expect(retentionHero(sessions.slice(0, 1), NOW)!.muted).toBe('');
-    expect(retentionHero([{ ...session(8, 18, [10]), retention: null }], NOW)).toBeNull();
-  });
 });
 
 describe('moved up to', () => {

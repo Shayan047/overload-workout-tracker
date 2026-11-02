@@ -46,8 +46,9 @@ function Routes() {
           <Stack.Screen name="workout" />
           <Stack.Screen name="pick-exercise" />
           <Stack.Screen name="summary" />
+          <Stack.Screen name="past-workout/[workoutId]" />
           <Stack.Screen name="exercise/[exerciseId]" />
-          <Stack.Screen name="one-weight" />
+          <Stack.Screen name="all-workouts" />
           <Stack.Screen name="frontier" />
           <Stack.Screen name="profile" />
           <Stack.Screen name="bodyweight" />

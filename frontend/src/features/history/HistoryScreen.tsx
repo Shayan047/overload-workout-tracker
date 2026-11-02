@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -30,6 +31,14 @@ export function HistoryScreen() {
   const note = history.data ? monthNote(month.year, month.month, workouts, today) : '';
   const waiting = status.state === 'waiting-for-wifi' ? 'Waiting for Wi-Fi' : 'Saved on this phone';
 
+  const open = (id: string) => router.push({ pathname: '/past-workout/[workoutId]', params: { workoutId: id } });
+  // A day with one workout opens it (21); with more, they're listed below to pick from.
+  const pick = (day: number) => {
+    const that = onDay(workouts, month.year, month.month, day);
+    if (that.length === 1) return open(that[0].id);
+    setPicked(day === picked ? null : day);
+  };
+
   const go = (delta: number) => {
     const next = new Date(month.year, month.month + delta, 1);
     setMonth({ year: next.getFullYear(), month: next.getMonth() });
@@ -54,7 +63,7 @@ export function HistoryScreen() {
         {shown.map((w, i) => (
           <View key={w.id}>
             {i > 0 ? <Separator inset={16} /> : null}
-            <WorkoutRow workout={w} sync={pending.has(w.id) ? waiting : 'Synced'} />
+            <WorkoutRow workout={w} sync={pending.has(w.id) ? waiting : 'Synced'} onPress={() => open(w.id)} />
           </View>
         ))}
       </View>
@@ -92,7 +101,7 @@ export function HistoryScreen() {
                   key={`day-${w}-${d}`}
                   cell={cell}
                   picked={cell?.day === picked}
-                  onPress={() => cell && setPicked(cell.day === picked ? null : cell.day)}
+                  onPress={() => cell && pick(cell.day)}
                   label={cell ? `${cal.title.split(' ')[0]} ${cell.day}` : ''}
                 />
               ))}
@@ -147,10 +156,15 @@ function Day({ cell, picked, onPress, label }: { cell: Cell; picked: boolean; on
 }
 
 /** One workout: what and when, then how it went against last time (amber: you) and whether
- * it has synced. */
-function WorkoutRow({ workout, sync }: { workout: WorkoutHistoryItem; sync: string }) {
+ * it has synced. Opens the workout (21). */
+function WorkoutRow({ workout, sync, onPress }: { workout: WorkoutHistoryItem; sync: string; onPress: () => void }) {
   return (
-    <View style={styles.row}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${workout.title}, ${workoutLine(workout)}. Open`}
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+    >
       <View style={styles.flex}>
         <Text variant="rowTitle" numberOfLines={1}>
           {workout.title}
@@ -169,7 +183,7 @@ function WorkoutRow({ workout, sync }: { workout: WorkoutHistoryItem; sync: stri
           {sync}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -206,6 +220,7 @@ const styles = StyleSheet.create({
   note: { marginTop: 10, marginHorizontal: 4 },
   empty: { marginTop: 16, marginHorizontal: 4 },
   list: { marginTop: 16, paddingVertical: 2, borderRadius: radius.card, backgroundColor: colors.surface },
+  rowPressed: { backgroundColor: colors.surfaceHover },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 16 },
   flex: { flex: 1, minWidth: 0 },
   right: { alignItems: 'flex-end' },
