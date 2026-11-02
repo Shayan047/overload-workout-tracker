@@ -36,16 +36,28 @@ if (supported) {
 let prepared: Promise<boolean> | null = null;
 
 /** Asks for permission once and creates the Android channels. False if not allowed. */
+/** Creates a channel. expo-notifications 58 creates the silent channel (sound: null) but then
+ * fails to hand its settings back to JavaScript, so the call rejects although the channel
+ * exists. Without this, that rejection stopped the permission request below and no rest
+ * alert was ever scheduled. */
+async function channel(id: string, options: Notifications.NotificationChannelInput) {
+  try {
+    await Notifications.setNotificationChannelAsync(id, options);
+  } catch {
+    // The channel was created; only its description failed to come back.
+  }
+}
+
 function prepare(): Promise<boolean> {
   prepared ??= (async () => {
     if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync(CHANNEL.sound, {
+      await channel(CHANNEL.sound, {
         name: 'Rest timer',
         importance: Notifications.AndroidImportance.HIGH,
         sound: 'default',
         vibrationPattern: [0, 250, 120, 250],
       });
-      await Notifications.setNotificationChannelAsync(CHANNEL.silent, {
+      await channel(CHANNEL.silent, {
         name: 'Rest timer (silent)',
         importance: Notifications.AndroidImportance.HIGH,
         sound: null,

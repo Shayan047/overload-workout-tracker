@@ -47,7 +47,7 @@ function useKeyboardOpen(enabled: boolean): boolean {
 }
 
 /** Bottom sheet for logging a set (09) and changing an exercise (10). Tap the scrim or drag
- * down to close. Built on React Native's Modal and Animated, so it needs no extra library. */
+ * the handle down to close. Built on React Native's Modal and Animated, so it needs no extra library. */
 export function BottomSheet({ visible, onClose, accessibilityLabel, avoidKeyboard = false, children }: Props) {
   const insets = useSafeAreaInsets();
   const [mounted, setMounted] = useState(visible);
@@ -87,9 +87,12 @@ export function BottomSheet({ visible, onClose, accessibilityLabel, avoidKeyboar
     return () => sub.remove();
   }, [avoidKeyboard, visible, onClose]);
 
+  // Only the handle strip at the top drags the sheet. On the whole sheet, a tap whose finger
+  // drifted a few points down (common on a keypad) became a drag and the tap was lost.
   const drag = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, g) => g.dy > 6 && Math.abs(g.dy) > Math.abs(g.dx),
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > Math.abs(g.dx),
       onPanResponderMove: (_, g) => offset.setValue(Math.max(0, g.dy)),
       onPanResponderRelease: (_, g) => {
         if (g.dy > 80 || g.vy > 1) onClose();
@@ -125,9 +128,10 @@ export function BottomSheet({ visible, onClose, accessibilityLabel, avoidKeyboar
               transform: [{ translateY: offset }],
             },
           ]}
-          {...drag.panHandlers}
         >
-          <View style={styles.handle} />
+          <View style={styles.grab} {...drag.panHandlers}>
+            <View style={styles.handle} />
+          </View>
           {children}
         </Animated.View>
       </KeyboardAvoidingView>
@@ -148,18 +152,12 @@ const styles = StyleSheet.create({
   frame: { ...StyleSheet.absoluteFill, justifyContent: 'flex-end' },
   sheet: {
     flexShrink: 1,
-    paddingTop: 10,
     paddingHorizontal: 16,
     borderTopLeftRadius: radius.sheetTop,
     borderTopRightRadius: radius.sheetTop,
     backgroundColor: colors.surface,
   },
-  handle: {
-    width: 40,
-    height: 5,
-    borderRadius: 4,
-    marginBottom: 12,
-    alignSelf: 'center',
-    backgroundColor: colors.borderStrong,
-  },
+  // The drag strip: the sheet's 10 px top padding, the handle and the 12 px under it, full width.
+  grab: { marginHorizontal: -16, paddingTop: 10, paddingBottom: 12, alignItems: 'center' },
+  handle: { width: 40, height: 5, borderRadius: 4, backgroundColor: colors.borderStrong },
 });
