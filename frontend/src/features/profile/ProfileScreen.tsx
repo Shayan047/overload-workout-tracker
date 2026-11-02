@@ -1,6 +1,6 @@
 import { Link, router } from 'expo-router';
-import { type ReactNode, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { type ReactNode, useEffect, useState } from 'react';
+import { AppState, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { useAuth, useSync } from '@/api/AppProviders';
 import { useBodyweightEntries } from '@/api/bodyweight';
@@ -14,6 +14,8 @@ import { formatWeight, fromKg } from '@/lib/units';
 import { isReviewMode } from '@/review/reviewMode';
 import { sampleSplitDraft } from '@/review/sampleData';
 import { colors, radius, type } from '@/theme';
+
+import { RestAlarm } from '../../../modules/rest-alarm';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const UNITS = [
@@ -210,6 +212,7 @@ export function ProfileScreen() {
                 />
               }
             />
+            {RestAlarm ? <FullScreenAlertRow /> : null}
           </View>
           <Button title="Close" variant="secondary" size="sheet" onPress={() => setSheet(null)} />
         </View>
@@ -287,6 +290,33 @@ function Row({
     >
       {content}
     </Pressable>
+  );
+}
+
+/** Android 14+ asks the user to allow full-screen alerts, which open Rest's over (26) over
+ * the lock screen. Checked again whenever the app comes back from Settings. */
+function FullScreenAlertRow() {
+  const [allowed, setAllowed] = useState(() => RestAlarm?.canUseFullScreen() ?? true);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') setAllowed(RestAlarm?.canUseFullScreen() ?? true);
+    });
+    return () => sub.remove();
+  }, []);
+  return (
+    <>
+      <Separator inset={16} />
+      <ListRow
+        label="Full-screen alert"
+        accessibilityLabel={allowed ? 'Full-screen alert, on' : 'Full-screen alert, off. Turn on in Settings'}
+        onPress={allowed ? undefined : () => RestAlarm?.openFullScreenSettings()}
+        trailing={
+          <Text variant="bodyStrong" color={allowed ? 'textMuted' : 'accent'}>
+            {allowed ? 'On' : 'Turn on'}
+          </Text>
+        }
+      />
+    </>
   );
 }
 

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rest's over banner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#2A2F36;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.faint{color:#88909A}
+.small{font-size:13px}
+/* Android draws the banner; we set its icon, accent, title, text and two actions. */
+.banner{margin:44px 10px 0;padding:14px 16px 10px;border-radius:24px;background:#16181B;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.act{flex:1;height:40px;border:0;border-radius:20px;background:#22252A;color:#F3F5F7;font-family:inherit;font-size:14px;font-weight:650}
+.act.main{background:#3A2A0E;color:#FFC870}
+.other{margin:14px 10px 0;height:520px;border-radius:18px;background:#3A4048;opacity:.35}
+</style>
+</helmet>
+<main class="app" style="height:640px;padding:0 0 20px">
+  <div class="banner">
+    <div style="display:flex;align-items:center;gap:8px" class="small faint">
+      <svg width="14" height="13" viewBox="0 0 18 16" aria-hidden="true"><rect x="0" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect><rect x="5" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="10" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect></svg>
+      <span style="color:#FFA41B;font-weight:600">Overload</span> <span>now</span>
+    </div>
+    <div style="margin-top:8px;font-size:16px;font-weight:650">Rest's over</div>
+    <div class="small" style="color:#CED3D9;margin-top:2px">Bicep curl, set 3 next. Last time 20 × 5.</div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="act main">Start set 3</button>
+      <button class="act">+15 sec</button>
+    </div>
+  </div>
+  <div class="other" aria-hidden="true"></div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

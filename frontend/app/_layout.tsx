@@ -47,6 +47,7 @@ function Routes() {
           <Stack.Screen name="workout" />
           <Stack.Screen name="pick-exercise" />
           <Stack.Screen name="summary" />
+          <Stack.Screen name="rest-over" options={{ animation: 'fade' }} />
           <Stack.Screen name="past-workout/[workoutId]" />
           <Stack.Screen name="exercise/[exerciseId]" />
           <Stack.Screen name="all-workouts" />

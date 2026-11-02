@@ -267,6 +267,13 @@ export const type = {
     fontSize: 22,
     lineHeight: 26,
   },
+  /** The rest-over screen's headline (26): "Rest's over", 56 px. */
+  restOverTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 56,
+    lineHeight: 56,
+    letterSpacing: em(56, -0.015),
+  },
   /** What a summary row compares (11, 24): "reps", "lb", "est.", 12 px at 600. */
   unitTag: {
     ...font(600),
@@ -364,6 +371,8 @@ export const figures = {
   setLastTime: 20,
   exerciseDelta: 18,
   ghostReps: 18,
+  /** Last time's set on the rest-over screen (26). */
+  restOverLast: 24,
   /** The ghost's sets when you moved up (24, 25): "100 × 11, 110 × 7". */
   ghostSets: 22,
   /** The workout summary (11): the three stats, today / last reps, and a new best set. */

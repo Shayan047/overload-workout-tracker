@@ -1,18 +1,25 @@
 // The rest timer's alerts. While the app is open: a haptic at 10 s left and at the end.
-// For a locked phone or another app: a local notification scheduled for the end, with the
-// sound when "Rest alert sound" is on. The notification also carries the sound in the
-// foreground, so the app needs no audio library.
+// For a locked phone or another app, on Android builds with the RestAlarm module: an exact
+// alarm that opens the rest-over screen (26) over the lock screen, or shows its banner (27)
+// over another app. Elsewhere (Expo Go, iOS): a local notification scheduled for the end,
+// with the sound when "Rest alert sound" is on.
 
+import { useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
+import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import { useEffect, useRef } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import { useSettings } from '@/api/settings';
 import { useExercises } from '@/api/splits';
+import { cachedLastSessions } from '@/api/workouts';
 import { isReviewMode, now } from '@/review/reviewMode';
 
+import { RestAlarm } from '../../../modules/rest-alarm';
+import { setText } from './ghost';
 import { dueAlert, type Rest } from './rest';
+import { useWorkoutActions } from './useWorkoutActions';
 import { currentExercise, setsFor } from './workout';
 import { type Saved, useActiveWorkout } from './workoutStore';
 
@@ -72,18 +79,38 @@ function prepare(): Promise<boolean> {
   return prepared;
 }
 
-/** What's next when the rest ends: "Set 3 of bicep curl is next." */
-function nextText(saved: Saved, names: Map<string, string>): string {
+export type NextUp = { name: string; setNumber: number; lastTime: string | null } | null;
+
+/** The set that comes after the rest, with last time's set of the same number. */
+export function nextUp(saved: Saved, names: Map<string, string>, lastTime: (exerciseId: string, setNumber: number) => string | null): NextUp {
   const next = currentExercise(saved.state, { focusId: saved.focusId });
-  if (!next) return 'Time to finish your workout.';
-  const name = names.get(next.exercise_id) ?? 'your next exercise';
-  return `Set ${setsFor(saved.state, next.id).length + 1} of ${name.toLowerCase()} is next.`;
+  if (!next) return null;
+  const setNumber = setsFor(saved.state, next.id).length + 1;
+  return { name: names.get(next.exercise_id) ?? 'Your next exercise', setNumber, lastTime: lastTime(next.exercise_id, setNumber) };
 }
 
-async function schedule(rest: Rest, body: string, sound: boolean) {
+/** "Bicep curl, set 3 next. Last time 20 × 5." (27). */
+export function nextText(next: NextUp): string {
+  if (!next) return 'Time to finish your workout.';
+  return `${next.name}, set ${next.setNumber} next.${next.lastTime ? ` Last time ${next.lastTime}.` : ''}`;
+}
+
+async function schedule(rest: Rest, next: NextUp, sound: boolean) {
   if (!(await prepare())) return;
   const date = new Date(rest.endsAt);
   if (date.getTime() <= Date.now()) return;
+  const body = nextText(next);
+  if (RestAlarm) {
+    RestAlarm.schedule({
+      endsAt: date.getTime(),
+      title: 'Rest’s over',
+      body,
+      startLabel: next ? `Start set ${next.setNumber}` : 'Open workout',
+      url: Linking.createURL('rest-over'),
+      sound,
+    });
+    return;
+  }
   // The same identifier replaces any earlier one, even from before the app was killed.
   await Notifications.scheduleNotificationAsync({
     identifier: NOTIFICATION_ID,
@@ -97,6 +124,7 @@ async function schedule(rest: Rest, body: string, sound: boolean) {
 }
 
 function cancel() {
+  if (RestAlarm) return RestAlarm.cancel();
   void Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID).catch(() => undefined);
 }
 
@@ -105,17 +133,38 @@ export function RestAlerts() {
   const saved = useActiveWorkout();
   const settings = useSettings();
   const exercises = useExercises();
+  const queryClient = useQueryClient();
+  const actions = useWorkoutActions();
   const rest = saved?.rest ?? null;
   const sound = settings.data?.rest_alert_sound ?? true;
   const names = new Map((exercises.data ?? []).map((e) => [e.id, e.name]));
-  const body = saved ? nextText(saved, names) : '';
+  const unit = settings.data?.unit ?? 'lb';
+  const bodyweightIds = new Set((exercises.data ?? []).filter((e) => e.kind === 'bodyweight').map((e) => e.id));
+  const lastTime = (exerciseId: string, setNumber: number) => {
+    const set = cachedLastSessions(queryClient, [exerciseId])?.[0]?.sets.find((s) => s.set_number === setNumber);
+    return set ? setText(set, unit, bodyweightIds.has(exerciseId)) : null;
+  };
+  const next = saved ? nextUp(saved, names, lastTime) : null;
+  const nextKey = JSON.stringify(next);
 
-  // The notification follows the timer: rescheduled on ±15, cancelled on skip or finish.
+  // The alert follows the timer: rescheduled on ±15, cancelled on skip or finish.
   useEffect(() => {
     if (!supported) return;
-    if (rest) void schedule(rest, body, sound);
+    if (rest) void schedule(rest, JSON.parse(nextKey) as NextUp, sound);
     else cancel();
-  }, [rest, body, sound]);
+  }, [rest, nextKey, sound]);
+
+  // "+15 sec" on the rest-over banner while the app was away moved the alarm; the timer
+  // follows when the app comes back.
+  useEffect(() => {
+    if (!supported || !RestAlarm) return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') return;
+      const endsAt = RestAlarm?.takeExtendedEnd();
+      if (endsAt) void actions.restAgain(15, new Date(endsAt));
+    });
+    return () => sub.remove();
+  }, [actions]);
 
   // Haptics, each once per rest. A check on returning to the app catches an end missed in
   // the background (the notification already alerted) without buzzing again.
