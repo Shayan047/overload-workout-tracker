@@ -57,7 +57,9 @@ async function channel(id: string, options: Notifications.NotificationChannelInp
 
 function prepare(): Promise<boolean> {
   prepared ??= (async () => {
-    if (Platform.OS === 'android') {
+    // With the RestAlarm module the alarm has its own channels; these are only for the
+    // scheduled notification (Expo Go).
+    if (Platform.OS === 'android' && !RestAlarm) {
       await channel(CHANNEL.sound, {
         name: 'Rest timer',
         importance: Notifications.AndroidImportance.HIGH,
