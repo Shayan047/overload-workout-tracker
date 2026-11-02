@@ -8,12 +8,12 @@ import { useSettings } from '@/api/settings';
 import { useExercises } from '@/api/splits';
 import { Button, IconButton, Separator, Text, useFrameInsets } from '@/components';
 import { CheckIcon, CloseIcon, CloudOffIcon, GhostIcon, StarIcon } from '@/components/icons';
-import { fromKg } from '@/lib/units';
+import { formatWeight, fromKg } from '@/lib/units';
 import { colors, figure, figures, radius } from '@/theme';
 
 import { useFinishedWorkout } from './finishedStore';
-import { ghostDate, setText } from './ghost';
-import { timeRange } from './summary';
+import { changeText, ghostDate, isAhead, setText } from './ghost';
+import { type ExerciseResult, timeRange } from './summary';
 
 /** Where the workout's writes are, in the words of 11's note; null once they're sent. */
 function syncNote(status: OutboxStatus): string | null {
@@ -51,10 +51,22 @@ export function SummaryScreen() {
   const oneDecimal = (kg: number) => fromKg(kg, unit).toFixed(1);
   const note = syncNote(status);
 
-  // "See … progress": the biggest new best, else the biggest gain, else the first exercise.
+  // "See … progress": the biggest new best, else the first exercise ahead, else the first.
   const featured =
     summary.bests[0]?.exerciseId ??
-    [...summary.exercises].sort((a, b) => (b.delta ?? -Infinity) - (a.delta ?? -Infinity))[0]?.exerciseId;
+    (summary.exercises.find((e) => e.comparison && isAhead(e.comparison)) ?? summary.exercises[0])?.exerciseId;
+
+  /** Today / last in what was compared (24): reps at the same weight, the top weight when
+   * heavier, est. max when lighter. */
+  const compared = (e: ExerciseResult): { today: string; last: string | null; tag: string } => {
+    const c = e.comparison;
+    if (!c) return { today: String(e.reps), last: null, tag: 'reps' };
+    if (c.kind === 'reps') return { today: String(c.you), last: String(c.last), tag: 'reps' };
+    if (c.kind === 'heavier') {
+      return { today: formatWeight(fromKg(c.todayKg, unit)), last: formatWeight(fromKg(c.lastKg, unit)), tag: unit };
+    }
+    return { today: oneDecimal(c.youKg), last: oneDecimal(c.lastKg), tag: 'est.' };
+  };
 
   return (
     <View style={[styles.screen, { paddingTop: top }]}>
@@ -114,7 +126,7 @@ export function SummaryScreen() {
           </View>
           <View style={[styles.row, styles.tableHeader]}>
             <Text variant="label" color="textFaint" style={styles.colName}>
-              Total reps
+              Exercise
             </Text>
             <Text variant="label" color="textFaint" style={styles.colReps}>
               Today / last
@@ -123,29 +135,39 @@ export function SummaryScreen() {
               Change
             </Text>
           </View>
-          {summary.exercises.map((e) => (
-            <View key={e.rowId}>
-              <Separator inset={16} />
-              <View style={styles.row}>
-                <Text numberOfLines={1} style={styles.colName}>
-                  {name(e.exerciseId)}
-                </Text>
-                <Text style={[styles.reps, styles.colReps]}>
-                  {e.today}
-                  {e.last !== null ? <Text style={[styles.reps, styles.last]}> / {e.last}</Text> : null}
-                </Text>
-                {e.delta === null || e.delta === 0 ? (
-                  <Text variant="note" color="textFaint" style={styles.colChange}>
-                    {e.delta === null ? 'New' : 'Even'}
+          {summary.exercises.map((e) => {
+            const values = compared(e);
+            const change = e.comparison ? changeText(e.comparison, unit, 'summary') : 'New';
+            return (
+              <View key={e.rowId}>
+                <Separator inset={16} />
+                <View style={styles.row}>
+                  <Text numberOfLines={1} style={styles.colName}>
+                    {name(e.exerciseId)}
                   </Text>
-                ) : (
-                  <Text style={[styles.reps, styles.colChange, { color: e.delta > 0 ? colors.accent : colors.ghost }]}>
-                    {e.delta > 0 ? `+${e.delta}` : `−${-e.delta}`}
+                  <Text style={[styles.reps, styles.colReps]}>
+                    {values.today}
+                    {values.last !== null ? <Text style={[styles.reps, styles.last]}> / {values.last}</Text> : null}
+                    <Text variant="unitTag" color="textFaint">
+                      {' '}
+                      {values.tag}
+                    </Text>
                   </Text>
-                )}
+                  {change === 'New' || change === 'Even' ? (
+                    <Text variant="note" color="textFaint" style={styles.colChange}>
+                      {change}
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[styles.reps, styles.colChange, { color: isAhead(e.comparison!) ? colors.accent : colors.ghost }]}
+                    >
+                      {change}
+                    </Text>
+                  )}
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {summary.bests.length ? (
@@ -243,8 +265,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 44, paddingHorizontal: 16 },
   tableHeader: { height: 28 },
   colName: { flex: 1, minWidth: 0 },
-  colReps: { width: 92, textAlign: 'right' },
-  colChange: { width: 58, textAlign: 'right' },
+  colReps: { width: 104, textAlign: 'right' },
+  colChange: { width: 64, textAlign: 'right' },
   reps: { ...figure(figures.summaryReps), color: colors.text },
   last: { color: colors.ghost },
   bests: {

@@ -267,7 +267,7 @@ function RecentSection({ data, unit, today, bodyweight, exerciseId }: SectionPro
                 <LineKey age={age} mode="recent" />
                 <View style={styles.flex}>
                   <Text variant="rowTitle">{sessionTitle(s.at, today)}</Text>
-                  <Text variant="small" color="textMuted">
+                  <Text variant="smallInBody" color="textMuted">
                     {sessionSets(s.sets, unit, bodyweight)}
                   </Text>
                 </View>

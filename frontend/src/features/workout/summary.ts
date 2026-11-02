@@ -4,6 +4,7 @@
 
 import type { LastSession } from '@/api/workouts';
 
+import { compare, type Comparison, isAhead } from './ghost';
 import { type ActiveWorkout, setsFor } from './workout';
 
 type SetLike = { weight_kg: number; reps: number };
@@ -11,10 +12,10 @@ type SetLike = { weight_kg: number; reps: number };
 export type ExerciseResult = {
   rowId: string;
   exerciseId: string;
-  /** Total reps today and last time; `last` and `delta` are null without a last time. */
-  today: number;
-  last: number | null;
-  delta: number | null;
+  /** Today's total reps. */
+  reps: number;
+  /** Against last time, by the weight (ghost.ts); null without a last time. */
+  comparison: Comparison | null;
   /** Today's session est. max (kg), and the best before today. */
   estMaxKg: number | null;
   previousBestKg: number | null;
@@ -42,7 +43,6 @@ export type Summary = {
 
 const round3 = (value: number) => Math.round(value * 1000) / 1000;
 const epley = (weight: number, reps: number) => weight * (1 + reps / 30);
-const sum = (sets: readonly SetLike[]) => sets.reduce((total, s) => total + s.reps, 0);
 
 /** A session's best set and its est. max; 0-rep sets don't count. */
 function best(sets: readonly SetLike[], loadOffset: number): { set: SetLike; estMax: number } | null {
@@ -83,13 +83,12 @@ export function summarize(
         best(last.sets, bodyweightIds.has(row.exercise_id) ? last.bodyweight_kg : 0)?.estMax ??
         null)
       : null;
-    const lastTotal = last ? sum(last.sets) : null;
+    const lastOffset = last && bodyweightIds.has(row.exercise_id) ? last.bodyweight_kg : 0;
     exercises.push({
       rowId: row.id,
       exerciseId: row.exercise_id,
-      today: sum(sets),
-      last: lastTotal,
-      delta: lastTotal === null ? null : sum(sets) - lastTotal,
+      reps: sets.reduce((total, s) => total + s.reps, 0),
+      comparison: last ? compare(sets, last.sets, { today: offset, last: lastOffset }) : null,
       estMaxKg: today ? round3(today.estMax) : null,
       previousBestKg,
     });
@@ -104,7 +103,7 @@ export function summarize(
     }
   }
 
-  const compared = exercises.filter((e) => e.delta !== null);
+  const compared = exercises.flatMap((e) => (e.comparison ? [e.comparison] : []));
   const lastDate =
     rows
       .map(({ row }) => lastById.get(row.exercise_id)?.started_at)
@@ -121,7 +120,7 @@ export function summarize(
     sets: rows.reduce((total, { sets }) => total + sets.length, 0),
     volumeKg,
     exercises,
-    ahead: compared.filter((e) => e.delta! > 0).length,
+    ahead: compared.filter(isAhead).length,
     compared: compared.length,
     lastDate,
     bests: bests.sort((a, b) => b.gain - a.gain).map(({ gain: _gain, ...rest }) => rest),

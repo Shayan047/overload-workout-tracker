@@ -230,14 +230,14 @@ function ExerciseCard({
       <View style={styles.cardHeader}>
         <View style={styles.flex}>
           <Text variant="h2">{name}</Text>
-          <Text variant="small" color="textMuted">
+          <Text variant="smallInBody" color="textMuted">
             {subtitle}
           </Text>
         </View>
         {view.estMaxKg !== null ? (
           <View style={styles.estMax}>
             <Text style={styles.estMaxValue}>{estMaxText(view.estMaxKg, unit)}</Text>
-            <Text variant="small" color="textFaint">
+            <Text variant="small" color="textFaint" style={styles.estMaxLabel}>
               est. max
             </Text>
           </View>
@@ -484,6 +484,8 @@ const styles = StyleSheet.create({
   cardHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   estMax: { alignItems: 'flex-end' },
   estMaxValue: { ...figure(figures.pastEstMax), color: colors.text },
+  // The design sets the 22 px number in a body line, so its label sits 2 px lower.
+  estMaxLabel: { marginTop: 2 },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: TILE_GAP, marginTop: 12 },
   tile: {
     height: 58,

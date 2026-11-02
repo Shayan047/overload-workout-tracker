@@ -81,7 +81,7 @@ export function AllWorkoutsScreen() {
                 <LineKey age={age} mode="all" picked={on} />
                 <View style={styles.flex}>
                   <Text variant="rowTitle">{sessionTitle(s.at, today)}</Text>
-                  <Text variant="small" color="textMuted">
+                  <Text variant="smallInBody" color="textMuted">
                     {sessionSets(s.sets, unit, bodyweight)}
                   </Text>
                 </View>

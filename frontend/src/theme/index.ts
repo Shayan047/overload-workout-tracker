@@ -267,6 +267,12 @@ export const type = {
     fontSize: 22,
     lineHeight: 26,
   },
+  /** What a summary row compares (11, 24): "reps", "lb", "est.", 12 px at 600. */
+  unitTag: {
+    ...font(600),
+    fontSize: 12,
+    lineHeight: 16,
+  },
   /** "Set 1" above a set's tile on a past workout (21): 11 px at 600. */
   tileLabel: {
     ...font(600),
@@ -358,6 +364,8 @@ export const figures = {
   setLastTime: 20,
   exerciseDelta: 18,
   ghostReps: 18,
+  /** The ghost's sets when you moved up (24, 25): "100 × 11, 110 × 7". */
+  ghostSets: 22,
   /** The workout summary (11): the three stats, today / last reps, and a new best set. */
   summaryStat: 34,
   summaryReps: 19,

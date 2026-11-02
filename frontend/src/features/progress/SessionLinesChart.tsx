@@ -98,17 +98,21 @@ export function SessionLinesChart({
 /** The line's key beside a session in the list: amber for the latest, ice for the rest
  * (dashed for the third on 14). */
 export function LineKey({ age, mode, picked = false }: { age: number; mode: 'recent' | 'all'; picked?: boolean }) {
-  if (age === 0) return <View style={{ width: 18, height: 3, borderRadius: 2, backgroundColor: colors.accent }} />;
-  if (mode === 'recent' && age > 1) {
-    return (
+  let key;
+  if (age === 0) key = <View style={{ width: 18, height: 3, borderRadius: 2, backgroundColor: colors.accent }} />;
+  else if (mode === 'recent' && age > 1) {
+    key = (
       <Svg width={18} height={2}>
         <Line x1={0} y1={1} x2={18} y2={1} stroke={colors.ghostDeep} strokeWidth={2} strokeDasharray="5 5" />
       </Svg>
     );
+  } else {
+    key = (
+      <View
+        style={{ width: 18, height: 3, borderRadius: 2, backgroundColor: colors.ghost, opacity: mode === 'all' && !picked ? 0.5 : 1 }}
+      />
+    );
   }
-  return (
-    <View
-      style={{ width: 18, height: 3, borderRadius: 2, backgroundColor: colors.ghost, opacity: mode === 'all' && !picked ? 0.5 : 1 }}
-    />
-  );
+  // A 22 px column, as the designs' lists lay it out.
+  return <View style={{ width: 22 }}>{key}</View>;
 }

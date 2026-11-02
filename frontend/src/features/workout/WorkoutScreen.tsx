@@ -7,14 +7,14 @@ import { useSettings } from '@/api/settings';
 import { useExercises } from '@/api/splits';
 import { type LastSession, useLastSessions } from '@/api/workouts';
 import { BottomSheet, Button, IconButton, Separator, Text, useFrameInsets } from '@/components';
-import { CheckIcon, ChevronDownIcon, CloudOffIcon, GhostIcon, MoreIcon, PlusIcon } from '@/components/icons';
+import { ArrowUpIcon, CheckIcon, ChevronDownIcon, CloudOffIcon, GhostIcon, MoreIcon, PlusIcon } from '@/components/icons';
 import { bestSetText } from '@/features/today/today';
 import { equipmentLabel, type Exercise } from '@/lib/exercises';
 import { formatWeight, fromKg, type Unit } from '@/lib/units';
 import { isReviewMode, now } from '@/review/reviewMode';
-import { colors, figure, figures, radius } from '@/theme';
+import { colors, figure, figures, figureTimes, radius } from '@/theme';
 
-import { aheadText, elapsedText, exerciseDelta, ghost, ghostDate, lastTimeText, setText } from './ghost';
+import { changeText, compare, comparisonText, elapsedText, ghost, ghostDate, isAhead, lastTimeText, setGroups, setText } from './ghost';
 import { ChangeExerciseSheet, type ChangeTarget } from './ChangeExerciseSheet';
 import { LogSetSheet, type SetTarget } from './LogSetSheet';
 import { RestTimerCard } from './RestTimerCard';
@@ -31,7 +31,6 @@ import {
 } from './workout';
 import { inProgress, useActiveWorkout } from './workoutStore';
 
-const sum = (sets: readonly { reps: number }[]) => sets.reduce((total, s) => total + s.reps, 0);
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 /** The weight cell: "20", or for bodyweight exercises "+10" / "BW". */
@@ -58,47 +57,118 @@ function useElapsed(startedAt: string | undefined): string {
   return startedAt ? elapsedText(new Date(startedAt), clock) : '0:00';
 }
 
-function GhostPanel({ today, last }: { today: LoggedSet[]; last: LastSession }) {
-  const result = ghost(today, last.sets);
-  const scale = Math.max(result.lastTotal, result.you, 1);
-  const bar = (reps: number, color: string) => (
+/** "100 × 11, 110 × 7" in the number face, with the light "×" (24). */
+function SetsFigure({ sets, unit, bodyweight, color }: { sets: LoggedSet[] | LastSession['sets']; unit: Unit; bodyweight: boolean; color: string }) {
+  return (
+    <Text style={[styles.ghostSets, { color }]}>
+      {setGroups(sets, unit, bodyweight).map((g, i) => (
+        <Text key={`${g.load}-${i}`}>
+          {i ? ', ' : ''}
+          {g.load}
+          <Text style={styles.ghostTimes}>{' × '}</Text>
+          {g.reps.join(', ')}
+        </Text>
+      ))}
+    </Text>
+  );
+}
+
+type GhostProps = {
+  today: LoggedSet[];
+  last: LastSession;
+  unit: Unit;
+  bodyweight: boolean;
+  /** Today's bodyweight snapshot (rule 3). */
+  bodyweightKg: number;
+};
+
+/** The ghost (08, 24, 25): the sets so far against the same sets last time. Reps at the same
+ * weight, the move up when heavier, est. max when lighter. */
+function GhostPanel({ today, last, unit, bodyweight, bodyweightKg }: GhostProps) {
+  const offsets = bodyweight ? { today: bodyweightKg, last: last.bodyweight_kg } : undefined;
+  const result = ghost(today, last.sets, offsets);
+  const c = result.comparison;
+  const through = [...last.sets].sort((a, b) => a.set_number - b.set_number).slice(0, today.length);
+  const weight = (kg: number) => (bodyweight ? (kg > 0 ? `+${formatWeight(fromKg(kg, unit))} ${unit}` : 'bodyweight') : `${formatWeight(fromKg(kg, unit))} ${unit}`);
+  const oneWeight = [...today, ...through].every((s) => Math.abs(s.weight_kg - today[0]?.weight_kg) < 0.0005);
+
+  const header = (
+    <View style={styles.ghostHeader}>
+      <View style={styles.inline}>
+        <GhostIcon color={colors.ghost} size={16} />
+        <Text variant="label" color="ghost">
+          Ghost: {ghostDate(new Date(last.started_at))}
+        </Text>
+      </View>
+      {result.sets > 0 ? (
+        <View style={styles.inline}>
+          {c.kind === 'heavier' ? <ArrowUpIcon color={colors.accent} size={14} /> : null}
+          <Text variant="labelHeavy" color={isAhead(c) ? 'accent' : 'textSecondary'}>
+            {comparisonText(c, unit, 'panel')}
+          </Text>
+        </View>
+      ) : null}
+    </View>
+  );
+
+  if (c.kind === 'heavier') {
+    return (
+      <View style={styles.ghost} accessibilityLabel="Ghost: you against last time">
+        {header}
+        <View style={[styles.ghostGrid, styles.ghostSetsGrid]}>
+          <View style={[styles.ghostRow, styles.ghostSetsRow]}>
+            <Text variant="label" style={styles.ghostLabel}>
+              You
+            </Text>
+            <SetsFigure sets={today} unit={unit} bodyweight={bodyweight} color={colors.accent} />
+          </View>
+          <View style={[styles.ghostRow, styles.ghostSetsRow]}>
+            <Text variant="label" color="ghost" style={styles.ghostLabel}>
+              Last time
+            </Text>
+            <SetsFigure sets={through} unit={unit} bodyweight={bodyweight} color={colors.ghost} />
+          </View>
+        </View>
+        <Text variant="small" color="textFaint" style={styles.ghostNote}>
+          You moved up from {weight(c.lastKg)} to {weight(c.todayKg)}, so reps aren’t compared. Next time they are, at{' '}
+          {weight(c.todayKg)}.
+        </Text>
+      </View>
+    );
+  }
+
+  const [you, then] =
+    c.kind === 'lighter' ? [fromKg(c.youKg, unit), fromKg(c.lastKg, unit)] : [c.you, result.sets ? c.last : 0];
+  const scale = c.kind === 'lighter' ? Math.max(you, then, 1) : Math.max(result.lastTotal, you, 1);
+  const shown = (value: number) => (c.kind === 'lighter' ? value.toFixed(1) : String(value));
+  const bar = (value: number, color: string) => (
     <View style={styles.track}>
-      <View style={[styles.fill, { width: `${(reps / scale) * 100}%`, backgroundColor: color }]} />
+      <View style={[styles.fill, { width: `${(value / scale) * 100}%`, backgroundColor: color }]} />
     </View>
   );
   const note =
-    result.sets === 0
-      ? `Last time you finished with ${result.lastTotal}.`
-      : `Reps through set ${result.sets}. Last time you finished with ${result.lastTotal}.`;
+    c.kind === 'lighter'
+      ? `${weight(Math.max(...today.map((s) => s.weight_kg)))} today against ${weight(Math.max(...through.map((s) => s.weight_kg)))} last time, so this compares est. max from your best set so far.`
+      : result.sets === 0
+        ? `Last time you finished with ${result.lastTotal}.`
+        : `Reps through set ${result.sets}${oneWeight ? `, ${result.sets > 1 || through.length ? 'both ' : ''}at ${weight(today[0].weight_kg)}` : ''}. Last time you finished with ${result.lastTotal}.`;
   return (
     <View style={styles.ghost} accessibilityLabel="Ghost: you against last time">
-      <View style={styles.ghostHeader}>
-        <View style={styles.inline}>
-          <GhostIcon color={colors.ghost} size={16} />
-          <Text variant="label" color="ghost">
-            Ghost: {ghostDate(new Date(last.started_at))}
-          </Text>
-        </View>
-        {result.sets > 0 ? (
-          <Text variant="labelHeavy" color={result.delta > 0 ? 'accent' : 'textSecondary'}>
-            {aheadText(result.delta, 'reps')}
-          </Text>
-        ) : null}
-      </View>
+      {header}
       <View style={styles.ghostGrid}>
         <View style={styles.ghostRow}>
           <Text variant="label" style={styles.ghostLabel}>
             You
           </Text>
-          {bar(result.you, colors.accent)}
-          <Text style={[styles.ghostReps, { color: colors.accent }]}>{result.you}</Text>
+          {bar(you, colors.accent)}
+          <Text style={[styles.ghostReps, c.kind === 'lighter' && styles.ghostEstMax, { color: colors.accent }]}>{shown(you)}</Text>
         </View>
         <View style={styles.ghostRow}>
           <Text variant="label" color="ghost" style={styles.ghostLabel}>
             Last time
           </Text>
-          {bar(result.last, colors.ghost)}
-          <Text style={[styles.ghostReps, { color: colors.ghost }]}>{result.last}</Text>
+          {bar(then, colors.ghost)}
+          <Text style={[styles.ghostReps, c.kind === 'lighter' && styles.ghostEstMax, { color: colors.ghost }]}>{shown(then)}</Text>
         </View>
       </View>
       <Text variant="small" color="textFaint" style={styles.ghostNote}>
@@ -237,7 +307,9 @@ export function WorkoutScreen() {
           <MoreButton label={`Change ${name.toLowerCase()} for today`} onPress={() => setChanging(current.id)} />
         </View>
 
-        {ghostMode && last ? <GhostPanel today={today} last={last} /> : null}
+        {ghostMode && last ? (
+          <GhostPanel today={today} last={last} unit={unit} bodyweight={bodyweight} bodyweightKg={state?.workout.bodyweight_kg ?? 0} />
+        ) : null}
 
         <View style={[styles.grid, styles.gridHeader]}>
           <Text variant="label" color="textFaint" style={styles.colSet}>
@@ -416,7 +488,9 @@ export function WorkoutScreen() {
               const { name, bodyweight, last, today } = info(row);
               const best = bestSetText(today, { unit, bodyweightKg: state.workout.bodyweight_kg ?? 0, bodyweight });
               const summary = [plural(today.length, 'set'), best ? `best ${best}` : null].filter(Boolean).join(', ');
-              const delta = ghostMode && last && today.length ? exerciseDelta(sum(today), sum(last.sets)) : null;
+              const offsets = bodyweight ? { today: state.workout.bodyweight_kg ?? 0, last: last?.bodyweight_kg ?? 0 } : undefined;
+              const comparison = ghostMode && last && today.length ? compare(today, last.sets, offsets) : null;
+              const delta = comparison ? changeText(comparison, unit, 'done') : null;
               return (
                 <Pressable
                   key={row.id}
@@ -435,7 +509,7 @@ export function WorkoutScreen() {
                     </Text>
                   </View>
                   {delta ? (
-                    <Text style={[styles.delta, { color: delta.startsWith('+') ? colors.accent : colors.textMuted }]}>{delta}</Text>
+                    <Text style={[styles.delta, { color: comparison && isAhead(comparison) ? colors.accent : colors.textMuted }]}>{delta}</Text>
                   ) : null}
                 </Pressable>
               );
@@ -539,6 +613,11 @@ export function WorkoutScreen() {
         bodyweight={targetInfo?.bodyweight ?? false}
         unit={unit}
         lastSet={targetLastSet}
+        offsets={
+          targetInfo?.bodyweight
+            ? { today: state?.workout.bodyweight_kg ?? 0, last: targetInfo.last?.bodyweight_kg ?? 0 }
+            : undefined
+        }
         restSeconds={target && !target.setId ? (targetRow?.rest_seconds ?? 0) : 0}
         onClose={() => setTarget(null)}
         onSave={(weightKg, reps) => {
@@ -661,6 +740,11 @@ const styles = StyleSheet.create({
   fill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 6 },
   ghostReps: { ...figure(figures.ghostReps), width: 28, textAlign: 'right' },
   ghostNote: { marginTop: 10 },
+  ghostEstMax: { width: 40 },
+  ghostSetsRow: { alignItems: 'baseline' },
+  ghostSets: { ...figure(figures.ghostSets), flex: 1 },
+  ghostSetsGrid: { gap: 8 },
+  ghostTimes: { ...figureTimes(15, figures.ghostSets) },
   grid: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   gridHeader: { paddingTop: 14, paddingRight: 6, paddingBottom: 6, paddingLeft: 10 },
   colSet: { width: 34 },

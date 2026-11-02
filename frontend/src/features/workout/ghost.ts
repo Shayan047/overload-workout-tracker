@@ -1,33 +1,99 @@
 // Ghost mode and the numbers around it (08, 09): today against the most recent finished
-// session of the same exercise (rule 9), set by set. Computed on the phone from the cached
-// previous session, so it works offline.
+// session of the same exercise (rule 9). Computed on the phone from the cached previous
+// session, so it works offline.
+//
+// What's compared depends on the weight (24, 25): the heaviest weight in today's sets
+// against the heaviest in the same sets last time. The same weight compares reps; a heavier
+// one counts as ahead; a lighter one compares est. max (rule 4, with each workout's
+// bodyweight for bodyweight exercises, rule 2).
 
 import { formatWeight, fromKg, type Unit } from '@/lib/units';
 
 type SetLike = { set_number: number; weight_kg: number; reps: number };
+type LoadSet = { weight_kg: number; reps: number };
+
+export type Comparison =
+  | { kind: 'reps'; you: number; last: number; delta: number }
+  | { kind: 'heavier'; todayKg: number; lastKg: number; upKg: number }
+  /** Est. max (kg) of the best set today and last time. */
+  | { kind: 'lighter'; youKg: number; lastKg: number; deltaKg: number };
 
 export type Ghost = {
   /** Sets logged today. */
   sets: number;
-  /** Your reps through those sets. */
-  you: number;
-  /** Last time's reps through the same sets (all of them, if you've done more). */
-  last: number;
   /** Last time's reps in total. */
   lastTotal: number;
-  /** you − last. */
-  delta: number;
+  /** Today's sets against the same sets last time (all of them, if you've done more). */
+  comparison: Comparison;
 };
 
-const byNumber = (sets: readonly SetLike[]) => [...sets].sort((a, b) => a.set_number - b.set_number);
-const sum = (sets: readonly SetLike[]) => sets.reduce((total, s) => total + s.reps, 0);
+/** Bodyweight added to each set's weight for est. max: each workout's own snapshot, or 0. */
+export type Offsets = { today: number; last: number };
 
-export function ghost(today: readonly SetLike[], last: readonly SetLike[]): Ghost {
+const SAME = 0.0005;
+const byNumber = (sets: readonly SetLike[]) => [...sets].sort((a, b) => a.set_number - b.set_number);
+const sum = (sets: readonly LoadSet[]) => sets.reduce((total, s) => total + s.reps, 0);
+const counted = (sets: readonly LoadSet[]) => sets.filter((s) => s.reps >= 1);
+const top = (sets: readonly LoadSet[]) => Math.max(...counted(sets).map((s) => s.weight_kg));
+const bestEstMax = (sets: readonly LoadSet[], offset: number) =>
+  Math.max(...counted(sets).map((s) => (s.weight_kg + offset) * (1 + s.reps / 30)));
+
+/** `today` against `last` by option B; null when either has no set with a rep. */
+export function compare(today: readonly LoadSet[], last: readonly LoadSet[], offsets: Offsets = { today: 0, last: 0 }): Comparison | null {
+  if (!counted(today).length || !counted(last).length) return null;
+  const [mine, theirs] = [top(today), top(last)];
+  if (mine > theirs + SAME) return { kind: 'heavier', todayKg: mine, lastKg: theirs, upKg: mine - theirs };
+  if (mine < theirs - SAME) {
+    const [youKg, lastKg] = [bestEstMax(today, offsets.today), bestEstMax(last, offsets.last)];
+    return { kind: 'lighter', youKg, lastKg, deltaKg: youKg - lastKg };
+  }
+  const [you, lastReps] = [sum(today), sum(last)];
+  return { kind: 'reps', you, last: lastReps, delta: you - lastReps };
+}
+
+/** The ghost panel (08): the sets logged so far against the same sets last time. */
+export function ghost(today: readonly SetLike[], last: readonly SetLike[], offsets?: Offsets): Ghost {
   const mine = byNumber(today);
-  const theirs = byNumber(last);
-  const you = sum(mine);
-  const lastThrough = sum(theirs.slice(0, mine.length));
-  return { sets: mine.length, you, last: lastThrough, lastTotal: sum(theirs), delta: you - lastThrough };
+  const through = byNumber(last).slice(0, mine.length);
+  const comparison = compare(mine, through, offsets) ?? {
+    kind: 'reps',
+    you: sum(mine),
+    last: sum(through),
+    delta: sum(mine) - sum(through),
+  };
+  return { sets: mine.length, lastTotal: sum(last), comparison };
+}
+
+export function isAhead(c: Comparison): boolean {
+  if (c.kind === 'heavier') return true;
+  if (c.kind === 'lighter') return c.deltaKg > SAME;
+  return c.delta > 0;
+}
+
+const oneDecimal = (kg: number, unit: Unit) => Math.round(fromKg(Math.abs(kg), unit) * 10) / 10;
+
+/** The verdict: "Ahead by 2 reps" / "Up 2.5 lb" / "Est. max 0.7 lb behind" on the ghost panel,
+ * "Ahead by 1" / "Up 2.5 lb" / "Est. max −0.7" on the log-a-set pill (09). */
+export function comparisonText(c: Comparison, unit: Unit, style: 'panel' | 'short'): string {
+  if (c.kind === 'reps') return aheadText(c.delta, style === 'panel' ? 'reps' : 'short');
+  if (c.kind === 'heavier') return `Up ${formatWeight(fromKg(c.upKg, unit))} ${unit}`;
+  const amount = oneDecimal(c.deltaKg, unit);
+  if (amount === 0) return 'Est. max level';
+  if (style === 'short') return `Est. max ${c.deltaKg > 0 ? '+' : '−'}${amount.toFixed(1)}`;
+  return `Est. max ${amount.toFixed(1)} ${unit} ${c.deltaKg > 0 ? 'ahead' : 'behind'}`;
+}
+
+/** A finished exercise's change: "+1 rep" on 08's done cards, "+1" in 11's Change column;
+ * "+2.5 lb" when heavier; "−0.7 est." / "−0.7" when lighter. */
+export function changeText(c: Comparison, unit: Unit, style: 'done' | 'summary'): string {
+  if (c.kind === 'reps') {
+    if (style === 'done') return exerciseDelta(c.you, c.last);
+    return c.delta === 0 ? 'Even' : `${c.delta > 0 ? '+' : '−'}${Math.abs(c.delta)}`;
+  }
+  if (c.kind === 'heavier') return `+${formatWeight(fromKg(c.upKg, unit))} ${unit}`;
+  const amount = oneDecimal(c.deltaKg, unit);
+  if (amount === 0) return 'Even';
+  return `${c.deltaKg > 0 ? '+' : '−'}${amount.toFixed(1)}${style === 'done' ? ' est.' : ''}`;
 }
 
 /** "Ahead by 2 reps" (ghost panel) or "Ahead by 1" (the log-a-set pill). */
@@ -54,23 +120,25 @@ export function setText(set: SetLike, unit: Unit, bodyweight: boolean): string {
   return set.weight_kg > 0 ? `BW+${weightText(set.weight_kg, unit)} × ${set.reps}` : `BW × ${set.reps}`;
 }
 
-/** Up next (08): "25 × 9, 8, 7"; a new weight starts a new group: "25 × 9, 22.5 × 8". */
-export function lastTimeText(sets: readonly SetLike[], unit: Unit, bodyweight: boolean): string {
+/** Sets grouped by weight, in order: a new weight starts a new group. `load` is the weight as
+ * shown ("25", "bodyweight + 10", "bodyweight"). */
+export function setGroups(sets: readonly SetLike[], unit: Unit, bodyweight: boolean): { load: string; reps: number[] }[] {
   const groups: { weight: number; reps: number[] }[] = [];
   for (const set of byNumber(sets)) {
     const last = groups[groups.length - 1];
     if (last && last.weight === set.weight_kg) last.reps.push(set.reps);
     else groups.push({ weight: set.weight_kg, reps: [set.reps] });
   }
-  return groups
-    .map(({ weight, reps }) => {
-      const load = bodyweight
-        ? weight > 0
-          ? `bodyweight + ${weightText(weight, unit)}`
-          : 'bodyweight'
-        : weightText(weight, unit);
-      return `${load} × ${reps.join(', ')}`;
-    })
+  return groups.map(({ weight, reps }) => ({
+    load: bodyweight ? (weight > 0 ? `bodyweight + ${weightText(weight, unit)}` : 'bodyweight') : weightText(weight, unit),
+    reps,
+  }));
+}
+
+/** Up next (08): "25 × 9, 8, 7"; a new weight starts a new group: "25 × 9, 22.5 × 8". */
+export function lastTimeText(sets: readonly SetLike[], unit: Unit, bodyweight: boolean): string {
+  return setGroups(sets, unit, bodyweight)
+    .map(({ load, reps }) => `${load} × ${reps.join(', ')}`)
     .join(', ');
 }
 
