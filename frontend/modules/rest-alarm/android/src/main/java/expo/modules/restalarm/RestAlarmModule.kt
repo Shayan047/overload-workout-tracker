@@ -61,7 +61,7 @@ class RestAlarmModule : Module() {
 
     // "Start set": ask to unlock (if locked) on the way into the workout.
     Function("dismissKeyguard") {
-      val activity = appContext.currentActivity ?: return@Function
+      val activity = appContext.currentActivity ?: return@Function null
       val keyguard = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
       activity.runOnUiThread {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) keyguard.requestDismissKeyguard(activity, null)
@@ -70,7 +70,7 @@ class RestAlarmModule : Module() {
 
     // "+15 sec": back to whatever was on screen (the lock screen or the other app).
     Function("sendToBack") {
-      val activity = appContext.currentActivity ?: return@Function
+      val activity = appContext.currentActivity ?: return@Function null
       activity.runOnUiThread { activity.moveTaskToBack(true) }
     }
   }
