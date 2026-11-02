@@ -85,7 +85,7 @@ export function ProgressScreen() {
                 style={({ pressed }) => [styles.row, pressed && styles.pressed]}
               >
                 <View style={styles.name}>
-                  <Text variant="rowTitle" numberOfLines={1}>
+                  <Text variant="rowTitle" numberOfLines={2}>
                     {name}
                   </Text>
                   {status.kind === 'best' ? (
@@ -167,7 +167,8 @@ const styles = StyleSheet.create({
   chips: { gap: 8, paddingHorizontal: 20 },
   headings: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, marginHorizontal: 4, marginBottom: 8 },
   list: { paddingVertical: 2, borderRadius: radius.card, backgroundColor: colors.surface },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, height: 64, paddingHorizontal: 16 },
+  // 64 px as in 13; a name that wraps makes the row taller instead of cutting it off.
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 64, paddingVertical: 10, paddingHorizontal: 16 },
   pressed: { backgroundColor: colors.surfaceHover },
   name: { flex: 1, minWidth: 0 },
   flat: { flexDirection: 'row', alignItems: 'center', gap: 4 },

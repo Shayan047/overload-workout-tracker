@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Svg, { Rect } from 'react-native-svg';
 
 import { usePendingWorkoutIds, useWorkoutHistory, type WorkoutHistoryItem } from '@/api/history';
 import { useSync } from '@/api/AppProviders';
@@ -139,19 +140,32 @@ function Day({ cell, picked, onPress, label }: { cell: Cell; picked: boolean; on
     >
       {cell.state === 'today-trained' ? (
         <View style={styles.todayCircle}>
+          <Shape width={34} height={34} color={colors.accent} />
           <Text style={styles.todayNumber}>{cell.day}</Text>
         </View>
       ) : (
         <>
-          <View style={[styles.dayNumber, picked && styles.picked]}>
+          <View style={styles.dayNumber}>
+            {picked ? <Shape width={30} height={22} color={colors.surfaceRaised} /> : null}
             <Text variant="bodyStrong" style={{ color }}>
               {cell.day}
             </Text>
           </View>
-          <View style={[styles.dot, trained && styles.dotOn]} />
+          <View style={styles.dot}>{trained ? <Shape width={5} height={5} color={colors.accent} /> : null}</View>
         </>
       )}
     </Pressable>
+  );
+}
+
+/** A pill or circle drawn as a vector shape behind its content. The calendar's rows are
+ * 44 dp, which lands later rows on half pixels at some densities (2.625x on a Galaxy S24),
+ * and there Android drew small rounded views as squares. */
+function Shape({ width, height, color }: { width: number; height: number; color: string }) {
+  return (
+    <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Rect width={width} height={height} rx={Math.min(width, height) / 2} fill={color} />
+    </Svg>
   );
 }
 
@@ -203,18 +217,14 @@ const styles = StyleSheet.create({
   days: { marginTop: 4, rowGap: 2 },
   week: { flexDirection: 'row' },
   day: { flex: 1, height: 44, alignItems: 'center', justifyContent: 'center', gap: 3 },
-  dayNumber: { minWidth: 30, alignItems: 'center', borderRadius: radius.chip },
-  picked: { backgroundColor: colors.surfaceRaised },
-  dot: { width: 5, height: 5, borderRadius: radius.chip },
-  dotOn: { backgroundColor: colors.accent },
+  dayNumber: { width: 30, height: 22, alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 5, height: 5 },
   todayCircle: {
     width: 34,
     height: 34,
     marginTop: -2,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.chip,
-    backgroundColor: colors.accent,
   },
   todayNumber: { ...type.calendarToday, color: colors.onAccent },
   note: { marginTop: 10, marginHorizontal: 4 },

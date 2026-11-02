@@ -142,7 +142,7 @@ export function SummaryScreen() {
               <View key={e.rowId}>
                 <Separator inset={16} />
                 <View style={styles.row}>
-                  <Text numberOfLines={1} style={styles.colName}>
+                  <Text numberOfLines={2} style={styles.colName}>
                     {name(e.exerciseId)}
                   </Text>
                   <Text style={[styles.reps, styles.colReps]}>
@@ -262,8 +262,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 10,
   },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8, height: 44, paddingHorizontal: 16 },
-  tableHeader: { height: 28 },
+  // 44 px as in 11; a long name wraps and the row grows.
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 44, paddingVertical: 10, paddingHorizontal: 16 },
+  tableHeader: { minHeight: 28, paddingVertical: 0 },
   colName: { flex: 1, minWidth: 0 },
   colReps: { width: 104, textAlign: 'right' },
   colChange: { width: 64, textAlign: 'right' },

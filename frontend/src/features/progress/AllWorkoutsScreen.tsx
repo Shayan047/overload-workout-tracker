@@ -17,8 +17,8 @@ import { LineKey, SessionLinesChart } from './SessionLinesChart';
 /** 23's chart: as 14's, but taller. */
 const TALL: LinesFrame = { ...LINES, height: 306, top: 16, bottom: 276 };
 
-/** All workouts (23): every session's est. max per set, one line each. Today is amber; the
- * further back, the fainter. Tapping a session picks out its line. `pick` opens with one
+/** All workouts (23): every session's est. max per set, one line each. The latest is amber;
+ * the further back, the fainter. Tapping a session picks out its line. `pick` opens with one
  * picked. */
 export function AllWorkoutsScreen() {
   const { exerciseId, pick } = useLocalSearchParams<{ exerciseId: string; pick?: string }>();
@@ -58,7 +58,7 @@ export function AllWorkoutsScreen() {
     return (
       <>
         <Text color="textMuted" style={styles.intro}>
-          Estimated max for every set. Today is amber; the further back a workout, the fainter its line.
+          Estimated max for every set. Your latest workout is amber; the further back one is, the fainter its line.
         </Text>
         <View style={styles.chartCard}>
           <SessionLinesChart chart={chart} frame={TALL} mode="all" pickedId={picked} description={description} />
