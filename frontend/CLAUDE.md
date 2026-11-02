@@ -210,6 +210,29 @@ Need something new? Add a named style to the theme; never write a font size, wei
 - The auth screens have no design number; their screenshots are `00-sign-in` and `00-sign-up`.
 - Signed-out users land on Welcome (`welcome`); Units is `units`.
 
+## Native code and the dev app
+
+- `modules/rest-alarm` is a local Expo module (Kotlin, autolinked from `modules/`): the
+  rest-over alarm (exact alarm, full-screen notification, over-the-lock-screen helpers). Its
+  TypeScript side (`modules/rest-alarm/index.ts`) is null in Expo Go, on the web and on iOS,
+  and `RestAlerts` then schedules the notification instead.
+- Native code means Expo Go can't run every feature. The development build is a separate
+  app, "Overload Dev" (`com.shayan047.overload.dev`, scheme `overload-dev`), from the
+  `development` EAS profile (`APP_VARIANT=development` in `app.config.ts`, with
+  `expo-dev-client`). It installs next to the real Overload and never touches its data.
+  Build it with `npx eas-cli build -p android --profile development`; rebuild only when
+  native code or native dependencies change.
+
+## Testing on a phone over USB
+
+- Local API: `docker compose up -d --build` in `backend/` (Postgres + API on 8000, never Neon).
+- `adb reverse tcp:8000 tcp:8000` and `adb reverse tcp:8082 tcp:8082`, then
+  `CI=1 npx expo start --port 8082 --localhost` (CI mode doesn't watch files: restart it after
+  changes). Open Overload Dev (or Expo Go for JS-only work) at the dev server.
+- The workout screen's clock keeps the UI busy, so `uiautomator dump` fails there; tap by
+  coordinates from a screenshot. In Expo Go, keys typed with no field focused act as
+  shortcuts ("r" reloads).
+
 ## Checking sync by hand
 
 Development builds have a **Sync check** screen (link on the Today placeholder, route

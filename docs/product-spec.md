@@ -74,8 +74,13 @@ Overload (working name) is a workout tracker for iOS and Android.
 - Starts automatically when a set is saved, using the exercise's rest length.
 - Controls: −15, +15 and skip.
 - Haptic at 10 seconds left and at the end. Optional sound.
-- Works with the phone locked via a local notification.
-- Later: a lock-screen Live Activity (iOS) and an ongoing notification (Android).
+- When the rest ends with Overload in the background (Android): an exact alarm, as timer apps use.
+  With the phone locked or the screen off, "Rest's over" (26) opens over the lock screen, like the
+  Clock app's alarm; while another app is in use, a banner (27) shows instead. Both offer
+  "Start set N" and "+15 sec". Android 14+ needs full-screen alerts allowed once (Profile >
+  Rest timer alerts). Nothing extra appears while Overload is open.
+- Expo Go and iOS: a local notification at the end instead.
+- Later: a live countdown on the lock screen (12; iOS Live Activity, Android ongoing notification).
 - Actual rest durations are never recorded or used in stats.
 
 ### Summary

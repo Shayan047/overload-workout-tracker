@@ -279,6 +279,14 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   position. Skip sets `skipped`; skipped exercises are listed under "Skipped today" with
   Undo. Once a set is logged, Swap and Skip give way to "Done for today" (marks it `done`
   with the sets so far). Each is one PUT to the workout's row; the split is never written.
+- **Rest-over alarm** (after launch, `modules/rest-alarm`, `RestOverScreen.tsx`, 26, 27): on
+  Android builds the rest's end is an exact alarm (`setAlarmClock`) set by a local Kotlin
+  module instead of the notification below. When it goes off with the app in the
+  background, it posts a full-screen notification: Android opens `rest-over` over the lock
+  screen, or shows a banner over another app, with "Start set N" (opens the route) and
+  "+15 sec" (handled natively: a new alarm 15 s on, picked up by `restAgain` when the app
+  comes back). The alarm follows the timer like the notification did; nothing is posted
+  while the app is in the foreground. Rest lengths still never reach the API (rule 5).
 - **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
   set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
   progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives
