@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Expanded in the notification shade: adds last time's set of the same number. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+  <include layout="@layout/rest_over_top" />
+
+  <LinearLayout
+    android:id="@+id/rest_over_last"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:background="@drawable/rest_over_inset"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="10dp">
+
+    <ImageView
+      android:layout_width="15dp"
+      android:layout_height="15dp"
+      android:importantForAccessibility="no"
+      android:src="@drawable/rest_over_ghost" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:fontFamily="@font/archivo_100_600"
+      android:includeFontPadding="false"
+      android:text="@string/rest_over_last_time"
+      android:textColor="@color/rest_over_ghost"
+      android:textSize="13sp" />
+
+    <TextView
+      android:id="@+id/rest_over_last_set"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:fontFamily="@font/archivo_68_800"
+      android:includeFontPadding="false"
+      android:textColor="@color/rest_over_ghost"
+      android:textSize="20sp" />
+  </LinearLayout>
+</LinearLayout>

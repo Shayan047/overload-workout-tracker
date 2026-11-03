@@ -19,8 +19,8 @@ import { isReviewMode, now } from '@/review/reviewMode';
 import { RestAlarm } from '../../../modules/rest-alarm';
 import { setText } from './ghost';
 import { dueAlert, type Rest } from './rest';
+import { detailText, nextText, type NextUp, nextUp } from './restOver';
 import { useWorkoutActions } from './useWorkoutActions';
-import { currentExercise, setsFor } from './workout';
 import { type Saved, useActiveWorkout } from './workoutStore';
 
 const NOTIFICATION_ID = 'rest-timer';
@@ -81,22 +81,6 @@ function prepare(): Promise<boolean> {
   return prepared;
 }
 
-export type NextUp = { name: string; setNumber: number; lastTime: string | null } | null;
-
-/** The set that comes after the rest, with last time's set of the same number. */
-export function nextUp(saved: Saved, names: Map<string, string>, lastTime: (exerciseId: string, setNumber: number) => string | null): NextUp {
-  const next = currentExercise(saved.state, { focusId: saved.focusId });
-  if (!next) return null;
-  const setNumber = setsFor(saved.state, next.id).length + 1;
-  return { name: names.get(next.exercise_id) ?? 'Your next exercise', setNumber, lastTime: lastTime(next.exercise_id, setNumber) };
-}
-
-/** "Bicep curl, set 3 next. Last time 20 × 5." (27). */
-export function nextText(next: NextUp): string {
-  if (!next) return 'Time to finish your workout.';
-  return `${next.name}, set ${next.setNumber} next.${next.lastTime ? ` Last time ${next.lastTime}.` : ''}`;
-}
-
 async function schedule(rest: Rest, next: NextUp, sound: boolean) {
   if (!(await prepare())) return;
   const date = new Date(rest.endsAt);
@@ -107,6 +91,8 @@ async function schedule(rest: Rest, next: NextUp, sound: boolean) {
       endsAt: date.getTime(),
       title: 'Rest’s over',
       body,
+      detail: detailText(next),
+      lastTime: next?.lastTime ?? '',
       startLabel: next ? `Start set ${next.setNumber}` : 'Open workout',
       url: Linking.createURL('rest-over'),
       sound,
@@ -142,11 +128,12 @@ export function RestAlerts() {
   const names = new Map((exercises.data ?? []).map((e) => [e.id, e.name]));
   const unit = settings.data?.unit ?? 'lb';
   const bodyweightIds = new Set((exercises.data ?? []).filter((e) => e.kind === 'bodyweight').map((e) => e.id));
+  const lastSets = (exerciseId: string) => cachedLastSessions(queryClient, [exerciseId])?.[0]?.sets ?? [];
   const lastTime = (exerciseId: string, setNumber: number) => {
-    const set = cachedLastSessions(queryClient, [exerciseId])?.[0]?.sets.find((s) => s.set_number === setNumber);
+    const set = lastSets(exerciseId).find((s) => s.set_number === setNumber);
     return set ? setText(set, unit, bodyweightIds.has(exerciseId)) : null;
   };
-  const next = saved ? nextUp(saved, names, lastTime) : null;
+  const next = saved ? nextUp(saved, names, lastTime, (exerciseId) => lastSets(exerciseId).length) : null;
   const nextKey = JSON.stringify(next);
 
   // The alert follows the timer: rescheduled on ±15, cancelled on skip or finish.

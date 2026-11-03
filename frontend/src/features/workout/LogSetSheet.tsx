@@ -181,7 +181,7 @@ function SetForm({
             </Pressable>
           </View>
           <Text variant="small" color="textFaint" style={styles.hint} pointerEvents="none">
-            {active === 'weight' ? 'Typing' : `Steps of ${STEP[unit]}`}
+            Steps of {STEP[unit]}
           </Text>
         </View>
 
@@ -199,9 +199,11 @@ function SetForm({
             {reps.text ? <Text style={styles.entry}>{reps.text}</Text> : null}
             {active === 'reps' ? caret : <Text style={[styles.entry, styles.entryEmpty]}>–</Text>}
           </View>
-          <Text variant="small" color="textFaint" style={styles.hint}>
-            {active === 'reps' ? 'Typing' : 'Tap to type'}
-          </Text>
+          {active === 'reps' ? null : (
+            <Text variant="small" color="textFaint" style={styles.hint}>
+              Tap to type
+            </Text>
+          )}
         </Pressable>
       </View>
 

@@ -13,9 +13,9 @@ import { colors, figure, figures, radius } from '@/theme';
 
 import { RestAlarm } from '../../../modules/rest-alarm';
 import { setText } from './ghost';
-import { nextUp } from './RestAlerts';
+import { nextUp } from './restOver';
 import { useWorkoutActions } from './useWorkoutActions';
-import { currentExercise, plannedRows } from './workout';
+import { currentExercise } from './workout';
 import { inProgress, useActiveWorkout } from './workoutStore';
 
 const EXTRA_REST_SECONDS = 15;
@@ -57,8 +57,7 @@ export function RestOverScreen() {
   const next = nextUp(saved, names, (exerciseId, setNumber) => {
     const set = last(exerciseId)?.sets.find((s) => s.set_number === setNumber);
     return set ? setText(set, unit, byId.get(exerciseId)?.kind === 'bodyweight') : null;
-  });
-  const planned = row ? plannedRows(saved.state, row.id, last(row.exercise_id)?.sets.length ?? 0) : 0;
+  }, (exerciseId) => last(exerciseId)?.sets.length ?? 0);
 
   const start = () => {
     RestAlarm?.dismissKeyguard();
@@ -100,7 +99,7 @@ export function RestOverScreen() {
             </Text>
             <Text color="textMuted" style={styles.setLine}>
               Set {next.setNumber}
-              {planned >= next.setNumber ? ` of ${planned}` : ''} next
+              {next.planned >= next.setNumber ? ` of ${next.planned}` : ''} next
             </Text>
             {next.lastTime ? (
               <View style={styles.ghost}>

@@ -11,7 +11,10 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.os.SystemClock
 import android.provider.Settings
+import android.view.View
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 
 /** What the rest-over alert shows, saved so the alarm can post it with the app closed. */
@@ -19,6 +22,10 @@ data class Alarm(
   val endsAt: Long,
   val title: String,
   val body: String,
+  /** "Bicep curl, set 3 of 4 next". */
+  val detail: String,
+  /** Last time's set of the same number, "20 × 5"; empty if none. */
+  val lastTime: String,
   val startLabel: String,
   val url: String,
   val sound: Boolean,
@@ -48,6 +55,8 @@ object RestAlarm {
       .putLong("endsAt", alarm.endsAt)
       .putString("title", alarm.title)
       .putString("body", alarm.body)
+      .putString("detail", alarm.detail)
+      .putString("lastTime", alarm.lastTime)
       .putString("startLabel", alarm.startLabel)
       .putString("url", alarm.url)
       .putBoolean("sound", alarm.sound)
@@ -62,6 +71,8 @@ object RestAlarm {
       endsAt,
       p.getString("title", "") ?: "",
       p.getString("body", "") ?: "",
+      p.getString("detail", "") ?: "",
+      p.getString("lastTime", "") ?: "",
       p.getString("startLabel", "") ?: "",
       p.getString("url", "") ?: "",
       p.getBoolean("sound", true),
@@ -94,10 +105,15 @@ object RestAlarm {
     ensureChannels(context)
     val open = openApp(context, alarm.url)
     val notification = NotificationCompat.Builder(context, if (alarm.sound) CHANNEL_SOUND else CHANNEL_SILENT)
-      .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-      .setColor(0xFFFFA41B.toInt())
+      .setSmallIcon(R.drawable.rest_over_icon)
+      .setColor(context.getColor(R.color.rest_over_accent))
+      // The plain text stays for the lock screen's public version and screen readers.
       .setContentTitle(alarm.title)
       .setContentText(alarm.body)
+      .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+      .setCustomContentView(content(context, alarm, expanded = false))
+      .setCustomHeadsUpContentView(content(context, alarm, expanded = false))
+      .setCustomBigContentView(content(context, alarm, expanded = true))
       .setCategory(NotificationCompat.CATEGORY_ALARM)
       .setPriority(NotificationCompat.PRIORITY_MAX)
       .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -114,6 +130,20 @@ object RestAlarm {
     // screen for a new one (an update of a still-showing alert stayed silent after "+15 sec").
     notifications(context).cancel(NOTIFICATION_ID)
     notifications(context).notify(NOTIFICATION_ID, notification)
+  }
+
+  /** The notification's content (27): Android draws the card, header and actions around it. */
+  private fun content(context: Context, alarm: Alarm, expanded: Boolean): RemoteViews {
+    val views = RemoteViews(context.packageName, if (expanded) R.layout.rest_over_expanded else R.layout.rest_over_collapsed)
+    views.setTextViewText(R.id.rest_over_detail, alarm.detail)
+    // The chronometer counts from a base on the elapsed-time clock: the end of the rest.
+    val endedAgo = System.currentTimeMillis() - alarm.endsAt
+    views.setChronometer(R.id.rest_over_overtime, SystemClock.elapsedRealtime() - endedAgo, "+%s", true)
+    if (expanded) {
+      if (alarm.lastTime.isEmpty()) views.setViewVisibility(R.id.rest_over_last, View.GONE)
+      else views.setTextViewText(R.id.rest_over_last_set, alarm.lastTime)
+    }
+    return views
   }
 
   /** Rest's over is on screen: the alert has done its job. */

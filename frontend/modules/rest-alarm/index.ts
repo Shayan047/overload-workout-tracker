@@ -4,8 +4,13 @@ export type RestAlarmOptions = {
   /** When the rest ends, in epoch ms. */
   endsAt: number;
   title: string;
+  /** The plain text: lock screen, screen readers. */
   body: string;
-  /** The banner's main button: "Start set 3". */
+  /** The custom layout's line under the title: "Bicep curl, set 3 of 4 next". */
+  detail: string;
+  /** Last time's set of the same number, "20 × 5"; empty if none. */
+  lastTime: string;
+  /** The notification's main button: "Start set 3". */
   startLabel: string;
   /** The rest-over screen's deep link. */
   url: string;
