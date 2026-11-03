@@ -285,8 +285,10 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   background, it posts a full-screen notification: Android opens `rest-over` over the lock
   screen, or shows a banner over another app, with "Start set N" (opens the route) and
   "+15 sec" (handled natively: a new alarm 15 s on, picked up by `restAgain` when the app
-  comes back). The alarm follows the timer like the notification did; nothing is posted
-  while the app is in the foreground. Rest lengths still never reach the API (rule 5).
+  comes back). The alert is insistent (sound and vibration repeat) and times out after 2
+  minutes; it's cleared when Rest's over opens or the app comes back, and each alarm posts a
+  new alert (Android doesn't reopen the full-screen screen for an update). The alarm follows
+  the timer like the notification did; nothing is posted while the app is in the foreground. Rest lengths still never reach the API (rule 5).
 - **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
   set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
   progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives

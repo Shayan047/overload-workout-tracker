@@ -78,7 +78,10 @@ Overload (working name) is a workout tracker for iOS and Android.
   With the phone locked or the screen off, "Rest's over" (26) opens over the lock screen, like the
   Clock app's alarm; while another app is in use, a banner (27) shows instead. Both offer
   "Start set N" and "+15 sec". Android 14+ needs full-screen alerts allowed once (Profile >
-  Rest timer alerts). Nothing extra appears while Overload is open.
+  Rest timer alerts). It rings and vibrates until acted on (or 2 minutes), like the Clock app.
+  Nothing extra appears while Overload is open. Phone settings decide the banner: Do Not
+  Disturb hides it unless Overload is an allowed app, and Samsung's "Brief" pop-up style shows
+  it as one line without buttons for a few seconds ("Detailed" shows the buttons).
 - Expo Go and iOS: a local notification at the end instead.
 - Later: a live countdown on the lock screen (12; iOS Live Activity, Android ongoing notification).
 - Actual rest durations are never recorded or used in stats.
