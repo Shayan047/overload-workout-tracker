@@ -283,9 +283,11 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   Android builds the rest's end is an exact alarm (`setAlarmClock`) set by a local Kotlin
   module instead of the notification below. When it goes off with the app in the
   background, it posts a full-screen notification: Android opens `rest-over` over the lock
-  screen, or shows a banner over another app, with "Start set N" (opens the route) and
-  "+15 sec" (handled natively: a new alarm 15 s on, picked up by `restAgain` when the app
-  comes back). The alert is insistent (sound and vibration repeat) and times out after 2
+  screen, or pops up over another app. The notification's content is a custom layout
+  (`res/layout/rest_over_*.xml`: title, next set, a `Chronometer` counting up from the rest's
+  end, last time when expanded) in system fonts, since a notification can't load the app's.
+  The tap opens `rest-over`, "Start set N" opens `workout`, and "+15 sec" is handled
+  natively (a new alarm 15 s on, picked up by `restAgain` when the app comes back). The alert is insistent (sound and vibration repeat) and times out after 2
   minutes; it's cleared when Rest's over opens or the app comes back, and each alarm posts a
   new alert (Android doesn't reopen the full-screen screen for an update). The alarm follows
   the timer like the notification did; nothing is posted while the app is in the foreground. Rest lengths still never reach the API (rule 5).

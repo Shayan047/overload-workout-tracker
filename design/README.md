@@ -42,6 +42,6 @@ The mockups use Archivo's variable width axis (`font-stretch` 68% for numbers, 8
 | 24-ghost-states.png | Ghost panel by weight: same, heavier, lighter; the summary's Change column | after launch |
 | 25-ghost-chest-press.png | The ghost panel through one exercise (chest press) | after launch |
 | 26-rest-over.png | Rest's over: the full-screen alarm when a rest ends (over the lock screen) | after launch |
-| 27-rest-over-banner.png | Rest's over as a banner over another app (Android draws it; content only) | after launch |
+| 27-rest-over-banner.png | Rest's over as a notification over another app: our layout inside Android's card, header and buttons | after launch |
 
 Each PNG has a matching `source/NN-name.html`. Numbers 15 and 16 are retired: Fingerprint was dropped, and the one-weight chart now lives in 14.
