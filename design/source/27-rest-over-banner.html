@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Rest's over banner</title>
+<title>Rest's over notification</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -13,24 +13,62 @@
 body{margin:0;background:#060708}
 .app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#2A2F36;-webkit-font-smoothing:antialiased}
 .app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.muted{color:#A8AFB8}
 .faint{color:#88909A}
 .small{font-size:13px}
-/* Android draws the banner; we set its icon, accent, title, text and two actions. */
-.banner{margin:44px 10px 0;padding:14px 16px 10px;border-radius:24px;background:#16181B;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.act{flex:1;height:40px;border:0;border-radius:20px;background:#22252A;color:#F3F5F7;font-family:inherit;font-size:14px;font-weight:650}
-.act.main{background:#3A2A0E;color:#FFC870}
-.other{margin:14px 10px 0;height:520px;border-radius:18px;background:#3A4048;opacity:.35}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.state{margin:22px 22px 8px;font-size:13px;font-weight:600;color:#CED3D9}
+/* Android draws the card, the header row and the action buttons; we draw the content between them. */
+.notif{margin:0 10px;padding:14px 16px 6px;border-radius:24px;background:#16181B;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.head{display:flex;align-items:center;gap:8px}
+.title{font-size:17px;line-height:1.15;font-weight:700;font-stretch:85%}
+.acts{display:flex;margin-top:8px}
+.act{flex:1;height:40px;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:650;color:#F3F5F7}
+.act.main{color:#FFA41B}
+.other{margin:22px 10px 0;height:300px;border-radius:18px;background:#3A4048;opacity:.35}
 </style>
 </helmet>
-<main class="app" style="height:640px;padding:0 0 20px">
-  <div class="banner">
-    <div style="display:flex;align-items:center;gap:8px" class="small faint">
+<main class="app" style="height:640px;padding:20px 0 20px">
+  <div class="state">Pops up over other apps</div>
+  <div class="notif">
+    <div class="head small faint">
       <svg width="14" height="13" viewBox="0 0 18 16" aria-hidden="true"><rect x="0" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect><rect x="5" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="10" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect></svg>
-      <span style="color:#FFA41B;font-weight:600">Overload</span> <span>now</span>
+      <span style="color:#FFA41B;font-weight:600">Overload</span><span>now</span>
     </div>
-    <div style="margin-top:8px;font-size:16px;font-weight:650">Rest's over</div>
-    <div class="small" style="color:#CED3D9;margin-top:2px">Bicep curl, set 3 next. Last time 20 × 5.</div>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+      <div style="flex:1;min-width:0">
+        <div class="title">Rest's over</div>
+        <div class="small muted" style="margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Bicep curl, set 3 of 4 next</div>
+      </div>
+      <!-- Time since the rest ended; ticks up until acted on. -->
+      <span class="num" style="font-size:30px;color:#FFA41B">+0:08</span>
+    </div>
+    <div class="acts">
+      <button class="act main">Start set 3</button>
+      <button class="act">+15 sec</button>
+    </div>
+  </div>
+
+  <div class="state">Expanded in the notification shade</div>
+  <div class="notif">
+    <div class="head small faint">
+      <svg width="14" height="13" viewBox="0 0 18 16" aria-hidden="true"><rect x="0" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect><rect x="5" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="10" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect></svg>
+      <span style="color:#FFA41B;font-weight:600">Overload</span><span>now</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+      <div style="flex:1;min-width:0">
+        <div class="title">Rest's over</div>
+        <div class="small muted" style="margin-top:3px">Bicep curl, set 3 of 4 next</div>
+      </div>
+      <span class="num" style="font-size:30px;color:#FFA41B">+0:08</span>
+    </div>
+    <div style="margin-top:12px;display:flex;align-items:baseline;gap:8px;padding:10px 12px;border-radius:12px;background:#08090B">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:15px;height:15px;color:#7FD3EA;align-self:center"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>
+      <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span>
+      <span class="num" style="font-size:20px;color:#7FD3EA">20 × 5</span>
+    </div>
+    <div class="acts">
       <button class="act main">Start set 3</button>
       <button class="act">+15 sec</button>
     </div>
