@@ -28,8 +28,8 @@ data class Alarm(
  * The rest-over alarm: an exact alarm at the end of the rest, then a full-screen notification
  * (the Clock app's pattern). With the phone locked or the screen off, Android opens the
  * rest-over screen; while another app is in use, it shows the notification as a banner with
- * "Start set N" and "+15 sec". If Overload itself is open, nothing is posted: the timer card
- * is on screen.
+ * "Start set N" and "+15 sec". It rings and vibrates until acted on, for two minutes at most.
+ * If Overload itself is open, nothing is posted: the timer card is on screen.
  */
 object RestAlarm {
   private const val PREFS = "overload.rest-alarm"
@@ -39,6 +39,7 @@ object RestAlarm {
   const val ACTION_FIRE = "expo.modules.restalarm.FIRE"
   const val ACTION_EXTEND = "expo.modules.restalarm.EXTEND"
   const val EXTEND_SECONDS = 15
+  private const val RING_FOR_MS = 2 * 60 * 1000L
 
   private val vibration = longArrayOf(0, 400, 200, 400, 200, 400)
 
@@ -105,8 +106,10 @@ object RestAlarm {
       .setFullScreenIntent(open, true)
       .addAction(0, alarm.startLabel, open)
       .addAction(0, "+$EXTEND_SECONDS sec", broadcast(context, ACTION_EXTEND))
-      .setTimeoutAfter(10 * 60 * 1000L)
+      // Rings until acted on (like the Clock app's alarm), for two minutes at most.
+      .setTimeoutAfter(RING_FOR_MS)
       .build()
+    notification.flags = notification.flags or Notification.FLAG_INSISTENT
     // A new post, not an update of an earlier alert: Android only opens the full-screen
     // screen for a new one (an update of a still-showing alert stayed silent after "+15 sec").
     notifications(context).cancel(NOTIFICATION_ID)

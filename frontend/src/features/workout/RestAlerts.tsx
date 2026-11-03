@@ -162,6 +162,8 @@ export function RestAlerts() {
     if (!supported || !RestAlarm) return;
     const sub = AppState.addEventListener('change', (state) => {
       if (state !== 'active') return;
+      // Back in the app: a still-ringing alert has done its job.
+      RestAlarm?.dismissAlert?.();
       const endsAt = RestAlarm?.takeExtendedEnd();
       if (endsAt) void actions.restAgain(15, new Date(endsAt));
     });
