@@ -107,7 +107,15 @@ object RestAlarm {
       .addAction(0, "+$EXTEND_SECONDS sec", broadcast(context, ACTION_EXTEND))
       .setTimeoutAfter(10 * 60 * 1000L)
       .build()
+    // A new post, not an update of an earlier alert: Android only opens the full-screen
+    // screen for a new one (an update of a still-showing alert stayed silent after "+15 sec").
+    notifications(context).cancel(NOTIFICATION_ID)
     notifications(context).notify(NOTIFICATION_ID, notification)
+  }
+
+  /** Rest's over is on screen: the alert has done its job. */
+  fun dismissAlert(context: Context) {
+    notifications(context).cancel(NOTIFICATION_ID)
   }
 
   /** "+15 sec" on the banner: rest a little longer without opening the app. */

@@ -36,6 +36,10 @@ class RestAlarmModule : Module() {
       RestAlarm.cancel(context)
     }
 
+    Function("dismissAlert") {
+      RestAlarm.dismissAlert(context)
+    }
+
     Function("takeExtendedEnd") {
       RestAlarm.takeExtendedEnd(context)?.toDouble()
     }

@@ -40,6 +40,7 @@ export function RestOverScreen() {
 
   // Over the lock screen and with the screen on only while this screen is up.
   useEffect(() => {
+    RestAlarm?.dismissAlert?.(); // optional: builds before it lack it
     RestAlarm?.setShowOverLockScreen(true);
     return () => RestAlarm?.setShowOverLockScreen(false);
   }, []);

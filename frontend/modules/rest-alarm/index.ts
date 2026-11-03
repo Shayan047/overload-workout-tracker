@@ -16,6 +16,8 @@ type RestAlarmModule = {
   /** An exact alarm at `endsAt`, replacing any earlier one. */
   schedule(options: RestAlarmOptions): void;
   cancel(): void;
+  /** Clears the posted alert (Rest's over is on screen); the alarm itself is already done. */
+  dismissAlert(): void;
   /** The rest end set by the banner's "+15 sec" while the app was away, once; null if none. */
   takeExtendedEnd(): number | null;
   /** Android 14+ asks the user to allow full-screen alerts; false until they do. */
