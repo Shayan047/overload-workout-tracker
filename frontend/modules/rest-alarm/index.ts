@@ -12,8 +12,10 @@ export type RestAlarmOptions = {
   lastTime: string;
   /** The notification's main button: "Start set 3". */
   startLabel: string;
-  /** The rest-over screen's deep link. */
+  /** The rest-over screen's deep link: the alert opens it. */
   url: string;
+  /** The workout's deep link: "Start set N" opens it. */
+  startUrl: string;
   sound: boolean;
 };
 

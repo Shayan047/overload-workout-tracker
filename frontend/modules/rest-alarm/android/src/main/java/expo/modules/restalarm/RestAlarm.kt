@@ -27,7 +27,10 @@ data class Alarm(
   /** Last time's set of the same number, "20 × 5"; empty if none. */
   val lastTime: String,
   val startLabel: String,
+  /** Rest's over (26): the alert itself opens it. */
   val url: String,
+  /** The workout: "Start set N" goes straight there. */
+  val startUrl: String,
   val sound: Boolean,
 )
 
@@ -47,6 +50,8 @@ object RestAlarm {
   const val ACTION_EXTEND = "expo.modules.restalarm.EXTEND"
   const val EXTEND_SECONDS = 15
   private const val RING_FOR_MS = 2 * 60 * 1000L
+  private const val REQUEST_OPEN = 1
+  private const val REQUEST_START = 2
 
   private val vibration = longArrayOf(0, 400, 200, 400, 200, 400)
 
@@ -59,6 +64,7 @@ object RestAlarm {
       .putString("lastTime", alarm.lastTime)
       .putString("startLabel", alarm.startLabel)
       .putString("url", alarm.url)
+      .putString("startUrl", alarm.startUrl)
       .putBoolean("sound", alarm.sound)
       .apply()
   }
@@ -75,6 +81,7 @@ object RestAlarm {
       p.getString("lastTime", "") ?: "",
       p.getString("startLabel", "") ?: "",
       p.getString("url", "") ?: "",
+      p.getString("startUrl", "") ?: "",
       p.getBoolean("sound", true),
     )
   }
@@ -85,7 +92,7 @@ object RestAlarm {
     val fire = broadcast(context, ACTION_FIRE)
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarms.canScheduleExactAlarms()) {
       // An alarm clock is exact and allowed while the phone dozes; its "show" intent opens the app.
-      alarms.setAlarmClock(AlarmManager.AlarmClockInfo(endsAt, openApp(context, load(context)?.url)), fire)
+      alarms.setAlarmClock(AlarmManager.AlarmClockInfo(endsAt, openApp(context, load(context)?.url, REQUEST_OPEN)), fire)
     } else {
       alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, endsAt, fire)
     }
@@ -103,7 +110,7 @@ object RestAlarm {
     val alarm = load(context) ?: return
     if (isAppInForeground()) return
     ensureChannels(context)
-    val open = openApp(context, alarm.url)
+    val open = openApp(context, alarm.url, REQUEST_OPEN)
     val notification = NotificationCompat.Builder(context, if (alarm.sound) CHANNEL_SOUND else CHANNEL_SILENT)
       .setSmallIcon(R.drawable.rest_over_icon)
       .setColor(context.getColor(R.color.rest_over_accent))
@@ -120,7 +127,7 @@ object RestAlarm {
       .setAutoCancel(true)
       .setContentIntent(open)
       .setFullScreenIntent(open, true)
-      .addAction(0, alarm.startLabel, open)
+      .addAction(0, alarm.startLabel, openApp(context, alarm.startUrl, REQUEST_START))
       .addAction(0, "+$EXTEND_SECONDS sec", broadcast(context, ACTION_EXTEND))
       // Rings until acted on (like the Clock app's alarm), for two minutes at most.
       .setTimeoutAfter(RING_FOR_MS)
@@ -211,15 +218,15 @@ object RestAlarm {
     return info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
   }
 
-  /** Opens the app's rest-over route (a deep link, so it works after the app was killed). */
-  private fun openApp(context: Context, url: String?): PendingIntent {
+  /** Opens one of the app's routes (a deep link, so it works after the app was killed). */
+  private fun openApp(context: Context, url: String?, request: Int): PendingIntent {
     val intent = if (url.isNullOrEmpty()) {
       context.packageManager.getLaunchIntentForPackage(context.packageName) ?: Intent()
     } else {
       Intent(Intent.ACTION_VIEW, Uri.parse(url)).setPackage(context.packageName)
     }
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    return PendingIntent.getActivity(context, request, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
   }
 
   private fun broadcast(context: Context, action: String): PendingIntent {

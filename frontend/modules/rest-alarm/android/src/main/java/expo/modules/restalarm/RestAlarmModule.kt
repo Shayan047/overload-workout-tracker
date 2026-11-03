@@ -17,6 +17,7 @@ class AlarmOptions : Record {
   @Field var lastTime: String = ""
   @Field var startLabel: String = ""
   @Field var url: String = ""
+  @Field var startUrl: String = ""
   @Field var sound: Boolean = true
 }
 
@@ -30,7 +31,7 @@ class RestAlarmModule : Module() {
 
     Function("schedule") { options: AlarmOptions ->
       val endsAt = options.endsAt.toLong()
-      RestAlarm.save(context, Alarm(endsAt, options.title, options.body, options.detail, options.lastTime, options.startLabel, options.url, options.sound))
+      RestAlarm.save(context, Alarm(endsAt, options.title, options.body, options.detail, options.lastTime, options.startLabel, options.url, options.startUrl, options.sound))
       RestAlarm.schedule(context, endsAt)
     }
 

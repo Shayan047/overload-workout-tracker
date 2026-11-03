@@ -28,7 +28,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:fontFamily="@font/archivo_100_600"
+      android:fontFamily="sans-serif-medium"
       android:includeFontPadding="false"
       android:text="@string/rest_over_last_time"
       android:textColor="@color/rest_over_ghost"
@@ -39,9 +39,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:fontFamily="@font/archivo_68_800"
+      android:fontFamily="sans-serif-condensed"
       android:includeFontPadding="false"
       android:textColor="@color/rest_over_ghost"
-      android:textSize="20sp" />
+      android:textSize="20sp"
+      android:textStyle="bold" />
   </LinearLayout>
 </LinearLayout>

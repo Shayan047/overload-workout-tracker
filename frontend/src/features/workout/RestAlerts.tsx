@@ -95,6 +95,7 @@ async function schedule(rest: Rest, next: NextUp, sound: boolean) {
       lastTime: next?.lastTime ?? '',
       startLabel: next ? `Start set ${next.setNumber}` : 'Open workout',
       url: Linking.createURL('rest-over'),
+      startUrl: Linking.createURL('workout'),
       sound,
     });
     return;

@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Rest's over (27): the title and next set, with the time since the rest ended. Android draws
-     the card, the header row and the action buttons around it. -->
+<!-- Rest's over (27): the title with the time since the rest ended, then the next set. Android
+     draws the card, the header row and the action buttons around it. A notification can't use
+     the app's fonts (Android draws it in the system's process), so the title and count use the
+     phone's condensed bold, the nearest to Archivo's. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:gravity="center_vertical"
-  android:orientation="horizontal">
+  android:orientation="vertical">
 
   <LinearLayout
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:orientation="vertical">
+    android:baselineAligned="true"
+    android:orientation="horizontal">
 
     <TextView
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:fontFamily="@font/archivo_85_700"
+      android:layout_weight="1"
+      android:fontFamily="sans-serif-condensed"
       android:includeFontPadding="false"
       android:maxLines="1"
       android:text="@string/rest_over_title"
       android:textColor="@color/rest_over_text"
-      android:textSize="17sp" />
+      android:textSize="18sp"
+      android:textStyle="bold" />
 
-    <TextView
-      android:id="@+id/rest_over_detail"
+    <!-- Ticks up from the end of the rest until acted on. -->
+    <Chronometer
+      android:id="@+id/rest_over_overtime"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="3dp"
-      android:ellipsize="end"
-      android:fontFamily="@font/archivo_100_400"
+      android:layout_marginStart="12dp"
+      android:fontFamily="sans-serif-condensed"
       android:includeFontPadding="false"
-      android:maxLines="1"
-      android:textColor="@color/rest_over_text_muted"
-      android:textSize="13sp" />
+      android:textColor="@color/rest_over_accent"
+      android:textSize="26sp"
+      android:textStyle="bold" />
   </LinearLayout>
 
-  <!-- Ticks up from the end of the rest until acted on. -->
-  <Chronometer
-    android:id="@+id/rest_over_overtime"
-    android:layout_width="wrap_content"
+  <!-- The whole width, so long exercise names fit. -->
+  <TextView
+    android:id="@+id/rest_over_detail"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:fontFamily="@font/archivo_68_800"
+    android:layout_marginTop="2dp"
+    android:ellipsize="end"
     android:includeFontPadding="false"
-    android:textColor="@color/rest_over_accent"
-    android:textSize="30sp" />
+    android:maxLines="1"
+    android:textColor="@color/rest_over_text_muted"
+    android:textSize="13sp" />
 </LinearLayout>
