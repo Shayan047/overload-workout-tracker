@@ -23,7 +23,7 @@
       android:maxLines="1"
       android:text="@string/rest_over_title"
       android:textColor="@color/rest_over_text"
-      android:textSize="18sp"
+      android:textSize="17sp"
       android:textStyle="bold" />
 
     <!-- Ticks up from the end of the rest until acted on. -->
