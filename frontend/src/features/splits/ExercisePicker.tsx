@@ -114,7 +114,7 @@ function CustomExerciseSheet({
   };
 
   return (
-    <BottomSheet visible={visible} onClose={onClose} accessibilityLabel="Create a custom exercise">
+    <BottomSheet visible={visible} onClose={onClose} accessibilityLabel="Create a custom exercise" avoidKeyboard>
       <ScrollView style={styles.customSheet} keyboardShouldPersistTaps="handled">
         <TextField label="Name" value={name} onChangeText={setName} returnKeyType="done" />
         <Text variant="label" color="textMuted" style={styles.sheetLabel}>
@@ -309,7 +309,16 @@ const styles = StyleSheet.create({
   count: { marginTop: 16, marginBottom: 8, marginHorizontal: 4 },
   listArea: { flex: 1 },
   card: { flexShrink: 1, paddingVertical: 2, borderRadius: 20, backgroundColor: colors.surface, overflow: 'hidden' },
-  result: { flexDirection: 'row', alignItems: 'center', gap: 12, height: 56, paddingLeft: 16, paddingRight: 4 },
+  // 56 px as in 06; a name that wraps makes the row taller instead of clipping it.
+  result: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    minHeight: 56,
+    paddingVertical: 8,
+    paddingLeft: 16,
+    paddingRight: 4,
+  },
   resultText: { flex: 1 },
   resultName: { ...type.rowTitle, color: colors.text },
   inDay: { paddingRight: 12 },
@@ -327,7 +336,8 @@ const styles = StyleSheet.create({
   separator: { height: 1, marginLeft: 16, backgroundColor: colors.line },
   custom: { marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 10, height: 48, paddingHorizontal: 4 },
   customLabel: { ...type.buttonSecondary, color: colors.text },
-  customSheet: { maxHeight: 560, paddingHorizontal: 6 },
+  // Shrinks (and scrolls) when the keyboard leaves less room.
+  customSheet: { flexShrink: 1, maxHeight: 560, paddingHorizontal: 6 },
   sheetLabel: { marginTop: 18, marginBottom: 8 },
   muscleChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   bodyweightRow: { marginTop: 12, paddingHorizontal: 0 },

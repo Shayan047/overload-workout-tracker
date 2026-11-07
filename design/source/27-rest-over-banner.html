@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rest's over notification</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#2A2F36;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.state{margin:22px 22px 8px;font-size:13px;font-weight:600;color:#CED3D9}
+/* Android draws the card, the header row and the action buttons; we draw the content between them.
+   A notification can't use the app's fonts: on the phone the content is in the system's condensed
+   bold (title, count, set) and regular (detail), sizes and colors as here. Samsung shows the app
+   icon in place of the small mark and draws both actions in white. */
+.notif{margin:0 10px;padding:14px 16px 6px;border-radius:24px;background:#16181B;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.head{display:flex;align-items:center;gap:8px}
+.title{font-size:17px;line-height:1.15;font-weight:700;font-stretch:85%}
+.acts{display:flex;margin-top:8px}
+.act{flex:1;height:40px;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:650;color:#F3F5F7}
+.act.main{color:#FFA41B}
+.other{margin:22px 10px 0;height:300px;border-radius:18px;background:#3A4048;opacity:.35}
+</style>
+</helmet>
+<main class="app" style="height:640px;padding:20px 0 20px">
+  <div class="state">Pops up over other apps</div>
+  <div class="notif">
+    <div class="head small faint">
+      <svg width="14" height="13" viewBox="0 0 18 16" aria-hidden="true"><rect x="0" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect><rect x="5" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="10" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect></svg>
+      <span style="color:#FFA41B;font-weight:600">Overload</span><span>now</span>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:12px;margin-top:8px">
+      <div class="title" style="flex:1">Rest's over</div>
+      <!-- Time since the rest ended; Android's counter ticks up until acted on. -->
+      <span class="num" style="font-size:26px;color:#FFA41B">+00:08</span>
+    </div>
+    <div class="small muted" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Bicep curl, set 3 of 4 next</div>
+    <div class="acts">
+      <button class="act main">Start set 3</button>
+      <button class="act">+15 sec</button>
+    </div>
+  </div>
+
+  <div class="state">Expanded in the notification shade</div>
+  <div class="notif">
+    <div class="head small faint">
+      <svg width="14" height="13" viewBox="0 0 18 16" aria-hidden="true"><rect x="0" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect><rect x="5" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="10" y="0" width="3" height="16" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="3" height="8" rx="1.5" fill="#FFA41B"></rect></svg>
+      <span style="color:#FFA41B;font-weight:600">Overload</span><span>now</span>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:12px;margin-top:8px">
+      <div class="title" style="flex:1">Rest's over</div>
+      <span class="num" style="font-size:26px;color:#FFA41B">+00:08</span>
+    </div>
+    <div class="small muted" style="margin-top:2px">Bicep curl, set 3 of 4 next</div>
+    <div style="margin-top:12px;display:flex;align-items:baseline;gap:8px;padding:10px 12px;border-radius:12px;background:#08090B">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:15px;height:15px;color:#7FD3EA;align-self:center"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>
+      <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span>
+      <span class="num" style="font-size:20px;color:#7FD3EA">20 × 5</span>
+    </div>
+    <div class="acts">
+      <button class="act main">Start set 3</button>
+      <button class="act">+15 sec</button>
+    </div>
+  </div>
+  <div class="other" aria-hidden="true"></div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

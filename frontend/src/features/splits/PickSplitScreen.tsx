@@ -55,59 +55,58 @@ export function PickSplitScreen({ mode }: Props) {
   };
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={[styles.content, { paddingTop: top + 8, paddingBottom: bottom - 2 }]}
-    >
-      <View style={styles.header}>
-        {mode === 'onboarding' || router.canGoBack() ? (
-          <IconButton accessibilityLabel="Back" onPress={() => router.back()}>
-            <BackIcon color={colors.text} />
-          </IconButton>
-        ) : (
-          <View />
-        )}
-        {mode === 'onboarding' ? (
-          <Text variant="small" color="textFaint">
-            Step 2 of 2
-          </Text>
-        ) : null}
-      </View>
-
-      <View style={styles.intro}>
-        <Text variant="h1" accessibilityRole="header" style={styles.title}>
-          Pick a split
-        </Text>
-        <Text variant="lead" color="textMuted" style={styles.subtitle}>
-          Start from a common split or build your own. You can rename days and change exercises after.
-        </Text>
-      </View>
-
-      <View style={styles.list}>
-        {presets.data?.map((preset) => (
-          <PresetCard key={preset.key} preset={preset} onPress={() => open(() => draftFromPreset(preset, newId()))} />
-        ))}
-        {presets.isError && !presets.data ? (
-          <Notice message="Can’t load the common splits right now. Check your connection, or build your own." />
-        ) : null}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Build my own. Name your days and pick exercises"
-          onPress={() => open(() => newDraft(newId))}
-          style={({ pressed }) => [styles.card, styles.buildOwn, pressed && styles.cardPressed]}
-        >
-          <View style={styles.plus}>
-            <PlusIcon color={colors.onAccent} size={20} strokeWidth={2.2} />
-          </View>
-          <View style={styles.cardBody}>
-            <Text style={styles.cardTitle}>Build my own</Text>
-            <Text variant="small" color="textMuted" style={styles.buildOwnNote}>
-              Name your days and pick exercises
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8, paddingBottom: bottom - 2 }]}>
+        <View style={styles.header}>
+          {mode === 'onboarding' || router.canGoBack() ? (
+            <IconButton accessibilityLabel="Back" onPress={() => router.back()}>
+              <BackIcon color={colors.text} />
+            </IconButton>
+          ) : (
+            <View />
+          )}
+          {mode === 'onboarding' ? (
+            <Text variant="small" color="textFaint">
+              Step 2 of 2
             </Text>
-          </View>
-        </Pressable>
-      </View>
-    </ScrollView>
+          ) : null}
+        </View>
+
+        <View style={styles.intro}>
+          <Text variant="h1" accessibilityRole="header" style={styles.title}>
+            Pick a split
+          </Text>
+          <Text variant="lead" color="textMuted" style={styles.subtitle}>
+            Start from a common split or build your own. You can rename days and change exercises after.
+          </Text>
+        </View>
+
+        <View style={styles.list}>
+          {presets.data?.map((preset) => (
+            <PresetCard key={preset.key} preset={preset} onPress={() => open(() => draftFromPreset(preset, newId()))} />
+          ))}
+          {presets.isError && !presets.data ? (
+            <Notice message="Can’t load the common splits right now. Check your connection, or build your own." />
+          ) : null}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Build my own. Name your days and pick exercises"
+            onPress={() => open(() => newDraft(newId))}
+            style={({ pressed }) => [styles.card, styles.buildOwn, pressed && styles.cardPressed]}
+          >
+            <View style={styles.plus}>
+              <PlusIcon color={colors.onAccent} size={20} strokeWidth={2.2} />
+            </View>
+            <View style={styles.cardBody}>
+              <Text style={styles.cardTitle}>Build my own</Text>
+              <Text variant="small" color="textMuted" style={styles.buildOwnNote}>
+                Name your days and pick exercises
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 

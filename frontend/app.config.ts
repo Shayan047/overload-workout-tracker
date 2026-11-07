@@ -2,11 +2,16 @@ import type { ExpoConfig } from 'expo/config';
 
 import tokens from '../design/tokens.json';
 
+// The development build (APP_VARIANT=development, eas.json's "development" profile) is a
+// separate app, "Overload Dev", so it installs next to the real one and never touches its
+// data. It talks to the local API.
+const DEV = process.env.APP_VARIANT === 'development';
+
 // A config file rather than app.json, so native background colors come from the tokens.
 const config: ExpoConfig = {
-  name: 'Overload',
+  name: DEV ? 'Overload Dev' : 'Overload',
   slug: 'overload',
-  scheme: 'overload',
+  scheme: DEV ? 'overload-dev' : 'overload',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -17,7 +22,7 @@ const config: ExpoConfig = {
   },
   android: {
     // Permanent: an APK only installs over an earlier one with the same package.
-    package: 'com.shayan047.overload',
+    package: DEV ? 'com.shayan047.overload.dev' : 'com.shayan047.overload',
     adaptiveIcon: {
       backgroundColor: tokens.color.bg,
       foregroundImage: './assets/android-icon-foreground.png',

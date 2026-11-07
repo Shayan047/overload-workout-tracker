@@ -1,0 +1,7 @@
+{
+  "name": "rest-alarm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Overload's rest-over alarm on Android: an exact alarm and a full-screen notification.",
+  "main": "index.ts"
+}

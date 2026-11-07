@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ghost through one exercise</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:17px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn:hover{background:#FFB547;color:#1C1102}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.more{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:transparent;color:#A8AFB8;text-decoration:none;cursor:pointer}
+.more:hover{background:#22252A;color:#F3F5F7}
+.done{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:#121417}
+.tick{width:26px;height:26px;flex:none;border-radius:999px;background:#31353B;color:#F3F5F7;display:flex;align-items:center;justify-content:center}
+.grid{display:grid;grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) 44px;align-items:center;column-gap:8px}
+.setrow{height:56px;padding:0 6px 0 10px;border-radius:12px}
+.chk{width:32px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center;justify-self:end}
+.up{display:flex;align-items:center;gap:12px;padding:12px 4px 12px 16px}
+.sep{height:1px;margin:0 16px;background:#212429}
+.tbtn{height:44px;min-width:48px;padding:0 10px;flex:none;border:0;border-radius:12px;background:#22252A;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums;cursor:pointer}
+.tbtn:hover{background:#2B2F35}
+.moment{margin:28px 4px 0;font-size:13px;font-weight:600;color:#88909A}
+.moment b{color:#F3F5F7;font-weight:650}
+.x{font-weight:300;font-stretch:100%;font-size:15px;margin:0 2px;position:relative;top:-2px}
+</style>
+</helmet>
+<main class="app" style="height:1240px;padding:40px 16px 0">
+  <p class="moment" style="margin-top:0"><b>After set 1.</b> Same weight as last time's set 1, so the panel compares reps.</p>
+  <section aria-label="Current exercise" style="margin-top:10px;padding:16px 10px 10px;border-radius:22px;background:#1A1D21;border:1.5px solid #7A5418">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 0 0 8px">
+      <div style="flex:1">
+        <h2 class="h2" style="font-size:22px;font-stretch:85%">Chest press</h2>
+        <div class="muted small" style="margin-top:2px">Machine, 3 sets last time</div>
+      </div>
+      <span class="more"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></span>
+    </div>
+    <div style="margin:14px 8px 0;padding:14px;border-radius:14px;background:#08090B">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="small" style="display:flex;align-items:center;gap:6px;color:#7FD3EA;font-weight:600"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>Ghost: Thu, Oct 1</span>
+        <span class="small" style="color:#FFA41B;font-weight:650">Ahead by 1 rep</span>
+      </div>
+      <div style="display:grid;grid-template-columns:62px minmax(0,1fr) 28px;align-items:center;gap:6px 10px;margin-top:12px">
+        <span class="small" style="font-weight:600">You</span>
+        <span style="height:10px;border-radius:6px;background:#25282D;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:41%;border-radius:6px;background:#FFA41B"></span></span>
+        <span class="num" style="font-size:18px;text-align:right;color:#FFA41B">11</span>
+        <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span>
+        <span style="height:10px;border-radius:6px;background:#25282D;position:relative;overflow:hidden"><span style="position:absolute;left:0;top:0;bottom:0;width:37%;border-radius:6px;background:#7FD3EA"></span></span>
+        <span class="num" style="font-size:18px;text-align:right;color:#7FD3EA">10</span>
+      </div>
+      <p class="faint small" style="margin:10px 0 0">Reps through set 1, both at 100 lb. Last time you finished with 27.</p>
+    </div>
+    <div class="grid faint small" style="padding:14px 6px 6px 10px;font-weight:600"><span>Set</span><span>lb</span><span>Reps</span><span>Last time</span><span></span></div>
+    <div class="grid setrow"><span class="num faint" style="font-size:18px">1</span><span class="num" style="font-size:28px">100</span><span class="num" style="font-size:28px">11</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 10</span><span class="chk" style="background:#FFA41B;color:#1C1102"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:17px;height:17px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></div><div class="grid setrow" style="background:#22252A"><span class="num" style="font-size:18px;color:#FFA41B">2</span><span class="num" style="font-size:28px">100</span><span style="height:40px;width:56px;border-radius:10px;border:1.5px solid #FFA41B;background:#08090B;display:flex;align-items:center;justify-content:center;color:#88909A;font-size:20px">–</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 9</span><span class="chk" style="border:1.5px solid #555B64"></span></div><div class="grid setrow"><span class="num faint" style="font-size:18px">3</span><span class="num faint" style="font-size:28px">100</span><span class="faint" style="font-size:20px">–</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 8</span><span class="chk" style="border:1.5px solid #474C54"></span></div>
+  </section>
+  <p class="moment"><b>After set 2.</b> You moved up to 110 lb; last time's sets 1 and 2 topped out at 100. The panel switches to "Up 10 lb".</p>
+  <section aria-label="Current exercise" style="margin-top:10px;padding:16px 10px 10px;border-radius:22px;background:#1A1D21;border:1.5px solid #7A5418">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 0 0 8px">
+      <div style="flex:1">
+        <h2 class="h2" style="font-size:22px;font-stretch:85%">Chest press</h2>
+        <div class="muted small" style="margin-top:2px">Machine, 3 sets last time</div>
+      </div>
+      <span class="more"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.01M12 12h.01M19 12h.01" style="stroke-width:3"></path></svg></span>
+    </div>
+    <div style="margin:14px 8px 0;padding:14px;border-radius:14px;background:#08090B">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="small" style="display:flex;align-items:center;gap:6px;color:#7FD3EA;font-weight:600"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 20V11a6 6 0 0 1 12 0v9l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5z"></path><path d="M10 11h.01M14 11h.01"></path></svg>Ghost: Thu, Oct 1</span>
+        <span class="small" style="color:#FFA41B;font-weight:650;display:flex;align-items:center;gap:4px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke-width:2.2"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Up 10 lb</span>
+      </div>
+      <div style="display:grid;grid-template-columns:62px minmax(0,1fr);align-items:baseline;gap:8px 10px;margin-top:12px">
+        <span class="small" style="font-weight:600">You</span><span class="num" style="font-size:22px;color:#FFA41B">100<span class="x">×</span>11, 110<span class="x">×</span>7</span>
+        <span class="small" style="color:#7FD3EA;font-weight:600">Last time</span><span class="num" style="font-size:22px;color:#7FD3EA">100<span class="x">×</span>10, 9</span>
+      </div>
+      <p class="faint small" style="margin:10px 0 0">Set 2 moved up to 110 lb, so reps aren't compared. Next time they are, at 110.</p>
+    </div>
+    <div class="grid faint small" style="padding:14px 6px 6px 10px;font-weight:600"><span>Set</span><span>lb</span><span>Reps</span><span>Last time</span><span></span></div>
+    <div class="grid setrow"><span class="num faint" style="font-size:18px">1</span><span class="num" style="font-size:28px">100</span><span class="num" style="font-size:28px">11</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 10</span><span class="chk" style="background:#FFA41B;color:#1C1102"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:17px;height:17px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></div><div class="grid setrow"><span class="num faint" style="font-size:18px">2</span><span class="num" style="font-size:28px">110</span><span class="num" style="font-size:28px">7</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 9</span><span class="chk" style="background:#FFA41B;color:#1C1102"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:17px;height:17px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></div><div class="grid setrow" style="background:#22252A"><span class="num" style="font-size:18px;color:#FFA41B">3</span><span class="num" style="font-size:28px">110</span><span style="height:40px;width:56px;border-radius:10px;border:1.5px solid #FFA41B;background:#08090B;display:flex;align-items:center;justify-content:center;color:#88909A;font-size:20px">–</span><span class="num" style="font-size:20px;color:#7FD3EA">100 × 8</span><span class="chk" style="border:1.5px solid #555B64"></span></div>
+  </section>
+  <p class="moment"><b>Finished.</b> The exercise collapses into the done list with the same verdict, and the summary shows "110 / 100 lb, +10 lb".</p>
+  <div class="done" style="margin-top:10px">
+      <span class="tick"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:15px;height:15px;stroke-width:2.6"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+      <div style="flex:1"><div class="h2" style="font-size:16px">Chest press</div><div class="faint small">3 sets, best 110 × 7</div></div>
+      <span class="num" style="font-size:18px;color:#FFA41B">+10 lb</span>
+    </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

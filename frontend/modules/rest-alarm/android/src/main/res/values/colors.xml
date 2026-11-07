@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The rest-over notification's colors when the phone itself is in light mode, so the text
+     stays readable on Android's light card. The app is dark only; values-night has the tokens. -->
+<resources>
+  <color name="rest_over_text">#16181B</color>
+  <color name="rest_over_text_muted">#5A616B</color>
+  <color name="rest_over_accent">#7A5418</color>
+  <color name="rest_over_ghost">#5FA8BC</color>
+  <color name="rest_over_inset">#F3F5F7</color>
+</resources>

@@ -20,7 +20,7 @@ const BOTTOM_PADDING = 28;
 
 /** The design's bottom bar (07): 84 px with a 28 px bottom inset, icons over labels. On
  * phones with a larger home-indicator inset, the bar grows by the difference. */
-export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export function TabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const bottom = Math.max(BOTTOM_PADDING, insets.bottom);
   return (
@@ -41,8 +41,8 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             aria-selected={focused}
             accessibilityLabel={label}
             onPress={() => {
-              const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-              if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
+              const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+              if (!focused && !event.defaultPrevented) navigateToTab(route.key);
             }}
             style={styles.tab}
           >

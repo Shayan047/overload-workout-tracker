@@ -42,7 +42,9 @@ How it's built (chunk 9, `frontend/src/api/`):
   sending, retrying) → "Saved on this phone".
 - **Before the account exists** (onboarding, chunk 10): writes are queued as usual, but
   nothing is sent while there is no token; the outbox waits as if signed out and sign-up
-  resumes it. "Get started" clears any previous user's data on the phone first.
+  resumes it. "Get started" clears any previous user's data on the phone first. Signing in
+  instead (`api/signIn.ts`) drops those queued picks and the cache once the sign-in succeeds,
+  when no earlier user is on the phone: the account is shown as it is.
 - **Local changes win until sent:** a read whose answer would overwrite a change still in
   the outbox keeps the local value (`outbox.hasPending(path)`; settings so far).
 - **Cache** (`cache.ts`): TanStack Query results marked `meta: { persist: true }` are saved
@@ -215,7 +217,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 |---|---|---|---|
 | PUT | `/workouts/{id}` | `{split_day_id?, title, started_at, ended_at?, bodyweight_kg?}` | Start (no `ended_at`), edit, or finish (with `ended_at`). `409 {detail: {message, in_progress_workout_id}}` if another workout is in progress; `422` if `ended_at` is before `started_at`, or if `bodyweight_kg` is omitted on create and the user has no bodyweight entry. |
 | GET | `/workouts` | `updated_since?` | `[{split_day_id, title, started_at, ended_at, bodyweight_kg}]` |
-| GET | `/workouts/history` | | History (18): finished, live workouts, newest first, as `GET /workouts` plus `{sets, ahead, compared}`. `ahead` counts exercises whose total reps beat their previous session (the summary's rule, 11), out of `compared` that had one. Computed by `app/stats/history.py`. |
+| GET | `/workouts/history` | | History (18): finished, live workouts, newest first, as `GET /workouts` plus `{sets, ahead, compared}`. `ahead` counts exercises ahead of their previous session by the summary's rule (11, 24: same top weight, more total reps; a heavier top weight; or, at a lighter one, a higher est. max), out of `compared` that had one. Computed by `is_ahead` in `app/stats/history.py`. |
 | GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
 | GET | `/workouts/{id}` | | The workout with its live exercises in order, each with its live sets in order: `{…, exercises: [{…, sets: [...]}]}`. `404` if deleted. |
 | DELETE | `/workouts/{id}` | | `204`. Also soft-deletes its exercises and their sets. |
@@ -261,9 +263,13 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   one reopens it. Editing a set rewrites the same id; deleting renumbers the sets after it.
 - **Log a set** (09): the weight starts at the previous set today, else last time's set with
   the same number; the keypad's first key replaces it. Steppers move 2.5 lb or 1 kg.
-- **Ghost** (`ghost.ts`, computed on the phone from the cached last session): your reps
-  through the sets logged so far against last time's reps through the same sets. Hidden,
-  with the last-time column and row, when ghost mode is off.
+- **Ghost** (`ghost.ts`, computed on the phone from the cached last session): the sets
+  logged so far against the same sets last time. The heaviest weight with a rep decides
+  what's compared: the same weight compares reps, a heavier one counts as ahead ("Up 2.5
+  lb"), a lighter one compares est. max (rule 4; bodyweight exercises add each workout's
+  snapshot). The log-a-set pill compares the one set, and done cards and the summary the
+  whole exercise, by the same rule (`compare`). Hidden, with the last-time column and row,
+  when ghost mode is off.
 - **Finish:** the `ended_at` PUT goes to the outbox, and the cached history and last-time
   data are updated on the phone, so Today moves on and the next ghost is right offline.
   Finishing with no sets logged offers to discard the workout (`DELETE /workouts/{id}`).
@@ -275,6 +281,18 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   position. Skip sets `skipped`; skipped exercises are listed under "Skipped today" with
   Undo. Once a set is logged, Swap and Skip give way to "Done for today" (marks it `done`
   with the sets so far). Each is one PUT to the workout's row; the split is never written.
+- **Rest-over alarm** (after launch, `modules/rest-alarm`, `RestOverScreen.tsx`, 26, 27): on
+  Android builds the rest's end is an exact alarm (`setAlarmClock`) set by a local Kotlin
+  module instead of the notification below. When it goes off with the app in the
+  background, it posts a full-screen notification: Android opens `rest-over` over the lock
+  screen, or pops up over another app. The notification's content is a custom layout
+  (`res/layout/rest_over_*.xml`: title, next set, a `Chronometer` counting up from the rest's
+  end, last time when expanded) in system fonts, since a notification can't load the app's.
+  The tap opens `rest-over`, "Start set N" opens `workout`, and "+15 sec" is handled
+  natively (a new alarm 15 s on, picked up by `restAgain` when the app comes back). The alert is insistent (sound and vibration repeat) and times out after 2
+  minutes; it's cleared when Rest's over opens or the app comes back, and each alarm posts a
+  new alert (Android doesn't reopen the full-screen screen for an update). The alarm follows
+  the timer like the notification did; nothing is posted while the app is in the foreground. Rest lengths still never reach the API (rule 5).
 - **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
   set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
   progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives
@@ -287,17 +305,26 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   sound), since a channel's sound can't change. Permission is asked at the first rest.
 - **Summary** (chunk 16, `summary.ts`, 11): worked out on the phone when the workout
   finishes, against last time as it was cached before it: minutes, sets, volume (weight ×
-  reps; bodyweight exercises count the snapshot plus the added weight), total reps per
-  exercise against last time, "Ahead on N of M", and new bests. A new best is a session
+  reps; bodyweight exercises count the snapshot plus the added weight), each exercise
+  against last time by the ghost's rule (reps, the move up, or est. max; the Change column
+  says which), "Ahead on N of M", and new bests. A new best is a session
   est. max above `best_est_max_kg` (the best so far, not just last time); a first time
   ever is not a new best. The cached last-time data then takes today's sessions with the
   raised best. The summary is kept in memory; "See … progress" opens Exercise detail for
-  the biggest new best (else the biggest gain).
+  the biggest new best (else the first exercise ahead).
 - **Last time for a new set of exercises** (a swap, an add, another day) starts from what
   the other cached last-time queries know, so it shows offline too.
 - **Reads keep unsent workouts** (`api/pendingWrites.ts`): refreshing `GET /workouts` applies
   workout PUTs and DELETEs still in the outbox, and last-time data keeps a session finished
   on the phone while its writes are unsent (per exercise, the later `ended_at` wins).
+- **Past workouts** (after launch, `features/history/`, 21, 22): `GET /workouts/{id}` is a
+  persisted query, with writes still in the outbox applied on top (`withPendingDetail`);
+  offline it starts from the cached copy, and a workout the server hasn't received is built
+  from the outbox and its History entry. Edit sends only what changed: a `PUT /sets/{id}`
+  per new or changed set (sets renumbered 1, 2, 3... in order; an untouched weight keeps its
+  stored kg) and a `DELETE /sets/{id}` per removed one (`planWorkoutEdit`, tested). Delete
+  is `DELETE /workouts/{id}`. The phone's copy, History's set count and last-time data
+  change at once; stats are marked stale and refetched when next shown.
 - **History, profile and bodyweight** (chunk 20, `features/history/`, `features/profile/`):
   - `GET /workouts/history` and `GET /bodyweight-entries` are persisted queries. Finishing a
     workout adds its recap (sets, ahead, compared, from the summary) to the cached history,
@@ -306,8 +333,8 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   - A workout is "Waiting for Wi-Fi" (or "Saved on this phone") while a `/workouts/{id}`
     write is in the outbox; the finish is its last write and the outbox is FIFO, so after
     that the whole workout has been sent ("Synced"). Profile counts those workouts.
-  - The calendar marks days with a finished workout; tapping a day lists that day's
-    workouts instead of the four most recent. The line under it counts this month's
+  - The calendar marks days with a finished workout; tapping a day with one opens it,
+    and a day with more lists them instead of the four most recent. The line under it counts this month's
     workouts and its rest days before today, counted from the first workout ever.
   - Profile writes every setting through `PUT /settings` (the outbox). Bodyweight logs one
     entry per day: logging again the same day rewrites that day's entry (same id). Workouts
@@ -339,7 +366,7 @@ The app caches responses for offline viewing.
 |---|---|---|---|
 | GET | `/stats/progress` | `weeks?` (default 8), `as_of?` (default now) | Progress list (13), most recently trained first: `[{exercise_id, includes_bodyweight, sessions, latest_at, est_max_kg, change, is_new_best, plateau: {weeks_flat, best_kg, best_at} \| null, sparkline: [{at, est_max_kg}]}]`. `change` is a fraction (0.76 = +76%). |
 | GET | `/stats/exercises/{id}` | | Exercise detail (14): `{includes_bodyweight, est_max_kg, latest_at, first: {at, est_max_kg}, is_new_best, series: [{workout_id, at, est_max_kg, best_set, sets: [{weight_kg, reps}]}], weights: [{weight_kg, sessions, first_at}], best_set, most_reps, heaviest: {weight_kg, first_at}, plateau, projection: {at, est_max_kg, weekly_gain_kg, capped}, frontier}`. Empty values for an exercise never done; `404` for an exercise the user can't see. |
-| GET | `/stats/exercises/{id}/weights/{weight_kg}` | | One-weight views (15, 16): `{weight_kg, sessions: [{workout_id, at, reps: [...], total, average, retention}], total_change, first_retention, latest_retention, moved_up_on}`. The weight is rounded to the gram before matching, like stored weights, so 10 lb can be sent as 4.5359237. |
+| GET | `/stats/exercises/{id}/weights/{weight_kg}` | | Reps at one weight (14): `{weight_kg, sessions: [{workout_id, at, reps: [...], total, average, retention}], total_change, first_retention, latest_retention, moved_up_on}`. The weight is rounded to the gram before matching, like stored weights, so 10 lb can be sent as 4.5359237. |
 | GET | `/stats/exercises/{id}/frontier` | `as_of?` | Frontier (17): `{as_of, points: [{weight_kg, reps, at}]}`, lightest first. `as_of` gives the frontier as it stood then ("compare with"). |
 
 How the app shows them (chunk 17, `frontend/src/features/progress/`):
@@ -352,19 +379,20 @@ How the app shows them (chunk 17, `frontend/src/features/progress/`):
   order (most recently trained first). Values have one decimal under 100 and none above.
   The chips filter by the active split's days. Sparklines run from the window's first
   session to its last, with the lowest est. max at the bottom.
-- **Exercise detail (14):** the chart's x axis runs from the first session to the
-  projection date (or the last session), y has gridlines at a "nice" step (at most four
-  intervals). Weight bands follow the best set's weight; a band changes halfway between the
-  last session at one weight and the first at the next. The weight chips open the
-  one-weight views and the frontier card opens the frontier.
-- **One weight (15, 16; chunk 18):** `GET /stats/exercises/{id}/weights/{weight_kg}`, cached
-  like 14. Progress stacks the latest six sessions' reps per set (set 1 at the bottom, sets
-  past the fourth share the darkest shade) on a "nice" step with at most five intervals;
-  Fingerprint draws the latest session in amber and up to four earlier ones in ice, fading
-  with age, with the gain between the oldest and the latest filled. Tables list every
-  session, newest first. "You moved up to 15 lb" takes the heaviest weight above this one in
-  the session at `moved_up_on`, from the cached exercise detail. Headline copy and geometry
-  live in `oneWeight.ts` (tested).
+- **Exercise detail (14, redesigned after launch):** four sections. Estimated max: the
+  chart's x axis runs from the first session to the projection date (or the last session),
+  y has gridlines at a "nice" step (at most four intervals); weight bands follow the best
+  set's weight and change halfway between the last session at one weight and the first at
+  the next. Your last 3 workouts: est. max for every set of the latest three sessions in
+  `series`, one line each (`sessionLines.ts`, tested); for bodyweight exercises each
+  session's bodyweight is recovered from its est. max and best set. "See all N workouts"
+  opens All workouts (23, `all-workouts?exerciseId=...`), the same chart for every session.
+  Reps at one weight: `GET /stats/exercises/{id}/weights/{weight_kg}`, cached like 14, for
+  the chip picked (the latest weight used first); it stacks the latest six sessions' reps
+  per set (set 1 at the bottom, sets past the fourth share the darkest shade) on a "nice"
+  step with at most five intervals. "You moved up to 15 lb" takes the heaviest weight above
+  this one in the session at `moved_up_on`. Records, and the frontier card opens the
+  frontier. Fingerprint (16) was dropped; the API's retention fields are unused.
 - **Frontier (17; chunk 19):** today's frontier is the `frontier` field of
   `GET /stats/exercises/{id}` (already cached); "Compare with" fetches
   `GET /stats/exercises/{id}/frontier?as_of=<session time>`, also cached. The two dates are

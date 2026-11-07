@@ -53,6 +53,14 @@ Overload (working name) is a workout tracker for iOS and Android.
 ### Last time and ghost mode
 
 - While logging, show the same exercise's most recent completed session set by set, and whether the user is ahead or behind.
+- What's compared depends on the weight (designs 24, 25): the heaviest weight in today's sets
+  against the heaviest in the same sets last time (so a pyramid isn't "lighter" at set 1).
+  - Same weight: reps ("Ahead by 2 reps").
+  - Heavier: the move up is the win ("Up 2.5 lb"); reps aren't compared until next time.
+  - Lighter: est. max from the best set ("Est. max 0.7 lb behind").
+  Bodyweight exercises compare the added weight, and their est. max uses each workout's own
+  bodyweight. The same rule gives the log-a-set pill, the done cards, the summary's Change
+  column and "Ahead on N of M" (on the summary and in History).
 - Ghost = the most recent completed workout that contains the same exercise.
 - Ghost mode can be turned off in settings.
 
@@ -66,8 +74,20 @@ Overload (working name) is a workout tracker for iOS and Android.
 - Starts automatically when a set is saved, using the exercise's rest length.
 - Controls: −15, +15 and skip.
 - Haptic at 10 seconds left and at the end. Optional sound.
-- Works with the phone locked via a local notification.
-- Later: a lock-screen Live Activity (iOS) and an ongoing notification (Android).
+- When the rest ends with Overload in the background (Android): an exact alarm, as timer apps use.
+  With the phone locked or the screen off, "Rest's over" (26) opens over the lock screen, like the
+  Clock app's alarm; while another app is in use, its notification (27) pops up instead:
+  "Rest's over", the next set, a count up from the end of the rest ("+00:08") and, expanded,
+  last time's set. Both offer "Start set N" (opens the workout) and "+15 sec". It stays a
+  notification on purpose: drawing our own window over other apps needs an extra permission
+  and iOS can't do it at all. Android 14+ needs full-screen alerts allowed once (Profile >
+  Rest timer alerts). It rings and vibrates until acted on (or 2 minutes), like the Clock app.
+  Nothing extra appears while Overload is open. Phone settings decide the pop-up: in Do Not
+  Disturb it shows silently (chosen: DND stays quiet unless the user adds Overload to its
+  allowed apps), and Samsung's "Brief" pop-up style shows it as one line without buttons for a
+  few seconds ("Detailed" shows the buttons).
+- Expo Go and iOS: a local notification at the end instead.
+- Later: a live countdown on the lock screen (12; iOS Live Activity, Android ongoing notification).
 - Actual rest durations are never recorded or used in stats.
 
 ### Summary
@@ -77,16 +97,18 @@ Shown after finishing: duration, sets, volume, comparison with last time per exe
 ### Progress
 
 - **Progress list:** exercises with est. max sparklines and plateau flags.
-- **Exercise detail:** est. max chart over time, with bands showing the weight used and a projection, plus weight filter chips.
-- **One-weight view**, with two modes:
-  - Progress: stacked bars of reps per set for each session.
-  - Fingerprint: reps by set number for each session, plus retention.
+- **Exercise detail**, in sections:
+  - Estimated max: est. max over time at any weight, with bands showing the weight used and a projection.
+  - Your last 3 workouts: est. max for every set, one line per workout (latest amber, the two before in ice). "See all N workouts" opens every workout's line on one big chart (23), where tapping a workout picks out its line.
+  - Reps at one weight: weight chips, then stacked bars of reps per set for each session at that weight (the latest weight used is picked first).
+  - Records and the frontier.
 - **Rep-weight frontier** chart.
 
 Formulas:
 
 - Est. max = weight × (1 + reps ÷ 30) (Epley). A session's est. max comes from its best set. Computed, never stored.
-- Retention = reps in the last set ÷ reps in the first set, at one exact weight.
+- Retention = reps in the last set ÷ reps in the first set, at one exact weight. The API still
+  returns it, but the app no longer shows it (Fingerprint was dropped).
 - Frontier: for each weight, keep the most reps ever done. Drop a point if another point has at least the same weight and at least the same reps.
 - Plateau and projection (decided in chunk 7; `backend/app/stats/trend.py`):
   - **Plateau ("Flat for N weeks"):** the best session est. max ever was set at least
@@ -134,6 +156,12 @@ Screen numbers match `design/screens/`.
 - The account is created at the end of onboarding, after Save split on 04. What the user
   picks before that (unit, bodyweight, split) is saved on the phone and sent as soon as the
   account exists. "I already have an account" on 01 goes to sign-in, then Today.
+  "Create an account" on sign-in starts onboarding at 02, like "Get started" on 01.
+- Signing in shows the account as it is. Someone who goes through onboarding and then signs in
+  to an existing account loses those picks, with no prompt. Only after sign-in succeeds, and
+  only when no earlier user is on the phone: a user back after an expired session keeps their
+  unsent workouts.
+- Password fields never auto-capitalize or autocorrect, and have a show/hide button.
 - Bodyweight must be a plausible adult weight: 45–660 lb or 20–300 kg. Switching the unit on
   02 converts what was typed.
 - From Edit split, tapping a day opens Edit a day (05), whose Add exercise button opens Add exercises (06).
@@ -183,13 +211,19 @@ Screen numbers match `design/screens/`.
 **Progress**
 
 - Progress list (13) → tap an exercise → Exercise detail (14).
-- Weight chips (10 lb, 15 lb…) open the one-weight view, which toggles between Progress (15) and Fingerprint (16).
+- Weight chips (10 lb, 15 lb…) change the "Reps at one weight" section in place.
+- "See all N workouts" opens All workouts (23).
 - The frontier card on 14 opens Rep-weight frontier (17).
 
 **History**
 
-- History (18): the calendar and the list of recent workouts. Tapping a day lists that day's
-  workouts; tapping it again goes back to the recent ones.
+- History (18): the calendar and the list of recent workouts. Tapping a day with one workout
+  opens it (21); a day with more lists them to pick from, and tapping a day without one says
+  so. Tapping any workout in the list opens it too.
+- A past workout (21) shows every exercise's sets and est. max. Edit (22) changes weight and
+  reps, adds or deletes sets, or deletes the whole workout; nothing changes until Save. The
+  workout's bodyweight snapshot never changes (rule 3), and stats and History update from
+  the edited sets.
 - Profile (19): Units and Rest timer alerts open sheets, Bodyweight opens Bodyweight (20),
   Current split opens the Splits tab, Custom exercises lists them (they're made from Add
   exercises' "Can't find it?").

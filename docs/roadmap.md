@@ -195,6 +195,8 @@ Every UI chunk's "Done when" also requires:
 ### 22. Lock-screen timer — ON HOLD (to be decided)
 
 - **Goal:** an iOS Live Activity and an Android ongoing notification for the rest timer.
+- **Note:** the rest-over alarm (26, 27: an exact alarm and a full-screen screen when the rest
+  ends) was built after launch with a local native module. The live countdown is still on hold.
 - **Design:** 12.
 - **Review:** a web screenshot can't capture the lock screen. Take simulator or emulator screenshots instead (`xcrun simctl io booted screenshot` on iOS, `adb exec-out screencap -p` on Android), then have the design-reviewer compare each against `12-rest-timer-lock-screen` for content and colors. The system frame and layout will differ.
 - **Done when:** the rest countdown is visible on the lock screen on both platforms, and both screenshots get PASS for content and colors.

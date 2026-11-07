@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- The alarm must fire on time: exact alarms, as timer apps use. -->
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+  <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+  <!-- Opens the rest-over screen over the lock screen, like the Clock app's alarm. -->
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+
+  <application>
+    <receiver android:name="expo.modules.restalarm.RestAlarmReceiver" android:exported="false" />
+  </application>
+</manifest>

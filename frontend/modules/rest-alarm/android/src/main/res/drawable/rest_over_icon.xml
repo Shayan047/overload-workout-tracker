@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The notification's small icon: the brand mark's four bars. Android tints it with the
+     notification's color (amber). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="24dp"
+  android:height="24dp"
+  android:viewportWidth="28"
+  android:viewportHeight="28">
+  <path android:fillColor="#FFFFFFFF" android:pathData="M3.5,9h1.5a1.5,1.5 0,0 1,1.5 1.5v7a1.5,1.5 0,0 1,-1.5 1.5h-1.5a1.5,1.5 0,0 1,-1.5 -1.5v-7a1.5,1.5 0,0 1,1.5 -1.5z" />
+  <path android:fillColor="#FFFFFFFF" android:pathData="M10,4h1.5a1.5,1.5 0,0 1,1.5 1.5v17a1.5,1.5 0,0 1,-1.5 1.5h-1.5a1.5,1.5 0,0 1,-1.5 -1.5v-17a1.5,1.5 0,0 1,1.5 -1.5z" />
+  <path android:fillColor="#FFFFFFFF" android:pathData="M16.5,4h1.5a1.5,1.5 0,0 1,1.5 1.5v17a1.5,1.5 0,0 1,-1.5 1.5h-1.5a1.5,1.5 0,0 1,-1.5 -1.5v-17a1.5,1.5 0,0 1,1.5 -1.5z" />
+  <path android:fillColor="#FFFFFFFF" android:pathData="M23,9h1.5a1.5,1.5 0,0 1,1.5 1.5v7a1.5,1.5 0,0 1,-1.5 1.5h-1.5a1.5,1.5 0,0 1,-1.5 -1.5v-7a1.5,1.5 0,0 1,1.5 -1.5z" />
+</vector>

@@ -10,7 +10,7 @@ import { useWakingHint } from './useWakingHint';
 import { authErrorMessage, checkSignIn } from './messages';
 
 export function SignInScreen() {
-  const { signIn } = useAuth();
+  const { signIn, beginOnboarding } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -71,10 +71,15 @@ export function SignInScreen() {
             onPress={submit}
             disabled={busy}
           />
+          {/* A new account starts with onboarding (02-04), like "Get started" on 01; the
+              account itself is created at its end. */}
           <Button
             title="Create an account"
             variant="secondary"
-            onPress={() => router.replace('/sign-up')}
+            onPress={async () => {
+              await beginOnboarding();
+              router.replace('/units');
+            }}
           />
         </>
       }

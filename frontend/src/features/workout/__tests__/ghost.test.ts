@@ -1,10 +1,14 @@
 import {
   aheadText,
   applyKey,
+  changeText,
+  compare,
+  comparisonText,
   elapsedText,
   exerciseDelta,
   ghost,
   ghostDate,
+  isAhead,
   lastTimeText,
   setText,
 } from '../ghost';
@@ -16,18 +20,21 @@ const set = (n: number, w: number, reps: number) => ({ set_number: n, weight_kg:
 describe('ghost (08): reps through the sets logged so far, against the same sets last time', () => {
   const last = [set(1, 20, 6), set(2, 20, 5), set(3, 20, 5), set(4, 20, 4)];
 
-  test('after two sets of 7 and 6 against 6 and 5', () => {
-    expect(ghost([set(1, 20, 7), set(2, 20, 6)], last)).toEqual({ sets: 2, you: 13, last: 11, lastTotal: 20, delta: 2 });
+  test('after two sets of 7 and 6 against 6 and 5, at the same weight', () => {
+    expect(ghost([set(1, 20, 7), set(2, 20, 6)], last)).toEqual({
+      sets: 2,
+      lastTotal: 20,
+      comparison: { kind: 'reps', you: 13, last: 11, delta: 2 },
+    });
   });
 
   test('before any set', () => {
-    expect(ghost([], last)).toEqual({ sets: 0, you: 0, last: 0, lastTotal: 20, delta: 0 });
+    expect(ghost([], last)).toEqual({ sets: 0, lastTotal: 20, comparison: { kind: 'reps', you: 0, last: 0, delta: 0 } });
   });
 
   test('more sets than last time: the extra sets count, last time stays at its total', () => {
-    expect(ghost([6, 5, 5, 4, 3].map((r, i) => set(i + 1, 20, r)), last)).toMatchObject({ you: 23, last: 20, delta: 3 });
+    expect(ghost([6, 5, 5, 4, 3].map((r, i) => set(i + 1, 20, r)), last).comparison).toMatchObject({ you: 23, last: 20, delta: 3 });
   });
-
   test('ahead/behind wording', () => {
     expect(aheadText(2, 'reps')).toBe('Ahead by 2 reps');
     expect(aheadText(1, 'reps')).toBe('Ahead by 1 rep');
@@ -43,6 +50,64 @@ describe('ghost (08): reps through the sets logged so far, against the same sets
     expect(exerciseDelta(35, 33)).toBe('+2 reps');
     expect(exerciseDelta(33, 34)).toBe('−1 rep');
     expect(exerciseDelta(24, 24)).toBe('Even');
+  });
+});
+
+describe('compare (option B): the weight decides what is compared', () => {
+  // 25: chest press, last time 100 × 10, 9, 8.
+  const lastTime = [set(1, 100, 10), set(2, 100, 9), set(3, 100, 8)];
+
+  test('same top weight: reps', () => {
+    expect(ghost([set(1, 100, 11)], lastTime).comparison).toEqual({ kind: 'reps', you: 11, last: 10, delta: 1 });
+  });
+
+  test('moving up on set 2: heavier, against the same sets last time', () => {
+    const c = ghost([set(1, 100, 11), set(2, 110, 7)], lastTime).comparison!;
+    expect(c.kind).toBe('heavier');
+    expect(c.kind === 'heavier' && Math.round((c.upKg / LB) * 10) / 10).toBe(10);
+    expect(isAhead(c)).toBe(true);
+    expect(comparisonText(c, 'lb', 'panel')).toBe('Up 10 lb');
+    expect(comparisonText(c, 'lb', 'short')).toBe('Up 10 lb');
+  });
+
+  test('a pyramid is not lighter at set 1: only last time’s same sets count', () => {
+    const pyramid = [set(1, 100, 10), set(2, 110, 8), set(3, 120, 6)];
+    expect(ghost([set(1, 100, 10)], pyramid).comparison!.kind).toBe('reps');
+  });
+
+  test('lighter: est. max from the best set (rule 4)', () => {
+    // 24: 17.5 × 10 against 20 × 6 → 23.3 against 24.0.
+    const c = compare([set(1, 17.5, 10)], [set(1, 20, 6)])!;
+    expect(c.kind).toBe('lighter');
+    expect(isAhead(c)).toBe(false);
+    expect(comparisonText(c, 'lb', 'panel')).toBe('Est. max 0.7 lb behind');
+    expect(comparisonText(c, 'lb', 'short')).toBe('Est. max −0.7');
+    expect(changeText(c, 'lb', 'summary')).toBe('−0.7');
+    expect(changeText(c, 'lb', 'done')).toBe('−0.7 est.');
+  });
+
+  test('lighter but stronger counts as ahead', () => {
+    const c = compare([set(1, 17.5, 12)], [set(1, 20, 6)])!;
+    expect(isAhead(c)).toBe(true);
+    expect(comparisonText(c, 'lb', 'panel')).toBe('Est. max 0.5 lb ahead');
+  });
+
+  test('bodyweight exercises compare added weight, and est. max counts each workout’s bodyweight', () => {
+    expect(compare([set(1, 15, 6)], [set(1, 10, 8)], { today: lb(172), last: lb(172) })!.kind).toBe('heavier');
+    const lighter = compare([set(1, 5, 8)], [set(1, 10, 8)], { today: lb(180), last: lb(172) })!;
+    // (180 + 5) × 1.267 against (172 + 10) × 1.267: ahead, because the bodyweight went up.
+    expect(lighter.kind === 'lighter' && isAhead(lighter)).toBe(true);
+  });
+
+  test('the change column and done cards', () => {
+    expect(changeText({ kind: 'reps', you: 29, last: 28, delta: 1 }, 'lb', 'summary')).toBe('+1');
+    expect(changeText({ kind: 'reps', you: 29, last: 28, delta: 1 }, 'lb', 'done')).toBe('+1 rep');
+    expect(changeText({ kind: 'reps', you: 24, last: 24, delta: 0 }, 'lb', 'summary')).toBe('Even');
+    expect(changeText(compare([set(1, 22.5, 8)], [set(1, 20, 13)])!, 'lb', 'summary')).toBe('+2.5 lb');
+  });
+
+  test('zero-rep sets never decide the weight', () => {
+    expect(compare([set(1, 110, 0), set(2, 100, 10)], [set(1, 100, 9), set(2, 100, 9)])!.kind).toBe('reps');
   });
 });
 

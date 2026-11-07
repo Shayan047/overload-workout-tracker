@@ -4,7 +4,7 @@
 // once they exist (chunks 10–20).
 
 import type { Preset, SplitDraft } from '@/features/splits/draft';
-import type { BodyweightEntry, WorkoutHistoryItem } from '@/api/pendingWrites';
+import type { BodyweightEntry, WorkoutDetail, WorkoutHistoryItem } from '@/api/pendingWrites';
 import type { LastSession, WorkoutSummary } from '@/api/workouts';
 import type { Rest } from '@/features/workout/rest';
 import type { ExerciseStats, OneWeightStats, ProgressItem } from '@/api/stats';
@@ -437,6 +437,36 @@ export const sampleHistory = (() => {
   workouts.reverse();
   return { workouts, pendingIds: workouts.slice(0, 2).map((w) => w.id) };
 })();
+
+/** A past workout (21, 22): Shoulders & Arms on Tuesday, October 6, the same sets as last
+ * time on 07–09. Any History id opens it, with that entry's title and times. */
+export function sampleWorkoutDetail(id: string): WorkoutDetail {
+  const oct6 = sampleHistory.workouts.find((w) => new Date(w.started_at).getDate() === 6 && new Date(w.started_at).getMonth() === 9)!;
+  const entry = sampleHistory.workouts.find((w) => w.id === id) ?? oct6;
+  return {
+    id,
+    split_day_id: SAMPLE_DAY_ID,
+    title: entry.title,
+    started_at: entry.started_at,
+    ended_at: entry.ended_at,
+    bodyweight_kg: entry.bodyweight_kg,
+    exercises: sampleLastSessions.map((last, position) => ({
+      id: `rv-past-${position}`,
+      workout_id: id,
+      exercise_id: last.exercise_id,
+      position,
+      status: 'done',
+      source: 'split',
+      rest_seconds: 90,
+      sets: last.sets.map((set) => ({
+        ...set,
+        id: `rv-past-${position}-${set.set_number}`,
+        workout_exercise_id: `rv-past-${position}`,
+        logged_at: new Date(new Date(entry.started_at).getTime() + (position * 7 + set.set_number * 2) * 60_000).toISOString(),
+      })),
+    })),
+  };
+}
 
 /** Bodyweight (20): weekly from Monday, August 10, then today. */
 export const sampleBodyweight: BodyweightEntry[] = [

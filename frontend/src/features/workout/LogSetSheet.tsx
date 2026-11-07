@@ -7,7 +7,7 @@ import { formatRest } from '@/lib/exercises';
 import { formatWeight, fromKg, toKg, type Unit } from '@/lib/units';
 import { colors, figure, figures, radius } from '@/theme';
 
-import { aheadText, applyKey, type KeyField, setText } from './ghost';
+import { applyKey, compare, comparisonText, type KeyField, type Offsets, setText } from './ghost';
 
 /** The set being logged or edited. */
 export type SetTarget = {
@@ -31,6 +31,8 @@ type Props = {
   unit: Unit;
   /** Last time's set with the same number; null without one or with ghost mode off. */
   lastSet: { set_number: number; weight_kg: number; reps: number } | null;
+  /** Today's and last time's bodyweight, for a bodyweight exercise's est. max (rule 2). */
+  offsets?: Offsets;
   /** The rest that saving starts; 0 when it starts none (editing a set). */
   restSeconds: number;
   onSave: (weightKg: number, reps: number) => void;
@@ -69,6 +71,7 @@ function SetForm({
   bodyweight,
   unit,
   lastSet,
+  offsets,
   restSeconds,
   onSave,
   onDelete,
@@ -95,7 +98,11 @@ function SetForm({
   const weightValue = Number(weight.text || '0');
   const repsValue = reps.text === '' ? null : Number(reps.text);
   const canSave = repsValue !== null && Number.isFinite(weightValue);
-  const delta = lastSet && repsValue !== null ? repsValue - lastSet.reps : null;
+  // The pill (09): this set against last time's, by the weight (24).
+  const comparison =
+    lastSet && repsValue !== null && Number.isFinite(weightValue)
+      ? compare([{ weight_kg: toKg(weightValue, unit), reps: repsValue }], [lastSet], offsets)
+      : null;
   const unitLabel = `${bodyweight ? 'Added weight' : 'Weight'}, ${unit}`;
 
   const caret = <View style={styles.caret} />;
@@ -126,10 +133,10 @@ function SetForm({
             </Text>
             <Text style={styles.lastTimeSet}>{setText(lastSet, unit, bodyweight)}</Text>
           </View>
-          {delta !== null ? (
+          {comparison ? (
             <View style={styles.pill}>
               <Text variant="labelHeavy" color="accentLight">
-                {aheadText(delta, 'short')}
+                {comparisonText(comparison, unit, 'short')}
               </Text>
             </View>
           ) : null}
@@ -174,7 +181,7 @@ function SetForm({
             </Pressable>
           </View>
           <Text variant="small" color="textFaint" style={styles.hint} pointerEvents="none">
-            {active === 'weight' ? 'Typing' : `Steps of ${STEP[unit]}`}
+            Steps of {STEP[unit]}
           </Text>
         </View>
 
@@ -192,9 +199,11 @@ function SetForm({
             {reps.text ? <Text style={styles.entry}>{reps.text}</Text> : null}
             {active === 'reps' ? caret : <Text style={[styles.entry, styles.entryEmpty]}>–</Text>}
           </View>
-          <Text variant="small" color="textFaint" style={styles.hint}>
-            {active === 'reps' ? 'Typing' : 'Tap to type'}
-          </Text>
+          {active === 'reps' ? null : (
+            <Text variant="small" color="textFaint" style={styles.hint}>
+              Tap to type
+            </Text>
+          )}
         </Pressable>
       </View>
 

@@ -41,20 +41,23 @@ function Routes() {
       {signedIn ? <RestAlerts /> : null}
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
         {/* Review mode opens every screen, so each can be screenshotted. */}
-        <Stack.Protected guard={signedIn}>
+        {/* Signed out, these send you to Welcome (otherwise the router picks a fallback). */}
+        <Stack.Protected guard={signedIn} redirectTo="/welcome">
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="workout" />
           <Stack.Screen name="pick-exercise" />
           <Stack.Screen name="summary" />
+          <Stack.Screen name="rest-over" options={{ animation: 'fade' }} />
+          <Stack.Screen name="past-workout/[workoutId]" />
           <Stack.Screen name="exercise/[exerciseId]" />
-          <Stack.Screen name="one-weight" />
+          <Stack.Screen name="all-workouts" />
           <Stack.Screen name="frontier" />
           <Stack.Screen name="profile" />
           <Stack.Screen name="bodyweight" />
           <Stack.Screen name="dev-sync" />
         </Stack.Protected>
         {/* Signed out: onboarding first (Welcome is where they land), then the account. */}
-        <Stack.Protected guard={isReviewMode || !signedIn}>
+        <Stack.Protected guard={isReviewMode || !signedIn} redirectTo="/">
           <Stack.Screen name="welcome" />
           <Stack.Screen name="units" />
           <Stack.Screen name="sign-up" />

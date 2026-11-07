@@ -120,6 +120,16 @@ export function useWorkoutActions() {
         return commit({ ...saved, rest: null }, []);
       },
 
+      /** A short rest after the rest ended: "+15 sec" on the rest-over screen, or on its banner
+       * while the app was away (then the alarm already set `endsAt`). */
+      restAgain(seconds: number, endsAt?: Date) {
+        const saved = require();
+        const rowId = saved.rest?.rowId ?? currentExercise(saved.state, { focusId: saved.focusId })?.id;
+        if (!rowId) return Promise.resolve();
+        const rest = startRest(rowId, seconds, now());
+        return commit({ ...saved, rest: endsAt ? { ...rest, endsAt: endsAt.toISOString() } : rest }, []);
+      },
+
       deleteSet(setId: string) {
         const saved = require();
         const { state, writes } = deleteSet(saved.state, setId);

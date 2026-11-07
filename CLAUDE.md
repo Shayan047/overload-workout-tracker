@@ -28,9 +28,12 @@ Personal workout tracker for iOS and Android. "Overload" is a working name.
 - Each split day is an ordered list of exercises, each with its own rest length.
 - Exercise library seeded from free-exercise-db, plus custom exercises.
 - Workout: start today's day, log working sets (weight, reps), finish. Resumes after restart.
-- Ghost mode shows last time set by set while logging. Today-only swap/skip/move/add.
+- Ghost mode shows last time set by set while logging. It compares reps at the same weight,
+  counts a heavier weight as ahead, and compares est. max at a lighter one. Today-only
+  swap/skip/move/add.
 - Rest timer auto-starts on set save; works with the phone locked.
-- Summary, progress (est. max, one-weight views, frontier), history, bodyweight, profile.
+- Summary, progress (est. max, last workouts set by set, reps at one weight, frontier),
+  history (past workouts open in full and can be edited), bodyweight, profile.
 - Out of scope: social, AI, muscle heatmap, rest-time stats.
 
 Full detail: `docs/product-spec.md`.
@@ -62,8 +65,8 @@ Full detail: `docs/api-and-sync.md`.
 5. Rest durations are never recorded or used in any stat. Only each exercise's configured
    rest length is stored.
 6. Changes made during a workout apply to that workout only and never edit the split.
-7. One-weight stats (Progress and Fingerprint) only use sets done at that exact weight.
-   Retention = reps in the last set ÷ reps in the first set.
+7. One-weight stats ("Reps at one weight" on Exercise detail) only use sets done at that
+   exact weight.
 8. Frontier: for each weight, keep the most reps ever done. Drop a point if another point
    has at least the same weight and at least the same reps.
 9. Ghost = the most recent completed workout that contains the same exercise.
