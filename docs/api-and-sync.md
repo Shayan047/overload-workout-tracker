@@ -42,7 +42,9 @@ How it's built (chunk 9, `frontend/src/api/`):
   sending, retrying) → "Saved on this phone".
 - **Before the account exists** (onboarding, chunk 10): writes are queued as usual, but
   nothing is sent while there is no token; the outbox waits as if signed out and sign-up
-  resumes it. "Get started" clears any previous user's data on the phone first.
+  resumes it. "Get started" clears any previous user's data on the phone first. Signing in
+  instead (`api/signIn.ts`) drops those queued picks and the cache once the sign-in succeeds,
+  when no earlier user is on the phone: the account is shown as it is.
 - **Local changes win until sent:** a read whose answer would overwrite a change still in
   the outbox keeps the local value (`outbox.hasPending(path)`; settings so far).
 - **Cache** (`cache.ts`): TanStack Query results marked `meta: { persist: true }` are saved

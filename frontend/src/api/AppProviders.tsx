@@ -29,6 +29,7 @@ import {
   type User,
 } from './session';
 import type { Settings } from './settings';
+import { signInAndKeepAccount } from './signIn';
 import { deviceStorage } from './storage';
 
 type Services = {
@@ -185,8 +186,16 @@ function Providers({ services, children }: { services: Services; children: React
     () => ({
       user: isReviewMode ? REVIEW_USER : user,
       signedIn: isReviewMode || user !== null,
-      signIn: async (email, password) =>
-        startSession(await apiRequest('POST', '/auth/sign-in', { body: { email, password } })),
+      signIn: (email, password) =>
+        signInAndKeepAccount({
+          request: () => apiRequest<TokenResponse>('POST', '/auth/sign-in', { body: { email, password } }),
+          previousUser: lastUserId,
+          discardOnboarding: async () => {
+            await outbox.clear();
+            await clearQueryCache(queryClient, deviceStorage);
+          },
+          start: startSession,
+        }),
       signUp: async (email, password, displayName) =>
         startSession(
           await apiRequest('POST', '/auth/sign-up', {

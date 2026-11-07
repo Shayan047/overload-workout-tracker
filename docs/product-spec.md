@@ -157,6 +157,10 @@ Screen numbers match `design/screens/`.
   picks before that (unit, bodyweight, split) is saved on the phone and sent as soon as the
   account exists. "I already have an account" on 01 goes to sign-in, then Today.
   "Create an account" on sign-in starts onboarding at 02, like "Get started" on 01.
+- Signing in shows the account as it is. Someone who goes through onboarding and then signs in
+  to an existing account loses those picks, with no prompt. Only after sign-in succeeds, and
+  only when no earlier user is on the phone: a user back after an expired session keeps their
+  unsent workouts.
 - Password fields never auto-capitalize or autocorrect, and have a show/hide button.
 - Bodyweight must be a plausible adult weight: 45–660 lb or 20–300 kg. Switching the unit on
   02 converts what was typed.
