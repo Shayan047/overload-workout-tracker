@@ -49,7 +49,7 @@ export function BackIcon({ color, size = 22 }: IconProps) {
   );
 }
 
-/** Not synced yet (07's "waiting for Wi-Fi" pill). */
+/** Not synced yet (07's "Saved on this phone" pill). */
 export function CloudOffIcon({ color, size = 22 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">

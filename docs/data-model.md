@@ -30,7 +30,7 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 | Table | Columns |
 |---|---|
 | users | email, password_hash, display_name (nullable) |
-| user_settings | user_id (unique), unit ('lb' or 'kg', default 'lb'), active_split_id (nullable), ghost_mode (default true), sync_wifi_only (default true), rest_alert_sound (default true) |
+| user_settings | user_id (unique), unit ('lb' or 'kg', default 'lb'), active_split_id (nullable), ghost_mode (default true), sync_wifi_only (default true; unused since sync stopped depending on Wi-Fi, kept for older builds), rest_alert_sound (default true) |
 | exercises | owner_user_id (null = library exercise), name, primary_muscle, secondary_muscles (text[], default empty), equipment (nullable), kind ('weighted' or 'bodyweight') |
 | splits | user_id, name, repeat_mode ('in_order' or 'weekdays') |
 | split_days | user_id, split_id, name, position, weekday (0–6, nullable, only used in weekdays mode) |

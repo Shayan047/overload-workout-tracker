@@ -140,7 +140,7 @@ Formulas:
 
 - History calendar and a list of recent workouts.
 - Bodyweight log.
-- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, sync on Wi-Fi only, custom exercises.
+- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, custom exercises. Sync has no setting: changes go out on any connection, Wi-Fi or mobile data, and wait only when there's no internet.
 
 ### Out of scope for now
 

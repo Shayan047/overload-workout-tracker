@@ -31,13 +31,12 @@ export type SendResult =
   | { ok: false; kind: 'http'; status: number };
 
 /** Whether writes may be sent right now, and if not, why. See network.ts. */
-export type Connection = { canSend: boolean; reason: 'ok' | 'offline' | 'needs-wifi' };
+export type Connection = { canSend: boolean; reason: 'ok' | 'offline' };
 
 export type OutboxState =
   | 'idle' // nothing waiting
   | 'sending'
   | 'offline'
-  | 'waiting-for-wifi'
   | 'retrying' // the last attempt failed; a retry is scheduled
   | 'signed-out'; // the API said 401; waiting for sign-in
 
@@ -227,7 +226,6 @@ export class Outbox {
     if (!this.queue.length) return 'idle';
     if (this.paused) return 'signed-out';
     if (connection.reason === 'offline') return 'offline';
-    if (connection.reason === 'needs-wifi') return 'waiting-for-wifi';
     return 'sending';
   }
 

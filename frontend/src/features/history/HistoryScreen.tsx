@@ -4,7 +4,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
 import { usePendingWorkoutIds, useWorkoutHistory, type WorkoutHistoryItem } from '@/api/history';
-import { useSync } from '@/api/AppProviders';
 import { IconButton, Screen, Separator, Text } from '@/components';
 import { BackIcon, ChevronRightIcon } from '@/components/icons';
 import { now } from '@/review/reviewMode';
@@ -22,7 +21,6 @@ export function HistoryScreen() {
   const today = now();
   const history = useWorkoutHistory();
   const pending = usePendingWorkoutIds();
-  const { status } = useSync();
   const [month, setMonth] = useState({ year: today.getFullYear(), month: today.getMonth() });
   const [picked, setPicked] = useState<number | null>(null);
 
@@ -30,7 +28,6 @@ export function HistoryScreen() {
   const cal = calendar(month.year, month.month, workouts, today);
   const shown = picked !== null ? onDay(workouts, month.year, month.month, picked) : workouts.slice(0, RECENT);
   const note = history.data ? monthNote(month.year, month.month, workouts, today) : '';
-  const waiting = status.state === 'waiting-for-wifi' ? 'Waiting for Wi-Fi' : 'Saved on this phone';
 
   const open = (id: string) => router.push({ pathname: '/past-workout/[workoutId]', params: { workoutId: id } });
   // A day with one workout opens it (21); with more, they're listed below to pick from.
@@ -64,7 +61,7 @@ export function HistoryScreen() {
         {shown.map((w, i) => (
           <View key={w.id}>
             {i > 0 ? <Separator inset={16} /> : null}
-            <WorkoutRow workout={w} sync={pending.has(w.id) ? waiting : 'Synced'} onPress={() => open(w.id)} />
+            <WorkoutRow workout={w} sync={pending.has(w.id) ? 'Saved on this phone' : 'Synced'} onPress={() => open(w.id)} />
           </View>
         ))}
       </View>

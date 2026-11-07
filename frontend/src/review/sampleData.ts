@@ -400,7 +400,7 @@ export function sampleOneWeight(exerciseId: string, weightKg: number): OneWeight
 }
 
 /** History (18) and Profile (19): 46 workouts since Monday, August 3. October as 18 draws
- * it (Sunday the 4th off); the two latest are still waiting for Wi-Fi. */
+ * it (Sunday the 4th off); the two latest are still saved on this phone. */
 export const sampleHistory = (() => {
   const titles = ['Chest & Back', 'Shoulders & Arms', 'Legs'];
   const drawn: Record<string, [number, number, number, number]> = {

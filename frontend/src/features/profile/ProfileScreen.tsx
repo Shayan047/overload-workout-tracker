@@ -68,11 +68,9 @@ export function ProfileScreen() {
       : 'Everything is synced';
   const syncNote = !status.pending
     ? 'Nothing waiting to send'
-    : status.state === 'waiting-for-wifi'
-      ? `${waitingWorkouts === 1 || (!waitingWorkouts && status.pending === 1) ? 'It syncs' : 'They sync'} next time you're on Wi-Fi`
-      : status.state === 'signed-out'
-        ? 'They sync once you sign in'
-        : "They sync as soon as there's a connection";
+    : status.state === 'signed-out'
+      ? 'They sync once you sign in'
+      : "They sync as soon as there's a connection";
 
   return (
     <View style={[styles.screen, { paddingTop: top }]}>
@@ -140,18 +138,6 @@ export function ProfileScreen() {
             icon={status.pending ? <CloudOffIcon color={colors.textMuted} /> : <CheckIcon color={colors.textMuted} />}
             label={syncTitle}
             note={syncNote}
-          />
-          <Separator inset={16} />
-          <Row
-            label="Sync on Wi-Fi only"
-            note="Workouts are always saved on this phone first"
-            trailing={
-              <Switch
-                value={s?.sync_wifi_only ?? true}
-                onValueChange={(v) => set({ sync_wifi_only: v })}
-                accessibilityLabel="Sync on Wi-Fi only"
-              />
-            }
           />
           <Separator inset={16} />
           <Row label="Custom exercises" value={String(custom.length)} onPress={() => setSheet('custom')} />

@@ -44,7 +44,8 @@ Full detail: `docs/product-spec.md`.
 - PostgreSQL is the source of truth. The app talks only to the API, never to the database.
 - Offline first for logging: an outbox queue of unsent writes in on-device key-value
   storage (not a local database), plus a cache of today's split, last-time data and recent stats.
-- "Sync on Wi-Fi only" is on by default. UI shows "Saved on this phone" / "Waiting for Wi-Fi".
+- Writes go out on any connection, Wi-Fi or mobile data; only having no internet holds them
+  back. The UI shows "Saved on this phone" until they're sent.
 - UUIDs are generated on the phone. Writes are idempotent `PUT /resource/{id}` upserts.
 - Pulls use `updated_since`; soft-deleted rows return with `deleted_at` set.
 - Conflicts: last write wins per row by `updated_at`.

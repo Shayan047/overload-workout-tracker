@@ -20,8 +20,8 @@ A user must be able to log a whole workout with no connection.
 
 - **Outbox.** The app keeps an outbox of unsent changes in on-device key-value storage. This is a queue, not a local database.
 - **Cache.** The app also caches what it needs to show offline: today's split, last-time data, and recent stats.
-- **Sending.** The outbox sends when the connection rules allow. "Sync on Wi-Fi only" is on by default.
-- **Status in the UI.** "Saved on this phone" and "Waiting for Wi-Fi" states.
+- **Sending.** The outbox sends whenever there is internet, on Wi-Fi or mobile data.
+- **Status in the UI.** "Saved on this phone" until a change is sent.
 - Every write goes through the outbox and the UI updates immediately. Logging never waits on the network.
 
 How it's built (chunk 9, `frontend/src/api/`):
@@ -30,16 +30,14 @@ How it's built (chunk 9, `frontend/src/api/`):
   resolves once the entry is stored. One run at a time sends the oldest entry and waits for
   its answer. It applies the retry rule below: 408, 429, 5xx and no answer back off 2 s, 5 s,
   15 s, 30 s, 1 min, 2 min, then every 5 min.
-- **What starts a run:** a NetInfo network change (airplane mode off, Wi-Fi back), the app
+- **What starts a run:** a NetInfo network change (airplane mode off, signal back), the app
   returning to the foreground, a new write, or the retry timer. Runs happen only while the
   app is open; anything queued while it's closed goes on the next open.
-- **The Wi-Fi rule** (`network.ts`): with "Sync on Wi-Fi only" on, only Wi-Fi or ethernet
-  sends. No connection, or a network that reports no internet, counts as offline.
-  Reachability not checked yet counts as reachable (a failed send just retries). The rule
-  limits the outbox only; reads may use mobile data.
-- **Status copy** (the pill on Today, 07): nothing waiting → hidden; on mobile data with
-  Wi-Fi only → "N waiting for Wi-Fi"; signed out → "Sign in to sync"; otherwise (offline,
-  sending, retrying) → "Saved on this phone".
+- **The connection rule** (`network.ts`): only being offline holds the outbox back: no
+  connection, or a network that reports no internet. Wi-Fi and mobile data are treated the
+  same. Reachability not checked yet counts as reachable (a failed send just retries).
+- **Status copy** (the pill on Today, 07): nothing waiting → hidden; signed out → "Sign in
+  to sync"; otherwise (offline, sending, retrying) → "Saved on this phone".
 - **Before the account exists** (onboarding, chunk 10): writes are queued as usual, but
   nothing is sent while there is no token; the outbox waits as if signed out and sign-up
   resumes it. "Get started" clears any previous user's data on the phone first. Signing in
@@ -51,7 +49,7 @@ How it's built (chunk 9, `frontend/src/api/`):
   in AsyncStorage (`overload.cache.v1`) and restored before the first screen renders.
 - **Tests:** `outbox.test.ts` covers the rules with a fake network and server.
   `outbox.e2e.test.ts` runs the real outbox against the API: a whole session written
-  offline is saved and not sent, goes out once on Wi-Fi, and two full replays leave the
+  offline is saved and not sent, goes out once online, and two full replays leave the
   data unchanged.
 
 ## IDs and writes
@@ -209,7 +207,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 | Method | Path | Body | Response |
 |---|---|---|---|
 | GET | `/settings` | | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, updated_at}` |
-| PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). |
+| PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). `sync_wifi_only` no longer does anything: the app sends on any connection, and older builds still read it. |
 
 ### Workouts
 
@@ -330,7 +328,7 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
     workout adds its recap (sets, ahead, compared, from the summary) to the cached history,
     and it stays there until the server has the workout; entries logged on the phone stay
     until sent (the local value wins meanwhile). Deletes still in the outbox hide rows.
-  - A workout is "Waiting for Wi-Fi" (or "Saved on this phone") while a `/workouts/{id}`
+  - A workout is "Saved on this phone" while a `/workouts/{id}`
     write is in the outbox; the finish is its last write and the outbox is FIFO, so after
     that the whole workout has been sent ("Synced"). Profile counts those workouts.
   - The calendar marks days with a finished workout; tapping a day with one opens it,

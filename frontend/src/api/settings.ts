@@ -8,6 +8,7 @@ export type Settings = {
   unit: 'lb' | 'kg';
   active_split_id: string | null;
   ghost_mode: boolean;
+  /** Unused since the app syncs on any connection. Still sent: the API requires it. */
   sync_wifi_only: boolean;
   rest_alert_sound: boolean;
 };

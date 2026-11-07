@@ -18,11 +18,8 @@ import { type ExerciseResult, timeRange } from './summary';
 /** Where the workout's writes are, in the words of 11's note; null once they're sent. */
 function syncNote(status: OutboxStatus): string | null {
   if (status.pending === 0 || status.state === 'sending' || status.state === 'idle') return null;
-  if (status.state === 'waiting-for-wifi') {
-    return "Saved on this phone. It syncs to your account the next time you're on Wi-Fi.";
-  }
   if (status.state === 'signed-out') return 'Saved on this phone. It syncs to your account after you sign in again.';
-  return "Saved on this phone. It syncs to your account when you're back online.";
+  return "Saved on this phone. It syncs to your account the next time you're online.";
 }
 
 function goToday() {
