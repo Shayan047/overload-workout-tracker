@@ -9,15 +9,14 @@ import {
   Chip,
   IconButton,
   ReorderableList,
-  RestPill,
   Tag,
   Text,
   TextField,
   useFrameInsets,
 } from '@/components';
 import { BackIcon, MoreIcon, PencilIcon, PlusIcon } from '@/components/icons';
-import { equipmentLabel, type Exercise, formatRest, muscleLabel } from '@/lib/exercises';
-import { colors, figure, figures, type } from '@/theme';
+import { equipmentLabel, type Exercise, muscleLabel } from '@/lib/exercises';
+import { colors } from '@/theme';
 
 import {
   type DraftDay,
@@ -27,12 +26,9 @@ import {
   removeExercise,
   renameDay,
   setDayWeekday,
-  setRest,
   WEEKDAYS_SHORT,
 } from './draft';
 import { draftStore, useDraft } from './draftStore';
-
-const REST_STEP = 15;
 
 function ExerciseRow({
   row,
@@ -55,7 +51,6 @@ function ExerciseRow({
         <View style={styles.tags}>
           {exercise ? <Tag label={muscleLabel(exercise.primary_muscle)} /> : null}
           {equipment ? <Tag label={equipment} /> : null}
-          <RestPill text={`Rest ${formatRest(row.restSeconds)}`} />
         </View>
       </View>
       <Pressable
@@ -70,7 +65,7 @@ function ExerciseRow({
   );
 }
 
-/** Rest length and removal for one exercise, from its "…" button. */
+/** Removing an exercise, from its "…" button. */
 function ExerciseSheet({
   day,
   row,
@@ -82,36 +77,11 @@ function ExerciseSheet({
   name: string;
   onClose: () => void;
 }) {
-  const change = (seconds: number) => row && draftStore.update((d) => setRest(d, day.id, row.id, seconds));
   return (
     <BottomSheet visible={!!row} onClose={onClose} accessibilityLabel={`Options for ${name}`}>
       {row ? (
         <View style={styles.sheet}>
           <Text variant="h2">{name}</Text>
-          <Text variant="label" color="textMuted" style={styles.sheetLabel}>
-            Rest after each set
-          </Text>
-          <View style={styles.stepperRow}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="15 seconds less"
-              onPress={() => change(row.restSeconds - REST_STEP)}
-              style={styles.stepperButton}
-            >
-              <Text style={styles.stepperLabel}>−15</Text>
-            </Pressable>
-            <Text style={styles.restValue} accessibilityLabel={`Rest ${formatRest(row.restSeconds)}`}>
-              {formatRest(row.restSeconds)}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="15 seconds more"
-              onPress={() => change(row.restSeconds + REST_STEP)}
-              style={styles.stepperButton}
-            >
-              <Text style={styles.stepperLabel}>+15</Text>
-            </Pressable>
-          </View>
           <View style={styles.sheetActions}>
             <Button title="Done" size="medium" onPress={onClose} />
             <Button
@@ -189,7 +159,7 @@ function DaySheet({
   );
 }
 
-/** Edit a day (05): the day's exercises in workout order, each with its own rest length. */
+/** Edit a day (05): the day's exercises in workout order. */
 export function EditDayScreen() {
   const { dayId } = useLocalSearchParams<{ dayId: string }>();
   const { top, bottom } = useFrameInsets();
@@ -320,18 +290,6 @@ const styles = StyleSheet.create({
   spacer: { flexGrow: 1, minHeight: 12 },
   sheet: { gap: 4, paddingHorizontal: 6 },
   sheetLabel: { marginTop: 18, marginBottom: 8 },
-  stepperRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  stepperButton: {
-    height: 44,
-    minWidth: 64,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surfaceRaised,
-  },
-  stepperLabel: { ...type.stepper, color: colors.text },
-  restValue: { ...figure(figures.restValue), color: colors.text },
   weekdays: { marginTop: 4 },
   weekdayChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   sheetActions: { marginTop: 22, gap: 6 },

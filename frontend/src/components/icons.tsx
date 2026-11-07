@@ -180,7 +180,7 @@ export function MoreIcon({ color, size = 22 }: IconProps) {
   );
 }
 
-/** Rest length (05's rest pill) and the rest timer (08, 1.8 stroke). */
+/** The rest timer (08, 1.8 stroke). */
 export function TimerIcon({ color, size = 12, strokeWidth = 2 }: IconProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">

@@ -83,6 +83,14 @@ export function formatRest(seconds: number): string {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
+/** The default rest moves in these steps, and stays within an hour (the API's limit). */
+export const REST_STEP_SECONDS = 15;
+const MAX_REST_SECONDS = 3600;
+
+export function stepRest(seconds: number, delta: number): number {
+  return Math.min(MAX_REST_SECONDS, Math.max(0, seconds + delta));
+}
+
 const normalize = (text: string) => text.toLowerCase().replace(/-/g, ' ');
 
 /** Every word of `query` must appear in the name (case and hyphens ignored). Exact matches

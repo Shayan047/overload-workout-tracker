@@ -32,7 +32,7 @@ async def put_settings(body: SettingsIn, user: CurrentUser, session: SessionDep)
     if body.active_split_id is not None:
         with not_found_as_404("Split"):
             await sync.require_owned(session, Split, body.active_split_id, user.id)
-    for column, value in body.model_dump().items():
+    for column, value in body.model_dump(exclude_unset=True).items():
         if getattr(settings, column) != value:
             setattr(settings, column, value)
     await session.flush()

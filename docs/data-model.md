@@ -14,7 +14,7 @@ this file in the same commit.
   filter on the user, and each such table has a `(user_id, updated_at)` index for pulls.
 - Weights are stored in kg as `NUMERIC(7,3)` (up to 9999.999 kg) and converted to the
   user's unit only for display. 10 lb is stored as 4.536 kg and reads back as 10.0 lb.
-- Rest durations are never recorded. Only configured `rest_seconds` is stored.
+- Rest durations are never recorded. The rest length used is `user_settings.default_rest_seconds`.
 - Est. max and other stats are computed, never stored.
 - Fixed value sets (unit, kind, repeat mode, status, source) are `text` columns with
   CHECK constraints, not Postgres enums, so adding a value is a one-line migration.
@@ -30,7 +30,7 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
 | Table | Columns |
 |---|---|
 | users | email, password_hash, display_name (nullable) |
-| user_settings | user_id (unique), unit ('lb' or 'kg', default 'lb'), active_split_id (nullable), ghost_mode (default true), sync_wifi_only (default true; unused since sync stopped depending on Wi-Fi, kept for older builds), rest_alert_sound (default true) |
+| user_settings | user_id (unique), unit ('lb' or 'kg', default 'lb'), active_split_id (nullable), ghost_mode (default true), sync_wifi_only (default true; unused since sync stopped depending on Wi-Fi, kept for older builds), rest_alert_sound (default true), default_rest_seconds (default 90, 0–3600) |
 | exercises | owner_user_id (null = library exercise), name, primary_muscle, secondary_muscles (text[], default empty), equipment (nullable), kind ('weighted' or 'bodyweight') |
 | splits | user_id, name, repeat_mode ('in_order' or 'weekdays') |
 | split_days | user_id, split_id, name, position, weekday (0–6, nullable, only used in weekdays mode) |
@@ -61,9 +61,9 @@ Every table also has `id`, `created_at`, `updated_at` and `deleted_at`.
   free-exercise-db id (chunk 4), so they are stable across servers.
 - **Weekdays: 0 = Monday … 6 = Sunday**, matching Python's `date.weekday()`. JavaScript's
   `Date.getDay()` uses 0 = Sunday, so the app converts with `(getDay() + 6) % 7`.
-- **`workout_exercises.rest_seconds` exists.** It is copied from the split day exercise at
-  start and chosen for added or swapped exercises, so every exercise in a workout has a rest
-  length and later split edits never change a workout in progress.
+- **`split_day_exercises.rest_seconds` and `workout_exercises.rest_seconds` are unused.** Each
+  exercise once had its own rest; now the timer reads the default rest. The columns stay, and the
+  app still writes them, because the API requires them and older builds read them.
 - **Unique constraints only for invariants that a single row write cannot break in passing:**
   - `users`: email, case-insensitive (unique index on `lower(email)`).
   - `user_settings`: one row per user.

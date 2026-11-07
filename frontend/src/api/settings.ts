@@ -1,5 +1,6 @@
 import { type QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { DEFAULT_REST_SECONDS } from '@/features/splits/draft';
 import { isReviewMode } from '@/review/reviewMode';
 
 import { useSync } from './AppProviders';
@@ -11,6 +12,7 @@ export type Settings = {
   /** Unused since the app syncs on any connection. Still sent: the API requires it. */
   sync_wifi_only: boolean;
   rest_alert_sound: boolean;
+  default_rest_seconds: number;
 };
 
 /** What a new account starts with (the server's defaults). */
@@ -20,14 +22,15 @@ export const DEFAULT_SETTINGS: Settings = {
   ghost_mode: true,
   sync_wifi_only: true,
   rest_alert_sound: true,
+  default_rest_seconds: DEFAULT_REST_SECONDS,
 };
 
 export const SETTINGS_KEY = ['settings'] as const;
 
 /** The body of PUT /settings: the whole object, nothing else. */
 export function settingsBody(settings: Settings): Settings {
-  const { unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound } = settings;
-  return { unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound };
+  const { unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, default_rest_seconds } = settings;
+  return { unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, default_rest_seconds };
 }
 
 /** The user's settings, cached on the phone for offline use. While a settings change is

@@ -206,8 +206,8 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 
 | Method | Path | Body | Response |
 |---|---|---|---|
-| GET | `/settings` | | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, updated_at}` |
-| PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). `sync_wifi_only` no longer does anything: the app sends on any connection, and older builds still read it. |
+| GET | `/settings` | | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, default_rest_seconds, updated_at}` |
+| PUT | `/settings` | `{unit, active_split_id, ghost_mode, sync_wifi_only, rest_alert_sound, default_rest_seconds?}` | The settings. `unit` is `lb` or `kg`; `active_split_id` must be the user's split (or null). `sync_wifi_only` no longer does anything: the app sends on any connection, and older builds still read it. `default_rest_seconds` is 0–3600; leaving it out (older builds) keeps the saved value. |
 
 ### Workouts
 
@@ -290,9 +290,10 @@ How the app does it (chunk 13, `frontend/src/features/workout/`):
   natively (a new alarm 15 s on, picked up by `restAgain` when the app comes back). The alert is insistent (sound and vibration repeat) and times out after 2
   minutes; it's cleared when Rest's over opens or the app comes back, and each alarm posts a
   new alert (Android doesn't reopen the full-screen screen for an update). The alarm follows
-  the timer like the notification did; nothing is posted while the app is in the foreground. Rest lengths still never reach the API (rule 5).
+  the timer like the notification did; nothing is posted while the app is in the foreground. Rests taken still never reach the API (rule 5).
 - **Rest timer** (chunk 15, `rest.ts`, `RestTimerCard.tsx`, `RestAlerts.tsx`): saving a new
-  set (not an edit) starts it with that row's `rest_seconds`. It's stored with the workout in
+  set (not an edit) starts it with the user's `default_rest_seconds`; the `rest_seconds` on
+  rows are written but not read. It's stored with the workout in
   progress as `{rowId, endsAt, totalSeconds}`, so it counts from timestamps and survives
   backgrounding and the app being killed. −15/+15 move the end and the total; −15 with 15 s
   or less left ends it. It never reaches the API (rule 5). While the app is open, a haptic at

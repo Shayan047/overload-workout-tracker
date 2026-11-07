@@ -25,7 +25,7 @@ Personal workout tracker for iOS and Android. "Overload" is a working name.
 - Multi-user from day one (personal use first, maybe public later). Dark mode only.
 - Splits: presets (PPL, Arnold, Upper/Lower, Body part, Full body) or custom. Repeat
   "in order" (rotation; rest days never shift it) or "set weekdays".
-- Each split day is an ordered list of exercises, each with its own rest length.
+- Each split day is an ordered list of exercises. One default rest (Profile) applies to all of them.
 - Exercise library seeded from free-exercise-db, plus custom exercises.
 - Workout: start today's day, log working sets (weight, reps), finish. Resumes after restart.
 - Ghost mode shows last time set by set while logging. It compares reps at the same weight,
@@ -63,8 +63,8 @@ Full detail: `docs/api-and-sync.md`.
    changes old workouts.
 4. Est. max = weight × (1 + reps ÷ 30) (Epley). A session's est. max comes from its best set.
    It is computed, never stored.
-5. Rest durations are never recorded or used in any stat. Only each exercise's configured
-   rest length is stored.
+5. Rest durations are never recorded or used in any stat. Only the user's default rest is
+   stored as a setting.
 6. Changes made during a workout apply to that workout only and never edit the split.
 7. One-weight stats ("Reps at one weight" on Exercise detail) only use sets done at that
    exact weight.

@@ -200,6 +200,7 @@ async def test_settings_defaults(session: AsyncSession) -> None:
     assert settings.ghost_mode is True
     assert settings.sync_wifi_only is True
     assert settings.rest_alert_sound is True
+    assert settings.default_rest_seconds == 90
 
 
 async def test_one_settings_row_per_user(session: AsyncSession) -> None:

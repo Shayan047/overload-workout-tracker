@@ -14,7 +14,7 @@ Overload (working name) is a workout tracker for iOS and Android.
 ### Splits
 
 - Presets are stored as data in code (`backend/app/services/presets.py`), each with library
-  exercises and rest lengths. Picking one copies it into the user's own split.
+  exercises. Picking one copies it into the user's own split.
   - Push, pull, legs (in order): Push, Pull, Legs
   - Arnold split (in order): Chest & Back, Shoulders & Arms, Legs. Shoulders & Arms matches
     screen 05: overhead press 2:30, lateral raise 1:00, bicep curl 1:30, hammer curl 1:30,
@@ -31,7 +31,7 @@ Overload (working name) is a workout tracker for iOS and Android.
 ### Day editor
 
 - An ordered list of exercises.
-- Each exercise has its own rest length (for example 1:00 to 2:30).
+- One rest length applies to every exercise: the default rest in Profile (1:30 until changed).
 
 ### Exercise library
 
@@ -71,7 +71,8 @@ Overload (working name) is a workout tracker for iOS and Android.
 
 ### Rest timer
 
-- Starts automatically when a set is saved, using the exercise's rest length.
+- Starts automatically when a set is saved, using the default rest. A change applies from
+  the next set on, in every split, even during a workout.
 - Controls: −15, +15 and skip.
 - Haptic at 10 seconds left and at the end. Optional sound.
 - When the rest ends with Overload in the background (Android): an exact alarm, as timer apps use.
@@ -140,7 +141,7 @@ Formulas:
 
 - History calendar and a list of recent workouts.
 - Bodyweight log.
-- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, rest alerts, custom exercises. Sync has no setting: changes go out on any connection, Wi-Fi or mobile data, and wait only when there's no internet.
+- Profile settings: units (lb or kg), bodyweight, current split, ghost mode, default rest, rest alerts, custom exercises. Sync has no setting: changes go out on any connection, Wi-Fi or mobile data, and wait only when there's no internet.
 
 ### Out of scope for now
 
@@ -172,7 +173,7 @@ Screen numbers match `design/screens/`.
 - Picking a preset or "Build my own" (one empty "Day 1") opens Edit split (04) with a copy.
   Nothing is saved until "Save split", which also makes it the active split.
 - Days and exercises reorder by dragging the handle (screen readers: move up/down).
-- On Edit a day (05), "…" opens the exercise's rest length (−15/+15 s, 0–60 min) and Remove;
+- On Edit a day (05), "…" opens Remove;
   the pencil renames the day, sets its weekday (set weekdays mode) and removes it.
 - Switching to "Set weekdays" spreads days without a weekday over the week (3 days: Mon,
   Wed, Fri). Each day needs its own weekday to save.
@@ -224,7 +225,7 @@ Screen numbers match `design/screens/`.
   reps, adds or deletes sets, or deletes the whole workout; nothing changes until Save. The
   workout's bodyweight snapshot never changes (rule 3), and stats and History update from
   the edited sets.
-- Profile (19): Units and Rest timer alerts open sheets, Bodyweight opens Bodyweight (20),
+- Profile (19): Units, Default rest (28, −15/+15 s, 0–60 min) and Rest timer alerts open sheets, Bodyweight opens Bodyweight (20),
   Current split opens the Splits tab, Custom exercises lists them (they're made from Add
   exercises' "Can't find it?").
 
