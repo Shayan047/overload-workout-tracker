@@ -123,8 +123,8 @@ export function BottomSheet({ visible, onClose, accessibilityLabel, avoidKeyboar
           style={[
             styles.sheet,
             {
-              // Above the keyboard, the home-indicator space isn't needed.
-              paddingBottom: keyboardOpen ? 16 : Math.max(30, insets.bottom),
+              // Above the keyboard, the navigation bar space isn't needed.
+              paddingBottom: keyboardOpen ? 16 : Math.max(30, insets.bottom + 16),
               transform: [{ translateY: offset }],
             },
           ]}
