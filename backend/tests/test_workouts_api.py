@@ -194,19 +194,132 @@ async def test_resume_returns_the_workout_in_progress(
     assert (await client.get("/workouts/in-progress", headers=signed_in.headers)).json() is None
 
 
-async def test_only_one_workout_can_be_in_progress(
-    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
-) -> None:
-    started = await start_shoulders_and_arms(Outbox(client, signed_in), arnold)
-
-    second = await client.put(
+async def start_next_day(outbox: Outbox) -> dict[str, Any]:
+    return await outbox.put(
         f"/workouts/{uuid.uuid4()}",
-        headers=signed_in.headers,
-        json={"title": "Legs", "started_at": "2026-10-09T19:00:00Z"},
+        {"title": "Legs", "started_at": "2026-10-10T18:00:00Z", "bodyweight_kg": 78.018},
     )
 
-    assert second.status_code == 409
-    assert second.json()["detail"]["in_progress_workout_id"] == started["workout"]["id"]
+
+async def in_progress_id(client: AsyncClient, who: SignedIn) -> str | None:
+    workout = (await client.get("/workouts/in-progress", headers=who.headers)).json()
+    return workout["id"] if workout else None
+
+
+async def test_a_new_start_finishes_a_workout_left_open_at_its_last_set(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    """Signing out mid-workout leaves it open on the server, and the phone has forgotten it.
+    Nothing can finish it, so it must not block every workout after it."""
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+    await log_set(outbox, left_open["rows"][2], 1, TWENTY_LB, 7)
+    await log_set(outbox, left_open["rows"][2], 2, TWENTY_LB, 6)
+
+    next_day = await start_next_day(outbox)
+
+    assert await in_progress_id(client, signed_in) == next_day["id"]
+    old = (
+        await client.get(f"/workouts/{left_open['workout']['id']}", headers=signed_in.headers)
+    ).json()
+    assert old["ended_at"] == "2026-10-09T18:22:00Z"  # set 2, the last one logged
+    assert [(s["set_number"], s["reps"]) for s in old["exercises"][2]["sets"]] == [(1, 7), (2, 6)]
+
+
+async def test_the_workouts_after_a_left_open_one_save_normally(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+    await log_set(outbox, left_open["rows"][2], 1, TWENTY_LB, 7)
+
+    next_day = await start_next_day(outbox)
+    row = await outbox.put(
+        f"/workout-exercises/{uuid.uuid4()}",
+        {"workout_id": next_day["id"], "exercise_id": CURL, "position": 0, "rest_seconds": 90},
+    )
+    await log_set(outbox, row, 1, TWENTY_LB, 8)
+
+    workout = (await client.get(f"/workouts/{next_day['id']}", headers=signed_in.headers)).json()
+    assert [s["reps"] for s in workout["exercises"][0]["sets"]] == [8]
+
+
+async def test_a_new_start_removes_a_workout_left_open_with_nothing_logged(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+
+    next_day = await start_next_day(outbox)
+
+    assert await in_progress_id(client, signed_in) == next_day["id"]
+    old = await client.get(f"/workouts/{left_open['workout']['id']}", headers=signed_in.headers)
+    assert old.status_code == 404
+
+
+async def test_a_deleted_set_does_not_count_as_something_logged(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+    logged = await log_set(outbox, left_open["rows"][2], 1, TWENTY_LB, 7)
+    await client.delete(f"/sets/{logged['id']}", headers=signed_in.headers)
+
+    await start_next_day(outbox)
+
+    old = await client.get(f"/workouts/{left_open['workout']['id']}", headers=signed_in.headers)
+    assert old.status_code == 404
+
+
+async def test_a_workout_left_open_never_ends_before_it_started(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    """`logged_at` comes from the phone's clock, which can move between two writes."""
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+    logged = await log_set(outbox, left_open["rows"][2], 1, TWENTY_LB, 7)
+    await outbox.put(
+        f"/sets/{logged['id']}",
+        {
+            "workout_exercise_id": left_open["rows"][2]["id"],
+            "set_number": 1,
+            "weight_kg": TWENTY_LB,
+            "reps": 7,
+            "logged_at": "2026-10-09T18:00:00Z",  # before the 18:12 start
+        },
+    )
+
+    await start_next_day(outbox)
+
+    old = (
+        await client.get(f"/workouts/{left_open['workout']['id']}", headers=signed_in.headers)
+    ).json()
+    assert old["ended_at"] == old["started_at"]
+
+
+async def test_resending_starts_changes_nothing_after_a_left_open_workout_closes(
+    client: AsyncClient, signed_in: SignedIn, arnold: dict[str, Any]
+) -> None:
+    outbox = Outbox(client, signed_in)
+    left_open = await start_shoulders_and_arms(outbox, arnold)
+    await log_set(outbox, left_open["rows"][2], 1, TWENTY_LB, 7)
+    next_day = await start_next_day(outbox)
+    before = await pull_everything(client, signed_in)
+
+    await outbox.replay()
+
+    assert await in_progress_id(client, signed_in) == next_day["id"]
+    assert await pull_everything(client, signed_in) == before
+
+
+async def test_a_new_start_leaves_other_users_workouts_alone(
+    client: AsyncClient, signed_in: SignedIn, other_user: SignedIn, arnold: dict[str, Any]
+) -> None:
+    mine = await start_shoulders_and_arms(Outbox(client, signed_in), arnold)
+
+    await start_next_day(Outbox(client, other_user))
+
+    assert await in_progress_id(client, signed_in) == mine["workout"]["id"]
 
 
 async def test_today_only_changes_leave_the_split_untouched(

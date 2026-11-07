@@ -215,7 +215,7 @@ unique or contiguous; lists sort by `position`, then `created_at`.
 
 | Method | Path | Body / query | Response |
 |---|---|---|---|
-| PUT | `/workouts/{id}` | `{split_day_id?, title, started_at, ended_at?, bodyweight_kg?}` | Start (no `ended_at`), edit, or finish (with `ended_at`). `409 {detail: {message, in_progress_workout_id}}` if another workout is in progress; `422` if `ended_at` is before `started_at`, or if `bodyweight_kg` is omitted on create and the user has no bodyweight entry. |
+| PUT | `/workouts/{id}` | `{split_day_id?, title, started_at, ended_at?, bodyweight_kg?}` | Start (no `ended_at`), edit, or finish (with `ended_at`). Starting one closes any other left in progress (see "One workout in progress"). `409 {detail: {message, in_progress_workout_id}}` only if two starts race; `422` if `ended_at` is before `started_at`, or if `bodyweight_kg` is omitted on create and the user has no bodyweight entry. |
 | GET | `/workouts` | `updated_since?` | `[{split_day_id, title, started_at, ended_at, bodyweight_kg}]` |
 | GET | `/workouts/history` | | History (18): finished, live workouts, newest first, as `GET /workouts` plus `{sets, ahead, compared}`. `ahead` counts exercises ahead of their previous session by the summary's rule (11, 24: same top weight, more total reps; a heavier top weight; or, at a lighter one, a higher est. max), out of `compared` that had one. Computed by `is_ahead` in `app/stats/history.py`. |
 | GET | `/workouts/in-progress` | | The unfinished workout to resume, with its exercises and sets (as `GET /workouts/{id}`), or `null`. |
@@ -350,7 +350,11 @@ Rules:
   On later PUTs an omitted value keeps the stored one. New entries never touch old workouts.
 - **A finished workout stays finished:** a PUT without `ended_at` keeps the stored one, so a
   replayed start can't reopen it.
-- **One workout in progress** per user (`409` otherwise).
+- **One workout in progress** per user. A workout stays open on the server if the user signs
+  out or reinstalls before finishing it, and no phone can finish it after that. So starting a
+  new one closes the old one: it ends at its last logged set, or is deleted if it has none.
+  Refusing the new one instead would lose every workout after it, because the outbox drops
+  rejected writes. The sets that reached the server are kept and show in History.
 - **Ghost (rule 9):** the most recent finished, non-deleted workout (by `ended_at`) in which
   the exercise has at least one live set, so a planned-then-skipped exercise isn't a ghost.
   In-progress workouts never count. If the exercise appears twice in that workout, its

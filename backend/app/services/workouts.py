@@ -42,6 +42,24 @@ async def _in_progress_id(
     return await session.scalar(stmt)
 
 
+async def _close_left_open(
+    session: AsyncSession, workout_id: uuid.UUID, user_id: uuid.UUID
+) -> None:
+    """A workout left open by signing out or reinstalling is one no phone knows about any more,
+    so nothing else can finish it. It ends at its last set, or goes if nothing was logged."""
+    last_set = await session.scalar(
+        select(func.max(Set.logged_at))
+        .join(WorkoutExercise, Set.workout_exercise_id == WorkoutExercise.id)
+        .where(WorkoutExercise.workout_id == workout_id, Set.deleted_at.is_(None))
+    )
+    if last_set is None:
+        await delete_workout(session, workout_id, user_id)
+        return
+    workout = await session.get_one(Workout, workout_id)
+    workout.ended_at = max(last_set, workout.started_at)  # `logged_at` is the phone's clock
+    await session.flush()
+
+
 async def put_workout(
     session: AsyncSession, user_id: uuid.UUID, workout_id: uuid.UUID, values: dict[str, Any]
 ) -> Workout:
@@ -50,7 +68,7 @@ async def put_workout(
     - `bodyweight_kg` omitted: on create, the latest bodyweight entry (rule 3: it is a
       snapshot and never follows later entries); on update, the stored value is kept.
     - A finished workout stays finished, so a replayed start can't reopen it.
-    - At most one workout is in progress.
+    - At most one workout is in progress: starting one closes any left open.
     """
     if values["split_day_id"] is not None:
         await sync.require_owned(session, SplitDay, values["split_day_id"], user_id)
@@ -70,7 +88,7 @@ async def put_workout(
 
     still_open = values["ended_at"] is None and (existing is None or existing.deleted_at is None)
     if still_open and (other := await _in_progress_id(session, user_id, other_than=workout_id)):
-        raise InProgressConflictError(other)
+        await _close_left_open(session, other, user_id)
     try:
         return await sync.upsert(session, Workout, workout_id, {"user_id": user_id}, values)
     except IntegrityError:  # lost a race with another start
