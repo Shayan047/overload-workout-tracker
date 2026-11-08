@@ -44,7 +44,7 @@ export function cacheHistoryRecap(
   );
 }
 
-/** Workouts with writes still on the phone ("Waiting for Wi-Fi" on 18, "2 workouts waiting"
+/** Workouts with writes still on the phone ("Saved on this phone" on 18, "2 workouts waiting"
  * on 19). The sync context changes with every outbox change, so this stays current. */
 export function usePendingWorkoutIds(): Set<string> {
   const { outbox } = useSync();

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Default rest</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h2{margin:0;font-size:22px;line-height:1.25;font-weight:650;font-stretch:85%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:54px;border:0;border-radius:14px;background:#FFA41B;color:#1C1102;font-family:inherit;font-size:17px;font-weight:650;cursor:pointer}
+.btn2{display:flex;align-items:center;justify-content:center;width:100%;height:50px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.tbtn{height:44px;min-width:64px;padding:0 10px;border:0;border-radius:12px;background:#22252A;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums;cursor:pointer}
+</style>
+</helmet>
+<main class="app" style="height:844px;padding:52px 20px 0">
+  <div aria-hidden="true">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="width:44px;height:44px;border-radius:999px;background:#16181B"></span>
+      <span style="font-size:24px;font-weight:700;font-stretch:85%">Profile</span>
+    </div>
+    <div style="margin-top:22px;height:56px;width:220px;border-radius:999px;background:#121417"></div>
+    <div style="margin-top:44px;height:330px;border-radius:20px;background:#16181B"></div>
+  </div>
+  <div style="position:absolute;inset:0;background:rgba(5,8,12,0.7)"></div>
+
+  <section role="dialog" aria-label="Default rest" style="position:absolute;left:0;right:0;bottom:0;padding:10px 20px 30px;border-radius:28px 28px 0 0;background:#16181B">
+    <div style="width:40px;height:5px;border-radius:4px;background:#474C54;margin:0 auto 16px"></div>
+
+    <h2 class="h2">Default rest</h2>
+    <p class="muted small" style="margin:4px 0 0">Rest between sets, for every exercise.</p>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding:14px;border-radius:14px;background:#08090B">
+      <button class="tbtn" aria-label="15 seconds less">−15</button>
+      <span class="num" style="font-size:44px" aria-label="Default rest 2:00">2:00</span>
+      <button class="tbtn" aria-label="15 seconds more">+15</button>
+    </div>
+
+    <button class="btn" style="margin-top:20px">Done</button>
+  </section>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

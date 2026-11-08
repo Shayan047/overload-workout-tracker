@@ -367,8 +367,8 @@ export const figures = {
   lastTime: 20,
   /** The day number in its circle on 04. */
   dayStep: 17,
-  /** The rest length in the exercise options sheet. */
-  restValue: 32,
+  /** The default rest in its sheet (28). */
+  defaultRest: 44,
   /** The active workout (08): elapsed time, set number, weight and reps, last time's set,
    * a finished exercise against last time, and the ghost's rep counts. */
   elapsed: 26,

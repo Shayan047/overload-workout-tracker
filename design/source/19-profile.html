@@ -36,7 +36,7 @@ a.it:hover{background:#1D2024;color:#F3F5F7}
 .gl{margin:22px 4px 8px;font-weight:600}
 </style>
 </helmet>
-<main class="app" style="height:940px;padding:52px 20px 0">
+<main class="app" style="height:884px;padding:52px 20px 0">
   <div style="display:flex;align-items:center;gap:12px">
     <a class="icon" href="Today.dc.html" aria-label="Back"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
     <h1 class="h1" style="font-size:24px">Profile</h1>
@@ -60,6 +60,8 @@ a.it:hover{background:#1D2024;color:#F3F5F7}
       <button class="sw" role="switch" aria-checked="true" aria-label="Ghost mode"><span class="knob"></span></button>
     </li>
     <li class="sep"></li>
+    <li><a class="it" href="28-default-rest.html"><span style="flex:1"><span style="display:block">Default rest</span><span class="muted small">Between sets, for every exercise</span></span><span class="val">1:30</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
+    <li class="sep"></li>
     <li><a class="it" href="Profile.dc.html"><span style="flex:1"><span style="display:block">Rest timer alerts</span><span class="muted small">Buzz at 10 seconds left and when rest ends</span></span><span class="val">Sound on</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
   </ul>
 
@@ -67,23 +69,16 @@ a.it:hover{background:#1D2024;color:#F3F5F7}
   <ul class="grp">
     <li class="it">
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#A8AFB8"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.1 4.5 4.5 0 0 0 7 18z"></path><path d="M4 4l16 16"></path></svg>
-      <span style="flex:1"><span style="display:block">2 workouts waiting</span><span class="muted small">They sync next time you're on Wi-Fi</span></span>
-    </li>
-    <li class="sep"></li>
-    <li class="it">
-      <span style="flex:1"><span style="display:block">Sync on Wi-Fi only</span><span class="muted small">Workouts are always saved on this phone first</span></span>
-      <button class="sw" role="switch" aria-checked="true" aria-label="Sync on Wi-Fi only"><span class="knob"></span></button>
+      <span style="flex:1"><span style="display:block">2 workouts waiting</span><span class="muted small">They sync as soon as there's a connection</span></span>
     </li>
     <li class="sep"></li>
     <li><a class="it" href="ExercisePicker.dc.html"><span style="flex:1">Custom exercises</span><span class="val">3</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
-    <li class="sep"></li>
-    <li><a class="it" href="Profile.dc.html"><span style="flex:1">Export workouts</span><span class="val">CSV</span><svg class="ico chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a></li>
   </ul>
 
   <button class="btn2" style="margin-top:22px">Sign out</button>
 </main>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":940}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":884}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

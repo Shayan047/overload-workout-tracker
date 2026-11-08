@@ -320,6 +320,7 @@ async def test_settings_round_trip_and_validate_the_active_split(
         "ghost_mode": True,
         "sync_wifi_only": True,
         "rest_alert_sound": True,
+        "default_rest_seconds": 90,
     }
 
     split = await from_preset(client, signed_in, "upper_lower")
@@ -337,6 +338,25 @@ async def test_settings_round_trip_and_validate_the_active_split(
     assert (
         await put(client, signed_in, "/settings", changed | {"unit": "stone"})
     ).status_code == 422
+
+
+async def test_default_rest_is_kept_and_limited(client: AsyncClient, signed_in: SignedIn) -> None:
+    settings = (await client.get("/settings", headers=signed_in.headers)).json()
+
+    response = await put(client, signed_in, "/settings", settings | {"default_rest_seconds": 120})
+    assert response.status_code == 200
+    assert response.json()["default_rest_seconds"] == 120
+
+    for bad in (-1, 3601, None):
+        changed = settings | {"default_rest_seconds": bad}
+        assert (await put(client, signed_in, "/settings", changed)).status_code == 422
+
+    # Builds from before the setting don't send it: their saves leave it alone.
+    older_build = {k: v for k, v in settings.items() if k != "default_rest_seconds"}
+    response = await put(client, signed_in, "/settings", older_build | {"unit": "kg"})
+    assert response.status_code == 200
+    assert response.json()["unit"] == "kg"
+    assert response.json()["default_rest_seconds"] == 120
 
 
 async def finished_workout(

@@ -17,6 +17,7 @@ import { colors, figure, figures, figureTimes, radius } from '@/theme';
 import { changeText, compare, comparisonText, elapsedText, ghost, ghostDate, isAhead, lastTimeText, setGroups, setText } from './ghost';
 import { ChangeExerciseSheet, type ChangeTarget } from './ChangeExerciseSheet';
 import { LogSetSheet, type SetTarget } from './LogSetSheet';
+import { restLength } from './rest';
 import { RestTimerCard } from './RestTimerCard';
 import { useWorkoutActions } from './useWorkoutActions';
 import {
@@ -619,7 +620,7 @@ export function WorkoutScreen() {
             ? { today: state?.workout.bodyweight_kg ?? 0, last: targetInfo.last?.bodyweight_kg ?? 0 }
             : undefined
         }
-        restSeconds={target && !target.setId ? (targetRow?.rest_seconds ?? 0) : 0}
+        restSeconds={target && !target.setId ? restLength(settings.data) : 0}
         onClose={() => setTarget(null)}
         onSave={(weightKg, reps) => {
           if (!target) return;

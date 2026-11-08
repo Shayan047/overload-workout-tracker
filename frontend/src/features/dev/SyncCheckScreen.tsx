@@ -12,7 +12,6 @@ import {
   ListRow,
   Screen,
   Separator,
-  Switch,
   SyncStatusPill,
   Text,
 } from '@/components';
@@ -22,7 +21,7 @@ import { colors } from '@/theme';
 /**
  * Development only: checks the outbox by hand on a phone (chunk 9's "Done when").
  * Turn on airplane mode, tap "Toggle ghost mode", see "Saved on this phone", turn airplane
- * mode off on Wi-Fi, and watch "Waiting to send" drop to 0.
+ * mode off, and watch "Waiting to send" drop to 0.
  */
 export function SyncCheckScreen() {
   const { user, signOut } = useAuth();
@@ -61,21 +60,6 @@ export function SyncCheckScreen() {
         <ListRow label="Waiting to send" trailing={<Text variant="h2">{status.pending}</Text>} />
         <Separator />
         <ListRow label="Outbox state" trailing={<Text color="textMuted">{status.state}</Text>} />
-        <Separator />
-        <ListRow
-          label="Sync on Wi-Fi only"
-          trailing={
-            settings.data ? (
-              <Switch
-                accessibilityLabel="Sync on Wi-Fi only"
-                value={settings.data.sync_wifi_only}
-                onValueChange={(value) => void updateSettings({ sync_wifi_only: value })}
-              />
-            ) : (
-              <Text color="textMuted">loading…</Text>
-            )
-          }
-        />
       </Card>
 
       <View style={styles.actions}>

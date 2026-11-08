@@ -34,7 +34,7 @@ The mockups use Archivo's variable width axis (`font-stretch` 68% for numbers, 8
 | 14-exercise-detail.png | Exercise detail, in sections: est. max over time, your last 3 workouts set by set, reps at one weight, records (redesigned after launch; the one-weight screens 15 and 16 were folded in or dropped) | 17, 18 |
 | 17-frontier.png | Rep-weight frontier | 19 |
 | 18-history.png | History | 20 |
-| 19-profile.png | Profile (without the "Export workouts" row: CSV export was dropped) | 20 |
+| 19-profile.png | Profile | 20 |
 | 20-bodyweight.png | Bodyweight | 20 |
 | 21-workout-detail.png | A past workout, opened from History | after launch |
 | 22-edit-workout.png | Editing a past workout (sets only) | after launch |
@@ -43,6 +43,7 @@ The mockups use Archivo's variable width axis (`font-stretch` 68% for numbers, 8
 | 25-ghost-chest-press.png | The ghost panel through one exercise (chest press) | after launch |
 | 26-rest-over.png | Rest's over: the full-screen alarm when a rest ends (over the lock screen) | after launch |
 | 27-rest-over-banner.png | Rest's over as a notification over another app: our layout inside Android's card, header and buttons | after launch |
+| 28-default-rest.png | Default rest: the sheet from Profile. One rest length for every exercise | after launch |
 | app-icon.png | The app icon: the brand mark on the app background (home screen, notifications) | after launch |
 
 Each PNG has a matching `source/NN-name.html`. Numbers 15 and 16 are retired: Fingerprint was dropped, and the one-weight chart now lives in 14.

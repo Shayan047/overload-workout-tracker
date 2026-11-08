@@ -7,7 +7,7 @@ import { colors, radius, type } from '@/theme';
 import { CloudOffIcon } from './icons';
 import { Text } from './Text';
 
-/** "Saved on this phone" / "1 waiting for Wi-Fi" (07). Hidden when nothing is waiting. */
+/** "Saved on this phone" (07). Hidden when nothing is waiting. */
 export function SyncStatusPill() {
   const { status } = useSync();
   const text = syncStatusText(status);

@@ -35,9 +35,8 @@ export type SplitTree = {
   }[];
 };
 
-/** Rest for exercises added from Add exercises (06). */
+/** Rest until the user picks their own (Profile, 28). */
 export const DEFAULT_REST_SECONDS = 90;
-export const MAX_REST_SECONDS = 3600;
 
 export const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export const WEEKDAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -177,14 +176,6 @@ export function removeExercise(draft: SplitDraft, dayId: string, rowId: string):
 
 export function moveExercise(draft: SplitDraft, dayId: string, from: number, to: number): SplitDraft {
   return from === to ? draft : mapDay(draft, dayId, (day) => ({ ...day, exercises: move(day.exercises, from, to) }));
-}
-
-export function setRest(draft: SplitDraft, dayId: string, rowId: string, seconds: number): SplitDraft {
-  const restSeconds = Math.min(MAX_REST_SECONDS, Math.max(0, Math.round(seconds)));
-  return mapDay(draft, dayId, (day) => ({
-    ...day,
-    exercises: day.exercises.map((e) => (e.id === rowId ? { ...e, restSeconds } : e)),
-  }));
 }
 
 /** What to fix before saving, or null. */

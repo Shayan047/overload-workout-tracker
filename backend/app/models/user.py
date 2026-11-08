@@ -20,7 +20,10 @@ class UserSettings(IdMixin, TimestampMixin, Base):
     """Settings the phone edits (onboarding and Profile). One row per user."""
 
     __tablename__ = "user_settings"
-    __table_args__ = (CheckConstraint("unit IN ('lb', 'kg')", name="unit"),)
+    __table_args__ = (
+        CheckConstraint("unit IN ('lb', 'kg')", name="unit"),
+        CheckConstraint("default_rest_seconds BETWEEN 0 AND 3600", name="default_rest_seconds"),
+    )
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), unique=True
@@ -32,3 +35,4 @@ class UserSettings(IdMixin, TimestampMixin, Base):
     ghost_mode: Mapped[bool] = mapped_column(server_default=text("true"))
     sync_wifi_only: Mapped[bool] = mapped_column(server_default=text("true"))
     rest_alert_sound: Mapped[bool] = mapped_column(server_default=text("true"))
+    default_rest_seconds: Mapped[int] = mapped_column(server_default=text("90"))

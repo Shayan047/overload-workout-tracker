@@ -15,6 +15,6 @@ export { SegmentedControl } from './SegmentedControl';
 export { Switch } from './Switch';
 export { SyncStatusPill } from './SyncStatusPill';
 export { TabBar } from './TabBar';
-export { RestPill, Tag } from './Tag';
+export { Tag } from './Tag';
 export { Text } from './Text';
 export { TextField } from './TextField';

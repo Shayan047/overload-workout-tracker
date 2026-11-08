@@ -9,11 +9,12 @@ import { type Settings, useSettings, useUpdateSettings } from '@/api/settings';
 import { treeFromDraft, useExercises, useSplitTree } from '@/api/splits';
 import { BottomSheet, Button, IconButton, ListRow, Separator, Switch, Text, useFrameInsets } from '@/components';
 import { BackIcon, CheckIcon, ChevronRightIcon, CloudOffIcon } from '@/components/icons';
-import { exerciseSubtitle } from '@/lib/exercises';
+import { restLength } from '@/features/workout/rest';
+import { exerciseSubtitle, formatRest, REST_STEP_SECONDS, stepRest } from '@/lib/exercises';
 import { formatWeight, fromKg } from '@/lib/units';
 import { isReviewMode } from '@/review/reviewMode';
 import { sampleSplitDraft } from '@/review/sampleData';
-import { colors, radius, type } from '@/theme';
+import { colors, figure, figures, radius, type } from '@/theme';
 
 import { RestAlarm } from '../../../modules/rest-alarm';
 
@@ -23,7 +24,7 @@ const UNITS = [
   { value: 'kg', label: 'Kilograms' },
 ] as const;
 
-type Sheet = 'units' | 'alerts' | 'custom' | null;
+type Sheet = 'units' | 'rest' | 'alerts' | 'custom' | null;
 
 function back() {
   if (router.canGoBack()) router.back();
@@ -47,6 +48,7 @@ export function ProfileScreen() {
 
   const s = settings.data;
   const unit = s?.unit ?? 'lb';
+  const rest = restLength(s);
   const set = (change: Partial<Settings>) => void update(change);
 
   const name = user?.display_name?.trim() || user?.email.split('@')[0] || 'You';
@@ -68,11 +70,9 @@ export function ProfileScreen() {
       : 'Everything is synced';
   const syncNote = !status.pending
     ? 'Nothing waiting to send'
-    : status.state === 'waiting-for-wifi'
-      ? `${waitingWorkouts === 1 || (!waitingWorkouts && status.pending === 1) ? 'It syncs' : 'They sync'} next time you're on Wi-Fi`
-      : status.state === 'signed-out'
-        ? 'They sync once you sign in'
-        : "They sync as soon as there's a connection";
+    : status.state === 'signed-out'
+      ? 'They sync once you sign in'
+      : "They sync as soon as there's a connection";
 
   return (
     <View style={[styles.screen, { paddingTop: top }]}>
@@ -125,6 +125,13 @@ export function ProfileScreen() {
           />
           <Separator inset={16} />
           <Row
+            label="Default rest"
+            note="Between sets, for every exercise"
+            value={formatRest(rest)}
+            onPress={() => setSheet('rest')}
+          />
+          <Separator inset={16} />
+          <Row
             label="Rest timer alerts"
             note="Buzz at 10 seconds left and when rest ends"
             value={s?.rest_alert_sound === false ? 'Sound off' : 'Sound on'}
@@ -140,18 +147,6 @@ export function ProfileScreen() {
             icon={status.pending ? <CloudOffIcon color={colors.textMuted} /> : <CheckIcon color={colors.textMuted} />}
             label={syncTitle}
             note={syncNote}
-          />
-          <Separator inset={16} />
-          <Row
-            label="Sync on Wi-Fi only"
-            note="Workouts are always saved on this phone first"
-            trailing={
-              <Switch
-                value={s?.sync_wifi_only ?? true}
-                onValueChange={(v) => set({ sync_wifi_only: v })}
-                accessibilityLabel="Sync on Wi-Fi only"
-              />
-            }
           />
           <Separator inset={16} />
           <Row label="Custom exercises" value={String(custom.length)} onPress={() => setSheet('custom')} />
@@ -192,6 +187,37 @@ export function ProfileScreen() {
             ))}
           </View>
           <Button title="Close" variant="secondary" size="sheet" onPress={() => setSheet(null)} />
+        </View>
+      </BottomSheet>
+
+      <BottomSheet visible={sheet === 'rest'} onClose={() => setSheet(null)} accessibilityLabel="Default rest">
+        <View style={styles.restSheet}>
+          <Text variant="exerciseTitle">Default rest</Text>
+          <Text variant="small" color="textMuted">
+            Rest between sets, for every exercise.
+          </Text>
+          <View style={styles.stepperRow}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="15 seconds less"
+              onPress={() => set({ default_rest_seconds: stepRest(rest, -REST_STEP_SECONDS) })}
+              style={styles.stepperButton}
+            >
+              <Text style={styles.stepperLabel}>−15</Text>
+            </Pressable>
+            <Text style={styles.restValue} accessibilityLabel={`Default rest ${formatRest(rest)}`}>
+              {formatRest(rest)}
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="15 seconds more"
+              onPress={() => set({ default_rest_seconds: stepRest(rest, REST_STEP_SECONDS) })}
+              style={styles.stepperButton}
+            >
+              <Text style={styles.stepperLabel}>+15</Text>
+            </Pressable>
+          </View>
+          <Button title="Done" size="medium" onPress={() => setSheet(null)} />
         </View>
       </BottomSheet>
 
@@ -352,5 +378,27 @@ const styles = StyleSheet.create({
   sheet: { gap: 4, paddingHorizontal: 6 },
   sheetList: { marginTop: 14, marginBottom: 12, borderRadius: radius.card, backgroundColor: colors.surfaceRaised },
   sheetGap: { height: 12 },
+  restSheet: { gap: 4, paddingHorizontal: 4, paddingTop: 4 },
+  stepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    marginBottom: 16,
+    padding: 14,
+    borderRadius: radius.input,
+    backgroundColor: colors.inset,
+  },
+  stepperButton: {
+    height: 44,
+    minWidth: 64,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceRaised,
+  },
+  stepperLabel: { ...type.stepper, color: colors.text },
+  restValue: { ...figure(figures.defaultRest), color: colors.text },
   customRow: { paddingVertical: 10, paddingHorizontal: 18 },
 });

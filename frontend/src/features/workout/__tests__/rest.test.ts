@@ -1,12 +1,24 @@
-import { adjustRest, dueAlert, remainingSeconds, restProgress, startRest } from '../rest';
+import { adjustRest, dueAlert, remainingSeconds, restLength, restProgress, startRest } from '../rest';
 
 const T0 = new Date(2026, 9, 9, 18, 4, 17);
 const at = (seconds: number) => new Date(T0.getTime() + seconds * 1000);
 
+describe('one rest length for every exercise', () => {
+  test('it is the default rest in settings', () => {
+    expect(restLength({ default_rest_seconds: 120 })).toBe(120);
+    expect(restLength({ default_rest_seconds: 0 })).toBe(0);
+  });
+
+  test('settings saved on the phone before this setting existed mean 1:30', () => {
+    expect(restLength({})).toBe(90);
+    expect(restLength(undefined)).toBe(90);
+  });
+});
+
 describe('the rest timer works from timestamps, so backgrounding never breaks it', () => {
   const rest = startRest('row-1', 90, T0);
 
-  test('starting: ends after the exercise’s rest length', () => {
+  test('starting: ends after the rest length', () => {
     expect(rest).toEqual({ rowId: 'row-1', endsAt: at(90).toISOString(), totalSeconds: 90 });
   });
 

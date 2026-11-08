@@ -4,6 +4,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.split import RestSeconds
+
 
 class SettingsIn(BaseModel):
     unit: Literal["lb", "kg"]
@@ -11,6 +13,8 @@ class SettingsIn(BaseModel):
     ghost_mode: bool
     sync_wifi_only: bool
     rest_alert_sound: bool
+    # Builds from before this setting leave it out, and that keeps the saved value.
+    default_rest_seconds: RestSeconds = 90
 
 
 class SettingsOut(BaseModel):
@@ -21,4 +25,5 @@ class SettingsOut(BaseModel):
     ghost_mode: bool
     sync_wifi_only: bool
     rest_alert_sound: bool
+    default_rest_seconds: int
     updated_at: datetime

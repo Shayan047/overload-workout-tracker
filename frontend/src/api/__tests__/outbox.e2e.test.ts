@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /**
  * End to end against a running API: a session logged offline is saved on the phone, sent
- * once Wi-Fi returns, and replaying the whole outbox afterwards changes nothing.
+ * once the connection returns, and replaying the whole outbox afterwards changes nothing.
  *
  *   E2E_API_URL=http://localhost:8000 npx jest outbox.e2e
  *
@@ -94,7 +94,7 @@ function withoutUpdatedAt(value: unknown): unknown {
 }
 
 const OFFLINE: Connection = { canSend: false, reason: 'offline' };
-const WIFI: Connection = { canSend: true, reason: 'ok' };
+const ONLINE: Connection = { canSend: true, reason: 'ok' };
 
 const describeE2E = API ? describe : describe.skip;
 
@@ -127,7 +127,7 @@ describeE2E('outbox against the real API', () => {
     });
   }
 
-  test('offline session: saved on the phone, sent on Wi-Fi, replay changes nothing', async () => {
+  test('offline session: saved on the phone, sent once online, replay changes nothing', async () => {
     const storage = new MemoryStorage();
     const connection = { current: OFFLINE };
     const outbox = await openOutbox(storage, connection);
@@ -202,8 +202,8 @@ describeE2E('outbox against the real API', () => {
     const savedQueue = storage.data.get(OUTBOX_KEY)!;
     expect((await get('/workouts')).length).toBe(0);
 
-    // Wi-Fi is back: it all goes, in order, once.
-    connection.current = WIFI;
+    // The connection is back: it all goes, in order, once.
+    connection.current = ONLINE;
     await outbox.flush();
     expect(outbox.status).toEqual({ pending: 0, state: 'idle', dropped: 0 });
     expect(syncStatusText(outbox.status)).toBeNull();
@@ -225,7 +225,7 @@ describeE2E('outbox against the real API', () => {
     for (let replay = 0; replay < 2; replay += 1) {
       const copy = new MemoryStorage();
       copy.data.set(OUTBOX_KEY, savedQueue);
-      const again = await openOutbox(copy, { current: WIFI });
+      const again = await openOutbox(copy, { current: ONLINE });
       expect(again.status.pending).toBe(11);
       await again.flush();
       expect(again.status).toEqual({ pending: 0, state: 'idle', dropped: 0 });

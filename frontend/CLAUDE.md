@@ -18,7 +18,7 @@ Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 - TanStack Query for reading server data; our own outbox (`src/api/outbox.ts`) for writes.
 - @react-native-async-storage/async-storage: the outbox queue and the offline cache.
 - react-native-svg for charts, hand-built and simple.
-- expo-haptics, expo-notifications, @react-native-community/netinfo (Wi-Fi check),
+- expo-haptics, expo-notifications, @react-native-community/netinfo (connection check),
   expo-secure-store (auth tokens).
 
 Ask before adding anything not on this list.
@@ -34,7 +34,7 @@ src/review/           review mode: ?review=1 flag, fixed clock, sample data
 src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, today/,
                       workout/, progress/, history/, profile/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
-                      (Wi-Fi rule, status copy), cache (offline queries), settings,
+                      (connection rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
 src/lib/              small pure helpers: ids, units (kg ⇄ lb, bodyweight input), dates,
                       exercises (search, labels, rest format)
@@ -104,8 +104,7 @@ npx eas-cli build -p android --profile preview    # cloud build; prints a downlo
 
 `npm run web` serves the app at http://localhost:8081 and talks to the real API (the
 backend allows that origin; see "CORS" in `../docs/api-and-sync.md`). Differences from a
-phone: the token is kept in localStorage, and "Sync on Wi-Fi only" is ignored because
-browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
+phone: the token is kept in localStorage. Add `?review=1` for the fixed sample data instead.
 
 ## Splits screens
 
@@ -205,7 +204,7 @@ Need something new? Add a named style to the theme; never write a font size, wei
   "today", so review screenshots match the designs.
 - The root layout sets `data-review-ready` on `<html>` once fonts are loaded; the
   screenshot script waits for it.
-- Review mode is signed in as a sample user, shows "1 waiting for Wi-Fi" like 07, makes no
+- Review mode is signed in as a sample user, shows "Saved on this phone" like 07, makes no
   API calls, and also opens the sign-in and sign-up screens (`sign-in`, `sign-up` routes).
 - The auth screens have no design number; their screenshots are `00-sign-in` and `00-sign-up`.
 - Signed-out users land on Welcome (`welcome`); Units is `units`.
@@ -237,8 +236,8 @@ Need something new? Add a named style to the theme; never write a font size, wei
 
 Development builds have a **Sync check** screen (link on the Today placeholder, route
 `/dev-sync`). Sign in, turn on airplane mode, tap "Toggle ghost mode": the pill says "Saved on
-this phone" and "Waiting to send" is 1. Turn airplane mode off on Wi-Fi: it drops to 0. With
-"Sync on Wi-Fi only" on, mobile data shows "1 waiting for Wi-Fi" instead.
+this phone" and "Waiting to send" is 1. Turn airplane mode off: it drops to 0, on Wi-Fi or
+mobile data.
 
 ## SDK 58
 
