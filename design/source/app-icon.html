@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>App icon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#2A2F36;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.state{margin:22px 22px 10px;font-size:13px;font-weight:600;color:#CED3D9}
+/* The icon: the brand mark's four bars on the app background (bg). Android masks it to the
+   phone's shape; the mark stays inside the 66% safe zone. */
+.icon{display:flex;align-items:center;justify-content:center;background:#0B0C0E;overflow:hidden}
+.home{display:flex;gap:22px;margin:0 22px;padding:18px 16px;border-radius:24px;background:linear-gradient(160deg,#4A5A6E,#2B3340)}
+.app-tile{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#F3F5F7}
+.other-icon{width:58px;height:58px;border-radius:20px;background:#3A4048;opacity:.6}
+.notif{margin:0 10px;padding:14px 16px;border-radius:24px;background:#3A3B3E;display:flex;gap:14px;align-items:center}
+</style>
+</helmet>
+<main class="app" style="height:640px;padding:6px 0 20px">
+  <div class="state">The icon</div>
+  <div style="display:flex;justify-content:center">
+    <div class="icon" style="width:200px;height:200px;border-radius:64px">
+      <svg viewBox="0 0 28 28" width="104" height="104" aria-hidden="true"><rect x="2" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect><rect x="8.5" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="21.5" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect></svg>
+    </div>
+  </div>
+
+  <div class="state">On the home screen</div>
+  <div class="home">
+    <div class="app-tile"><div class="other-icon"></div>Clock</div>
+    <div class="app-tile">
+      <div class="icon" style="width:58px;height:58px;border-radius:20px">
+        <svg viewBox="0 0 28 28" width="30" height="30" aria-hidden="true"><rect x="2" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect><rect x="8.5" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="21.5" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect></svg>
+      </div>
+      Overload
+    </div>
+    <div class="app-tile"><div class="other-icon"></div>Camera</div>
+    <div class="app-tile"><div class="other-icon"></div>Photos</div>
+  </div>
+
+  <div class="state">In the rest-over notification (Samsung)</div>
+  <div class="notif">
+    <div class="icon" style="width:42px;height:42px;border-radius:14px;flex:none">
+      <svg viewBox="0 0 28 28" width="22" height="22" aria-hidden="true"><rect x="2" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect><rect x="8.5" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="15" y="4" width="4.5" height="20" rx="1.5" fill="#FFA41B"></rect><rect x="21.5" y="9" width="4.5" height="10" rx="1.5" fill="#5FA8BC"></rect></svg>
+    </div>
+    <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <span style="flex:1;font-size:17px;font-weight:700;font-stretch:85%">Rest's over</span>
+        <span style="font-size:26px;font-weight:800;font-stretch:68%;color:#FFA41B;line-height:1">+00:02</span>
+      </div>
+      <div style="font-size:13px;color:#A8AFB8">Hammer curls, set 2 of 3 next</div>
+    </div>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

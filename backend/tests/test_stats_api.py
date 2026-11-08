@@ -247,9 +247,10 @@ async def test_workout_history_counts_sets_and_exercises_ahead(
     # Finished, live workouts only, newest first.
     assert [w["started_at"][:10] for w in history] == [day for day, _, _ in reversed(SAMPLE)]
     by_day = {w["started_at"][:10]: w for w in history}
-    # Oct 9's 24 reps beat Oct 6's 20; Sep 28's 40 didn't beat Sep 1's 48; Aug 18 was first.
+    # Oct 9's 24 reps beat Oct 6's 20 at the same weight; Sep 28 moved up from 10 lb to 15, so
+    # it's ahead though its 40 reps are fewer than Sep 1's 48; Aug 18 was first.
     assert [by_day["2026-10-09"][k] for k in ("sets", "ahead", "compared")] == [4, 1, 1]
-    assert [by_day["2026-09-28"][k] for k in ("sets", "ahead", "compared")] == [4, 0, 1]
+    assert [by_day["2026-09-28"][k] for k in ("sets", "ahead", "compared")] == [4, 1, 1]
     assert [by_day["2026-08-18"][k] for k in ("sets", "ahead", "compared")] == [4, 0, 0]
     assert by_day["2026-10-09"]["title"] == "Arms"
     assert len(await get(client, other_user, "/workouts/history")) == 1

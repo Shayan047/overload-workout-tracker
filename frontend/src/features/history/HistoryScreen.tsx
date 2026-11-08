@@ -1,8 +1,9 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Svg, { Rect } from 'react-native-svg';
 
 import { usePendingWorkoutIds, useWorkoutHistory, type WorkoutHistoryItem } from '@/api/history';
-import { useSync } from '@/api/AppProviders';
 import { IconButton, Screen, Separator, Text } from '@/components';
 import { BackIcon, ChevronRightIcon } from '@/components/icons';
 import { now } from '@/review/reviewMode';
@@ -20,7 +21,6 @@ export function HistoryScreen() {
   const today = now();
   const history = useWorkoutHistory();
   const pending = usePendingWorkoutIds();
-  const { status } = useSync();
   const [month, setMonth] = useState({ year: today.getFullYear(), month: today.getMonth() });
   const [picked, setPicked] = useState<number | null>(null);
 
@@ -28,7 +28,14 @@ export function HistoryScreen() {
   const cal = calendar(month.year, month.month, workouts, today);
   const shown = picked !== null ? onDay(workouts, month.year, month.month, picked) : workouts.slice(0, RECENT);
   const note = history.data ? monthNote(month.year, month.month, workouts, today) : '';
-  const waiting = status.state === 'waiting-for-wifi' ? 'Waiting for Wi-Fi' : 'Saved on this phone';
+
+  const open = (id: string) => router.push({ pathname: '/past-workout/[workoutId]', params: { workoutId: id } });
+  // A day with one workout opens it (21); with more, they're listed below to pick from.
+  const pick = (day: number) => {
+    const that = onDay(workouts, month.year, month.month, day);
+    if (that.length === 1) return open(that[0].id);
+    setPicked(day === picked ? null : day);
+  };
 
   const go = (delta: number) => {
     const next = new Date(month.year, month.month + delta, 1);
@@ -54,7 +61,7 @@ export function HistoryScreen() {
         {shown.map((w, i) => (
           <View key={w.id}>
             {i > 0 ? <Separator inset={16} /> : null}
-            <WorkoutRow workout={w} sync={pending.has(w.id) ? waiting : 'Synced'} />
+            <WorkoutRow workout={w} sync={pending.has(w.id) ? 'Saved on this phone' : 'Synced'} onPress={() => open(w.id)} />
           </View>
         ))}
       </View>
@@ -92,7 +99,7 @@ export function HistoryScreen() {
                   key={`day-${w}-${d}`}
                   cell={cell}
                   picked={cell?.day === picked}
-                  onPress={() => cell && setPicked(cell.day === picked ? null : cell.day)}
+                  onPress={() => cell && pick(cell.day)}
                   label={cell ? `${cal.title.split(' ')[0]} ${cell.day}` : ''}
                 />
               ))}
@@ -130,27 +137,45 @@ function Day({ cell, picked, onPress, label }: { cell: Cell; picked: boolean; on
     >
       {cell.state === 'today-trained' ? (
         <View style={styles.todayCircle}>
+          <Shape width={34} height={34} color={colors.accent} />
           <Text style={styles.todayNumber}>{cell.day}</Text>
         </View>
       ) : (
         <>
-          <View style={[styles.dayNumber, picked && styles.picked]}>
+          <View style={styles.dayNumber}>
+            {picked ? <Shape width={30} height={22} color={colors.surfaceRaised} /> : null}
             <Text variant="bodyStrong" style={{ color }}>
               {cell.day}
             </Text>
           </View>
-          <View style={[styles.dot, trained && styles.dotOn]} />
+          <View style={styles.dot}>{trained ? <Shape width={5} height={5} color={colors.accent} /> : null}</View>
         </>
       )}
     </Pressable>
   );
 }
 
-/** One workout: what and when, then how it went against last time (amber: you) and whether
- * it has synced. */
-function WorkoutRow({ workout, sync }: { workout: WorkoutHistoryItem; sync: string }) {
+/** A pill or circle drawn as a vector shape behind its content. The calendar's rows are
+ * 44 dp, which lands later rows on half pixels at some densities (2.625x on a Galaxy S24),
+ * and there Android drew small rounded views as squares. */
+function Shape({ width, height, color }: { width: number; height: number; color: string }) {
   return (
-    <View style={styles.row}>
+    <Svg width={width} height={height} style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Rect width={width} height={height} rx={Math.min(width, height) / 2} fill={color} />
+    </Svg>
+  );
+}
+
+/** One workout: what and when, then how it went against last time (amber: you) and whether
+ * it has synced. Opens the workout (21). */
+function WorkoutRow({ workout, sync, onPress }: { workout: WorkoutHistoryItem; sync: string; onPress: () => void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${workout.title}, ${workoutLine(workout)}. Open`}
+      onPress={onPress}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+    >
       <View style={styles.flex}>
         <Text variant="rowTitle" numberOfLines={1}>
           {workout.title}
@@ -169,7 +194,7 @@ function WorkoutRow({ workout, sync }: { workout: WorkoutHistoryItem; sync: stri
           {sync}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -189,23 +214,20 @@ const styles = StyleSheet.create({
   days: { marginTop: 4, rowGap: 2 },
   week: { flexDirection: 'row' },
   day: { flex: 1, height: 44, alignItems: 'center', justifyContent: 'center', gap: 3 },
-  dayNumber: { minWidth: 30, alignItems: 'center', borderRadius: radius.chip },
-  picked: { backgroundColor: colors.surfaceRaised },
-  dot: { width: 5, height: 5, borderRadius: radius.chip },
-  dotOn: { backgroundColor: colors.accent },
+  dayNumber: { width: 30, height: 22, alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 5, height: 5 },
   todayCircle: {
     width: 34,
     height: 34,
     marginTop: -2,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.chip,
-    backgroundColor: colors.accent,
   },
   todayNumber: { ...type.calendarToday, color: colors.onAccent },
   note: { marginTop: 10, marginHorizontal: 4 },
   empty: { marginTop: 16, marginHorizontal: 4 },
   list: { marginTop: 16, paddingVertical: 2, borderRadius: radius.card, backgroundColor: colors.surface },
+  rowPressed: { backgroundColor: colors.surfaceHover },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 16 },
   flex: { flex: 1, minWidth: 0 },
   right: { alignItems: 'flex-end' },

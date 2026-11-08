@@ -72,16 +72,26 @@ describe('workout summary (11), computed on the phone so it works offline', () =
   });
 
   test('total reps against last time, per exercise in order, skipped ones left out', () => {
-    expect(summary.exercises.map((e) => [e.exerciseId, e.today, e.last, e.delta])).toEqual([
-      ['ohp', 29, 28, 1],
-      ['lateral', 35, 33, 2],
-      ['curl', 24, 20, 4],
-      ['hammer', 24, 24, 0],
-      ['pushdown', 33, 34, -1],
-      ['chinup', 21, 20, 1],
+    expect(summary.exercises.map((e) => [e.exerciseId, e.comparison])).toEqual([
+      ['ohp', { kind: 'reps', you: 29, last: 28, delta: 1 }],
+      ['lateral', { kind: 'reps', you: 35, last: 33, delta: 2 }],
+      ['curl', { kind: 'reps', you: 24, last: 20, delta: 4 }],
+      ['hammer', { kind: 'reps', you: 24, last: 24, delta: 0 }],
+      ['pushdown', { kind: 'reps', you: 33, last: 34, delta: -1 }],
+      ['chinup', { kind: 'reps', you: 21, last: 20, delta: 1 }],
     ]);
     expect([summary.ahead, summary.compared]).toEqual([4, 6]);
     expect(summary.lastDate).toBe(new Date(2026, 9, 6, 18, 0).toISOString());
+  });
+
+  test('moving up a weight counts as ahead, even with fewer reps (option B)', () => {
+    const heavier: ActiveWorkout = {
+      ...state,
+      sets: state.sets.map((s) => (s.workout_exercise_id === 'row-4' ? { ...s, weight_kg: kg(55), reps: 8 } : s)),
+    };
+    const result = summarize(heavier, endedAt, last, bodyweightIds);
+    expect(result.exercises.find((e) => e.exerciseId === 'pushdown')!.comparison).toMatchObject({ kind: 'heavier' });
+    expect([result.ahead, result.compared]).toEqual([5, 6]);
   });
 
   test('new bests: est. max above the best so far, biggest gain first', () => {
@@ -94,7 +104,7 @@ describe('workout summary (11), computed on the phone so it works offline', () =
   test('a first time ever is not a "new best": nothing to beat', () => {
     const first = summarize(state, endedAt, last.filter((l) => l.exercise_id !== 'curl'), bodyweightIds);
     expect(first.bests.map((b) => b.exerciseId)).toEqual(['lateral']);
-    expect(first.exercises.find((e) => e.exerciseId === 'curl')).toMatchObject({ last: null, delta: null });
+    expect(first.exercises.find((e) => e.exerciseId === 'curl')).toMatchObject({ comparison: null });
     expect(first.compared).toBe(5);
   });
 

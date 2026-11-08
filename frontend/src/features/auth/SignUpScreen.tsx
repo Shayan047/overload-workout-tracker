@@ -6,6 +6,7 @@ import { BrandMark, Button, TextField } from '@/components';
 
 import { goToTodayAfterAuth } from './afterAuth';
 import { AuthScreen } from './AuthScreen';
+import { useWakingHint } from './useWakingHint';
 import { authErrorMessage, checkSignUp } from './messages';
 
 export function SignUpScreen() {
@@ -15,6 +16,7 @@ export function SignUpScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const waking = useWakingHint(busy);
 
   const submit = async () => {
     const problem = checkSignUp({ email, password });
@@ -76,7 +78,7 @@ export function SignUpScreen() {
       actions={
         <>
           <Button
-            title={busy ? 'Creating account…' : 'Create account'}
+            title={busy ? (waking ? 'Waking the server…' : 'Creating account…') : 'Create account'}
             size="medium"
             onPress={submit}
             disabled={busy}

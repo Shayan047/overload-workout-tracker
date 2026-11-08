@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit workout</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:24px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* Save is the main action while editing, so it is amber (08's Finish pill, filled). */
+.save{height:44px;padding:0 20px;display:flex;align-items:center;border-radius:999px;background:#FFA41B;color:#1C1102;font-weight:650;text-decoration:none}
+.save:hover{background:#FFB547;color:#1C1102}
+.ex{margin-top:12px;padding:14px 12px 6px;border-radius:20px;background:#16181B}
+.grid{display:grid;grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 40px;align-items:center;column-gap:10px}
+.head{padding:12px 4px 6px;font-size:13px;font-weight:600;color:#88909A}
+.row{height:58px;padding:0 0 0 4px}
+.setn{font-size:20px;color:#88909A}
+/* An editable number: 08's input box. Amber outline only on the one being typed in. */
+.field{height:46px;padding:0 12px;display:flex;align-items:center;border-radius:12px;background:#08090B;box-shadow:inset 0 0 0 1px #3E434A;font-size:24px}
+.field.on{box-shadow:inset 0 0 0 1.5px #FFA41B}
+.field .unit{font-size:13px;font-weight:600;font-stretch:100%;color:#88909A;margin-left:6px;position:relative;top:1px}
+.del{width:40px;height:40px;border:0;border-radius:999px;background:transparent;color:#88909A;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.del:hover{background:#22252A;color:#F3F5F7}
+.add{display:flex;align-items:center;gap:10px;height:48px;padding:0 6px;border:0;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+</style>
+</helmet>
+<main class="app" style="height:1340px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="icon" href="WorkoutDetail.dc.html" aria-label="Cancel editing"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <h1 class="h1" style="flex:1">Edit workout</h1>
+    <a class="save" href="WorkoutDetail.dc.html">Save</a>
+  </div>
+  <p class="muted" style="margin:14px 2px 0">Shoulders &amp; Arms, Tuesday, Oct 6. Your progress updates when you save.</p>
+
+  <section class="ex">
+    <h2 class="h2" style="padding:0 4px">Overhead press</h2>
+    <div class="grid head"><span>Set</span><span>lb</span><span>Reps</span><span></span></div>
+    <div class="grid row"><span class="num setn">1</span><span class="num field">75</span><span class="num field">8</span><button class="del" aria-label="Delete set 1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">2</span><span class="num field">75</span><span class="num field on">7</span><button class="del" aria-label="Delete set 2"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">3</span><span class="num field">75</span><span class="num field">7</span><button class="del" aria-label="Delete set 3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">4</span><span class="num field">75</span><span class="num field">6</span><button class="del" aria-label="Delete set 4"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <button class="add"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"></path></svg>Add set</button>
+  </section>
+
+  <section class="ex">
+    <h2 class="h2" style="padding:0 4px">Lateral raise</h2>
+    <div class="grid head"><span>Set</span><span>lb</span><span>Reps</span><span></span></div>
+    <div class="grid row"><span class="num setn">1</span><span class="num field">20</span><span class="num field">12</span><button class="del" aria-label="Delete set 1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">2</span><span class="num field">20</span><span class="num field">11</span><button class="del" aria-label="Delete set 2"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">3</span><span class="num field">20</span><span class="num field">10</span><button class="del" aria-label="Delete set 3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <button class="add"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"></path></svg>Add set</button>
+  </section>
+
+  <section class="ex">
+    <h2 class="h2" style="padding:0 4px">Chin-up</h2>
+    <div class="grid head"><span>Set</span><span>Added lb</span><span>Reps</span><span></span></div>
+    <div class="grid row"><span class="num setn">1</span><span class="num field">10</span><span class="num field">8</span><button class="del" aria-label="Delete set 1"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">2</span><span class="num field">10</span><span class="num field">6</span><button class="del" aria-label="Delete set 2"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <div class="grid row"><span class="num setn">3</span><span class="num field">10</span><span class="num field">6</span><button class="del" aria-label="Delete set 3"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+    <button class="add"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"></path></svg>Add set</button>
+    <p class="faint small" style="margin:0 6px 10px">This counts your bodyweight that day, 172 lb, plus the added weight.</p>
+  </section>
+
+
+  <button style="margin-top:22px;width:100%;height:50px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:650;cursor:pointer">Delete workout</button>
+  <p class="faint small" style="margin:10px 4px 0;text-align:center">Removes it from your history and progress.</p>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1340}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

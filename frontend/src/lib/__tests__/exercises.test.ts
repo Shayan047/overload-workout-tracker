@@ -6,6 +6,7 @@ import {
   muscleGroupOf,
   muscleLabel,
   searchExercises,
+  stepRest,
 } from '../exercises';
 
 const ex = (name: string, primary_muscle = 'biceps', equipment: string | null = 'dumbbell'): Exercise => ({
@@ -92,5 +93,17 @@ describe('muscleGroupOf: the filter chip a muscle belongs to (swap shows similar
     ['side delts', null],
   ])('%s → %s', (muscle, group) => {
     expect(muscleGroupOf(muscle)).toBe(group);
+  });
+});
+
+describe('stepRest (the default rest stepper, 28)', () => {
+  test('moves in the steps it is given', () => {
+    expect(stepRest(90, 15)).toBe(105);
+    expect(stepRest(90, -15)).toBe(75);
+  });
+
+  test('stays within 0 and 60 minutes', () => {
+    expect(stepRest(10, -15)).toBe(0);
+    expect(stepRest(3590, 15)).toBe(3600);
   });
 });

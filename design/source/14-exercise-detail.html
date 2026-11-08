@@ -30,9 +30,17 @@ a{color:#FFA41B}a:hover{color:#FFC870}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 16px}
 .sep{height:1px;margin:0 16px;background:#212429}
 .ax{font-family:'Archivo',system-ui,sans-serif;font-size:11px;fill:#88909A}
+.in{font-family:'Archivo',system-ui,sans-serif;font-size:11px;font-weight:700;fill:#1C1102}
+.tot{font-family:'Archivo',system-ui,sans-serif;font-size:14px;font-weight:800;font-stretch:72%;fill:#F3F5F7}
+.sec{margin:40px 0 0}
+.sech{margin:0;font-size:22px;line-height:1.15;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.secp{margin:6px 2px 0;color:#A8AFB8;font-size:14px}
+.lg{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;column-gap:10px;min-height:52px;padding:6px 16px}
+.btn2{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;margin-top:12px;border:1px solid #3E434A;border-radius:14px;background:transparent;color:#F3F5F7;font-family:inherit;font-size:15px;font-weight:650;text-decoration:none;cursor:pointer}
+.btn2:hover{background:#16181B;color:#F3F5F7}
 </style>
 </helmet>
-<main class="app" style="height:1240px;padding:52px 20px 0">
+<main class="app" style="height:2080px;padding:52px 20px 0">
   <div style="display:flex;align-items:center;gap:12px">
     <a class="icon" href="Progress.dc.html" aria-label="Back to progress"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
     <h1 class="h1" style="font-size:24px;flex:1">Bicep curl</h1>
@@ -51,14 +59,8 @@ a{color:#FFA41B}a:hover{color:#FFC870}
     </div>
   </div>
 
-  <div style="display:flex;gap:8px;margin:18px -20px 0;padding:0 20px;overflow-x:auto" role="group" aria-label="Weight filter">
-    <a class="chip on" href="Exercise.dc.html" aria-current="page">All weights</a>
-    <a class="chip" href="WeightProgress.dc.html">10 lb</a>
-    <a class="chip" href="WeightProgress.dc.html">15 lb</a>
-    <a class="chip" href="WeightProgress.dc.html">20 lb</a>
-  </div>
-
-  <section style="margin-top:14px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
+    <p class="secp" style="margin-top:12px">From your best set in each workout, at whatever weight you used.</p>
+  <section style="margin-top:18px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
     <svg viewBox="0 0 350 196" width="100%" role="img" aria-label="Estimated max rose from 14.0 pounds on Aug 18 to 24.7 pounds on Oct 9, with jumps when the weight went from 10 to 15 and then 20 pounds. Projected about 28 pounds by Dec 1." style="display:block">
       <rect x="30" y="20" width="45.7" height="140" fill="#1A1D21"></rect>
       <rect x="75.7" y="20" width="81.3" height="140" fill="#1F2226"></rect>
@@ -98,13 +100,131 @@ a{color:#FFA41B}a:hover{color:#FFC870}
       <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:12px;border-radius:3px;background:#1F2226;border:1px solid #3E434A"></span>Weight used</span>
     </div>
   </section>
-
-  <div style="display:flex;gap:12px;align-items:center;margin-top:12px;padding:14px 16px;border-radius:16px;background:#121417">
-    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#FFA41B"><path d="M4 18l6-6 4 4 6-8"></path><path d="M15 8h5v5"></path></svg>
-    <p style="margin:0">On pace for about <span class="num" style="font-size:19px">28 lb</span> by Dec 1. No plateau yet.</p>
+    <p class="muted" style="margin:12px 4px 0">On pace for about <span class="num" style="font-size:18px;color:#F3F5F7">28 lb</span> by Dec 1. No plateau yet.</p>
+  <section class="sec">
+    <h2 class="sech">Your last 3 workouts</h2>
+    <p class="secp">Estimated max for every set, so you can see how each workout held up from the first set to the last.</p>
+    <div style="margin-top:14px;padding:12px 12px 6px;border-radius:20px;background:#16181B">
+      <svg viewBox="0 0 350 196" width="100%" role="img" aria-label="Estimated max per set. Today 24.7, 24.0, 24.0, 23.3. Tue, Oct 6: 24.0, 23.3, 23.3, 22.7. Fri, Oct 2: 24.0, 23.3, 22.7, 22.7." style="display:block">
+        <g stroke="#31353B" stroke-width="1"><line x1="34" y1="160.0" x2="342" y2="160.0"></line><line x1="34" y1="113.3" x2="342" y2="113.3"></line><line x1="34" y1="66.7" x2="342" y2="66.7"></line><line x1="34" y1="20.0" x2="342" y2="20.0"></line></g>
+        <text class="ax" x="26" y="164.0" text-anchor="end">22</text><text class="ax" x="26" y="117.3" text-anchor="end">23</text><text class="ax" x="26" y="70.7" text-anchor="end">24</text><text class="ax" x="26" y="24.0" text-anchor="end">25</text>
+        <path d="M44 66.7L139.3 97.9L234.7 128.7L330 128.7" fill="none" stroke="#5FA8BC" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round"></path>
+        <circle cx="44" cy="66.7" r="2.5" fill="#5FA8BC"></circle><circle cx="139.3" cy="97.9" r="2.5" fill="#5FA8BC"></circle><circle cx="234.7" cy="128.7" r="2.5" fill="#5FA8BC"></circle><circle cx="330" cy="128.7" r="2.5" fill="#5FA8BC"></circle>
+        <path d="M44 66.7L139.3 97.9L234.7 97.9L330 128.7" fill="none" stroke="#7FD3EA" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></path>
+        <circle cx="44" cy="66.7" r="3" fill="#7FD3EA"></circle><circle cx="139.3" cy="97.9" r="3" fill="#7FD3EA"></circle><circle cx="234.7" cy="97.9" r="3" fill="#7FD3EA"></circle><circle cx="330" cy="128.7" r="3" fill="#7FD3EA"></circle>
+        <path d="M44 35.4L139.3 66.7L234.7 66.7L330 97.9" fill="none" stroke="#FFA41B" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></path>
+        <circle cx="44" cy="35.4" r="3.5" fill="#FFA41B"></circle><circle cx="139.3" cy="66.7" r="3.5" fill="#FFA41B"></circle><circle cx="234.7" cy="66.7" r="3.5" fill="#FFA41B"></circle><circle cx="330" cy="97.9" r="3.5" fill="#FFA41B"></circle>
+        <circle cx="44" cy="35.4" r="6" fill="#FFA41B" stroke="#16181B" stroke-width="3"></circle>
+        <text class="ax" x="44" y="182" text-anchor="middle">Set 1</text><text class="ax" x="139.3" y="182" text-anchor="middle">Set 2</text><text class="ax" x="234.7" y="182" text-anchor="middle">Set 3</text><text class="ax" x="330" y="182" text-anchor="middle">Set 4</text>
+      </svg>
+      <div style="margin:6px -12px 0">
+        <div class="lg"><span style="width:18px;height:3px;border-radius:2px;background:#FFA41B"></span><span><span class="h2" style="display:block;font-size:16px">Today</span><span class="muted small">20 lb × 7, 6, 6, 5</span></span><span class="num" style="font-size:20px;color:#FFA41B">24.7</span></div>
+        <div class="sep"></div>
+        <div class="lg"><span style="width:18px;height:3px;border-radius:2px;background:#7FD3EA"></span><span><span class="h2" style="display:block;font-size:16px">Tue, Oct 6</span><span class="muted small">20 lb × 6, 5, 5, 4</span></span><span class="num" style="font-size:20px">24.0</span></div>
+        <div class="sep"></div>
+        <div class="lg"><span style="width:18px;height:0;border-top:2px dashed #5FA8BC"></span><span><span class="h2" style="display:block;font-size:16px">Fri, Oct 2</span><span class="muted small">20 lb × 6, 5, 4, 4</span></span><span class="num" style="font-size:20px">24.0</span></div>
+      </div>
+    </div>
+    <a class="btn2" href="AllWorkouts.dc.html">See all 16 workouts</a>
+  </section>
+  <section class="sec">
+    <h2 class="sech">Reps at one weight</h2>
+    <p class="secp">Only sets done at the weight you pick. More reps at the same weight means you're getting stronger at it.</p>
+    <div style="display:flex;gap:8px;margin:14px -20px 0;padding:0 20px;overflow-x:auto" role="group" aria-label="Weight">
+      <a class="chip on" aria-current="true">10 lb</a>
+      <a class="chip">15 lb</a>
+      <a class="chip">20 lb</a>
+    </div>
+  <div style="display:flex;align-items:flex-start;gap:14px;margin-top:20px">
+    <span class="num" style="font-size:56px;color:#FFA41B">+14</span>
+    <p style="margin:2px 0 0;font-size:15px">more reps per workout at 10 lb, from 34 to 48. <span class="muted">Most of it came from sets 2 to 4 catching up to set 1.</span></p>
   </div>
 
-  <section style="margin-top:12px;border-radius:20px;background:#16181B;padding:4px 0">
+  <section style="margin-top:16px;padding:12px 12px 14px;border-radius:20px;background:#16181B">
+    <svg viewBox="0 0 350 232" width="100%" role="img" aria-label="Stacked bars of reps per set at 10 pounds. Totals: Aug 18, 34; Aug 21, 38; Aug 25, 40; Aug 28, 44; Sep 1, 48." style="display:block">
+      <g stroke="#31353B" stroke-width="1">
+        <line x1="30" y1="20" x2="342" y2="20"></line>
+        <line x1="30" y1="56" x2="342" y2="56"></line>
+        <line x1="30" y1="92" x2="342" y2="92"></line>
+        <line x1="30" y1="128" x2="342" y2="128"></line>
+        <line x1="30" y1="164" x2="342" y2="164"></line>
+        <line x1="30" y1="200" x2="342" y2="200" stroke="#474C54"></line>
+      </g>
+      <text class="ax" x="22" y="24" text-anchor="end">50</text>
+      <text class="ax" x="22" y="60" text-anchor="end">40</text>
+      <text class="ax" x="22" y="96" text-anchor="end">30</text>
+      <text class="ax" x="22" y="132" text-anchor="end">20</text>
+      <text class="ax" x="22" y="168" text-anchor="end">10</text>
+      <text class="ax" x="22" y="204" text-anchor="end">0</text>
+
+      <rect x="42.8" y="156.8" width="44" height="41.2" rx="3" fill="#FFC870"></rect>
+      <rect x="42.8" y="128" width="44" height="26.8" rx="3" fill="#FFA41B"></rect>
+      <rect x="42.8" y="102.8" width="44" height="23.2" rx="3" fill="#D9861A"></rect>
+      <rect x="42.8" y="77.6" width="44" height="23.2" rx="3" fill="#B87116"></rect>
+      <text class="in" x="64.8" y="181.4" text-anchor="middle">12</text>
+      <text class="in" x="64.8" y="145.4" text-anchor="middle">8</text>
+      <text class="in" x="64.8" y="118.4" text-anchor="middle">7</text>
+      <text class="in" x="64.8" y="93.2" text-anchor="middle">7</text>
+      <text class="tot" x="64.8" y="70" text-anchor="middle">34</text>
+
+      <rect x="104.4" y="156.8" width="44" height="41.2" rx="3" fill="#FFC870"></rect>
+      <rect x="104.4" y="124.4" width="44" height="30.4" rx="3" fill="#FFA41B"></rect>
+      <rect x="104.4" y="92" width="44" height="30.4" rx="3" fill="#D9861A"></rect>
+      <rect x="104.4" y="63.2" width="44" height="26.8" rx="3" fill="#B87116"></rect>
+      <text class="in" x="126.4" y="181.4" text-anchor="middle">12</text>
+      <text class="in" x="126.4" y="143.6" text-anchor="middle">9</text>
+      <text class="in" x="126.4" y="111.2" text-anchor="middle">9</text>
+      <text class="in" x="126.4" y="80.6" text-anchor="middle">8</text>
+      <text class="tot" x="126.4" y="55" text-anchor="middle">38</text>
+
+      <rect x="166" y="156.8" width="44" height="41.2" rx="3" fill="#FFC870"></rect>
+      <rect x="166" y="120.8" width="44" height="34" rx="3" fill="#FFA41B"></rect>
+      <rect x="166" y="88.4" width="44" height="30.4" rx="3" fill="#D9861A"></rect>
+      <rect x="166" y="56" width="44" height="30.4" rx="3" fill="#B87116"></rect>
+      <text class="in" x="188" y="181.4" text-anchor="middle">12</text>
+      <text class="in" x="188" y="141.8" text-anchor="middle">10</text>
+      <text class="in" x="188" y="107.6" text-anchor="middle">9</text>
+      <text class="in" x="188" y="75.2" text-anchor="middle">9</text>
+      <text class="tot" x="188" y="48" text-anchor="middle">40</text>
+
+      <rect x="227.6" y="153.2" width="44" height="44.8" rx="3" fill="#FFC870"></rect>
+      <rect x="227.6" y="113.6" width="44" height="37.6" rx="3" fill="#FFA41B"></rect>
+      <rect x="227.6" y="77.6" width="44" height="34" rx="3" fill="#D9861A"></rect>
+      <rect x="227.6" y="41.6" width="44" height="34" rx="3" fill="#B87116"></rect>
+      <text class="in" x="249.6" y="179.6" text-anchor="middle">13</text>
+      <text class="in" x="249.6" y="136.4" text-anchor="middle">11</text>
+      <text class="in" x="249.6" y="98.6" text-anchor="middle">10</text>
+      <text class="in" x="249.6" y="62.6" text-anchor="middle">10</text>
+      <text class="tot" x="249.6" y="34" text-anchor="middle">44</text>
+
+      <rect x="289.2" y="149.6" width="44" height="48.4" rx="3" fill="#FFC870"></rect>
+      <rect x="289.2" y="106.4" width="44" height="41.2" rx="3" fill="#FFA41B"></rect>
+      <rect x="289.2" y="66.8" width="44" height="37.6" rx="3" fill="#D9861A"></rect>
+      <rect x="289.2" y="27.2" width="44" height="37.6" rx="3" fill="#B87116"></rect>
+      <text class="in" x="311.2" y="177.8" text-anchor="middle">14</text>
+      <text class="in" x="311.2" y="131" text-anchor="middle">12</text>
+      <text class="in" x="311.2" y="89.6" text-anchor="middle">11</text>
+      <text class="in" x="311.2" y="50" text-anchor="middle">11</text>
+      <text class="tot" x="311.2" y="20" text-anchor="middle" style="fill:#FFA41B">48</text>
+
+      <text class="ax" x="64.8" y="220" text-anchor="middle">Aug 18</text>
+      <text class="ax" x="126.4" y="220" text-anchor="middle">Aug 21</text>
+      <text class="ax" x="188" y="220" text-anchor="middle">Aug 25</text>
+      <text class="ax" x="249.6" y="220" text-anchor="middle">Aug 28</text>
+      <text class="ax" x="311.2" y="220" text-anchor="middle" style="fill:#F3F5F7">Sep 1</text>
+    </svg>
+    <div style="display:flex;gap:14px;margin:8px 4px 0" class="muted small">
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;background:#FFC870"></span>Set 1</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;background:#FFA41B"></span>Set 2</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;background:#D9861A"></span>Set 3</span>
+      <span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:3px;background:#B87116"></span>Set 4</span>
+    </div>
+  </section>
+    <p class="faint small" style="margin:10px 4px 0">You moved up to 15 lb on Sep 4.</p>
+  </section>
+  <section class="sec">
+    <h2 class="sech">Records</h2>
+  <section style="margin-top:14px;border-radius:20px;background:#16181B;padding:4px 0">
     <div class="row"><span class="muted">Best set</span><span><span class="num" style="font-size:22px;color:#FFA41B">20 × 7</span> <span class="faint small">today</span></span></div>
     <div class="sep"></div>
     <div class="row"><span class="muted">Most reps</span><span><span class="num" style="font-size:22px">10 × 14</span> <span class="faint small">Sep 1</span></span></div>
@@ -121,32 +241,10 @@ a{color:#FFA41B}a:hover{color:#FFC870}
     <span style="flex:1"><span class="h2" style="display:block">Rep-weight frontier</span><span class="muted small">Your most reps at every weight you've used</span></span>
     <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="color:#88909A"><path d="M9 5l7 7-7 7"></path></svg>
   </a>
-
-  <div class="faint small" style="margin:20px 4px 8px;font-weight:600">Recent sessions</div>
-  <ul style="list-style:none;margin:0;padding:2px 0;border-radius:20px;background:#16181B">
-    <li class="row" style="min-height:60px">
-      <span><span class="h2" style="display:block">Today</span><span class="muted small">20 lb × 7, 6, 6, 5</span></span>
-      <span class="num" style="font-size:22px;color:#FFA41B">24.7</span>
-    </li>
-    <li class="sep"></li>
-    <li class="row" style="min-height:60px">
-      <span><span class="h2" style="display:block">Tue, Oct 6</span><span class="muted small">20 lb × 6, 5, 5, 4</span></span>
-      <span class="num" style="font-size:22px">24.0</span>
-    </li>
-    <li class="sep"></li>
-    <li class="row" style="min-height:60px">
-      <span><span class="h2" style="display:block">Fri, Oct 2</span><span class="muted small">20 lb × 6, 5, 4, 4</span></span>
-      <span class="num" style="font-size:22px">24.0</span>
-    </li>
-    <li class="sep"></li>
-    <li class="row" style="min-height:60px">
-      <span><span class="h2" style="display:block">Mon, Sep 28</span><span class="muted small">15 lb × 12, 10, 9, 9</span></span>
-      <span class="num" style="font-size:22px">21.0</span>
-    </li>
-  </ul>
+  </section>
 </main>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1240}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2080}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

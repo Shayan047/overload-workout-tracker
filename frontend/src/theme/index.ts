@@ -267,6 +267,44 @@ export const type = {
     fontSize: 22,
     lineHeight: 26,
   },
+  /** The rest-over screen's headline (26): "Rest's over", 56 px. */
+  restOverTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 56,
+    lineHeight: 56,
+    letterSpacing: em(56, -0.015),
+  },
+  /** The exercise on the rest-over screen (26): 24 px, no tracking, 1.15 line height. */
+  restOverName: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 24,
+    lineHeight: lineHeight(24, 1.15),
+  },
+  /** What a summary row compares (11, 24): "reps", "lb", "est.", 12 px at 600. */
+  unitTag: {
+    ...font(600),
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  /** "Set 1" above a set's tile on a past workout (21): 11 px at 600. */
+  tileLabel: {
+    ...font(600),
+    fontSize: 11,
+    lineHeight: 14,
+  },
+  /** A section's title on Exercise detail (14): "Your last 3 workouts", 22 px. */
+  sectionTitle: {
+    ...font(headings.weight, headings.widthPercent),
+    fontSize: 22,
+    lineHeight: lineHeight(22, 1.15),
+    letterSpacing: em(22, -0.01),
+  },
+  /** The line under a section title (14) and on edit (22): 14 px. */
+  sectionNote: {
+    ...font(body.weight),
+    fontSize: 14,
+    lineHeight: lineHeight(14, 1.4),
+  },
   /** Chart axis and band labels (14), 11 px. */
   chartLabel: {
     ...font(body.weight),
@@ -329,8 +367,8 @@ export const figures = {
   lastTime: 20,
   /** The day number in its circle on 04. */
   dayStep: 17,
-  /** The rest length in the exercise options sheet. */
-  restValue: 32,
+  /** The default rest in its sheet (28). */
+  defaultRest: 44,
   /** The active workout (08): elapsed time, set number, weight and reps, last time's set,
    * a finished exercise against last time, and the ghost's rep counts. */
   elapsed: 26,
@@ -339,6 +377,10 @@ export const figures = {
   setLastTime: 20,
   exerciseDelta: 18,
   ghostReps: 18,
+  /** Last time's set on the rest-over screen (26). */
+  restOverLast: 24,
+  /** The ghost's sets when you moved up (24, 25): "100 × 11, 110 × 7". */
+  ghostSets: 22,
   /** The workout summary (11): the three stats, today / last reps, and a new best set. */
   summaryStat: 34,
   summaryReps: 19,
@@ -348,16 +390,22 @@ export const figures = {
   progressValue: 22,
   estMax: 76,
   record: 22,
-  pace: 19,
-  /** One weight (15, 16): the headline number and each session's total, average or
-   * retention in the table. */
+  pace: 18,
+  /** Reps at one weight (14): the headline number. */
   oneWeightHero: 56,
-  oneWeightRow: 19,
   /** A next target on the frontier (17): "20 × 8". */
   frontierTarget: 24,
   /** Bodyweight (20): the latest weight, and each entry in the list. */
   bodyweightNow: 68,
   bodyweightRow: 20,
+  /** A past workout (21): each set's tile, and an exercise's est. max. Editing it (22): the
+   * set number and the weight and reps fields. */
+  pastSet: 21,
+  /** A session's est. max in the list under 14's last-3 chart and on 23. */
+  sessionEstMax: 20,
+  pastEstMax: 22,
+  editSetNumber: 20,
+  editValue: 24,
   /** The rest timer's countdown (08). */
   restCountdown: 40,
   /** Weight and reps being typed on Log a set (09), and last time's set beside them. */

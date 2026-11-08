@@ -1,5 +1,6 @@
-// The one-weight views: Progress (15, stacked reps per set) and Fingerprint (16, reps by set
-// number). Geometry is in the designs' SVG coordinates; pure, so it's tested against them.
+// Reps at one weight (a section of 14, drawn as 15 was): stacked reps per set for each
+// session at one exact weight (rule 7), and its headline. Geometry is in the designs' SVG
+// coordinates; pure, so it's tested against them.
 
 import type { WeightSession } from '@/api/stats';
 
@@ -12,9 +13,6 @@ const shortDate = (iso: string) => `${MONTHS[new Date(iso).getMonth()]} ${new Da
 const sameDay = (iso: string, now: Date) => new Date(iso).toDateString() === now.toDateString();
 const onDate = (iso: string, now: Date) => (sameDay(iso, now) ? 'today' : `on ${shortDate(iso)}`);
 const sum = (values: readonly number[]) => values.reduce((a, b) => a + b, 0);
-
-/** "79%". */
-export const percentText = (retention: number) => `${Math.round(retention * 100)}%`;
 
 type Tick = { y: number; label: string };
 
@@ -87,73 +85,6 @@ export function stackedBars(sessions: readonly WeightSession[], now: Date): Bars
   return { ticks: ticks.map((v) => ({ y: y(v), label: String(v) })), barWidth, bars, legend };
 }
 
-// 16: a 350 × 220 viewBox. Set 1 at x 40, the last set at 330; gridlines from y 38.9 to 190.
-export const PRINT = { width: 350, height: 220, left: 40, right: 330, gridRight: 336, top: 38.9, bottom: 190 };
-/** Earlier sessions fade with age: the oldest of four is faintest. */
-const EARLIER_OPACITY = [0.35, 0.5, 0.65, 0.85];
-const LABEL_ABOVE = 9.6;
-const LABEL_BELOW = 16;
-
-type Point = { x: number; y: number };
-type Label = { x: number; y: number; text: string };
-
-export type Fingerprint = {
-  ticks: Tick[];
-  latest: { points: Point[] };
-  /** Oldest first. */
-  earlier: { points: Point[]; opacity: number }[];
-  /** The area between the oldest line and the latest: your gain. */
-  gain: Point[] | null;
-  latestLabel: Label;
-  oldestLabel: Label | null;
-  xLabels: { x: number; text: string; anchor: 'middle' | 'end' }[];
-};
-
-/** Reps by set number: the latest session and up to four before it. */
-export function fingerprint(sessions: readonly WeightSession[]): Fingerprint {
-  const shown = sessions.slice(-(EARLIER_OPACITY.length + 1));
-  const reps = shown.flatMap((s) => s.reps);
-  const ticks = niceTicks(Math.min(...reps), Math.max(...reps));
-  const [hi, lo] = [ticks[0], ticks[ticks.length - 1]];
-  const y = (value: number) => PRINT.bottom - ((value - lo) / (hi - lo)) * (PRINT.bottom - PRINT.top);
-
-  const sets = Math.max(...shown.map((s) => s.reps.length));
-  const x = (set: number) =>
-    sets === 1 ? (PRINT.left + PRINT.right) / 2 : PRINT.left + (set * (PRINT.right - PRINT.left)) / (sets - 1);
-  const line = (s: WeightSession) => s.reps.map((r, set) => ({ x: x(set), y: y(r) }));
-
-  const latest = { points: line(shown[shown.length - 1]) };
-  const earlierSessions = shown.slice(0, -1);
-  const earlier = earlierSessions.map((s, i) => ({
-    points: line(s),
-    opacity: EARLIER_OPACITY[EARLIER_OPACITY.length - earlierSessions.length + i],
-  }));
-
-  const end = (points: Point[]) => points[points.length - 1];
-  const latestEnd = end(latest.points);
-  const oldest = earlier[0];
-  // The higher line's label goes above it, the lower one's below, clear of the x axis.
-  const latestHigher = !oldest || latestEnd.y <= end(oldest.points).y;
-  const place = (p: Point, above: boolean) =>
-    above ? p.y - LABEL_ABOVE : Math.min(p.y + LABEL_BELOW, PRINT.bottom - 3);
-
-  return {
-    ticks: ticks.map((v) => ({ y: y(v), label: String(v) })),
-    latest,
-    earlier,
-    gain: oldest ? [...latest.points, ...[...oldest.points].reverse()] : null,
-    latestLabel: { x: latestEnd.x, y: place(latestEnd, latestHigher), text: shortDate(shown[shown.length - 1].at) },
-    oldestLabel: oldest
-      ? { x: end(oldest.points).x, y: place(end(oldest.points), !latestHigher), text: shortDate(shown[0].at) }
-      : null,
-    xLabels: Array.from({ length: sets }, (_, set) => ({
-      x: x(set),
-      text: `Set ${set + 1}`,
-      anchor: sets > 1 && set === sets - 1 ? 'end' : 'middle',
-    })),
-  };
-}
-
 export type Hero = { value: string; text: string; muted: string };
 
 /** Where the extra reps came from, latest against first. */
@@ -203,21 +134,6 @@ export function progressHero(sessions: readonly WeightSession[], weight: string,
     text: `more reps per workout at ${weight}, ${from}`,
     muted: gainSource(first.reps, latest.reps),
   };
-}
-
-/** 16's headline: the latest retention, against the first session that has one. */
-export function retentionHero(sessions: readonly WeightSession[], now: Date): Hero | null {
-  const latest = sessions[sessions.length - 1];
-  if (!latest || latest.retention === null) return null;
-  const text = `of your first set's reps held through your last set ${onDate(latest.at, now)}.`;
-  const first = sessions.find((s) => s.retention !== null);
-  if (!first || first === latest) return { value: percentText(latest.retention), text, muted: '' };
-
-  const [was, is] = [Math.round(first.retention! * 100), Math.round(latest.retention * 100)];
-  const when = shortDate(first.at);
-  const muted =
-    is > was ? `Up from ${was}% on ${when}.` : is < was ? `Down from ${was}% on ${when}.` : `Same as on ${when}.`;
-  return { value: percentText(latest.retention), text, muted };
 }
 
 /** The weight moved up to on `movedUpOn`: the heaviest above `weightKg` in that session. */

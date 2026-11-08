@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The rest-over notification's colors, from design/tokens.json. Android draws the card itself
+     in the phone's own theme; this is the dark one, which the design (27) is for. -->
+<resources>
+  <color name="rest_over_text">#F3F5F7</color>
+  <color name="rest_over_text_muted">#A8AFB8</color>
+  <color name="rest_over_accent">#FFA41B</color>
+  <color name="rest_over_ghost">#7FD3EA</color>
+  <color name="rest_over_inset">#08090B</color>
+</resources>

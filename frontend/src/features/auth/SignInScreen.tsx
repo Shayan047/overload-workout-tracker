@@ -6,14 +6,16 @@ import { BrandMark, Button, TextField } from '@/components';
 
 import { goToTodayAfterAuth } from './afterAuth';
 import { AuthScreen } from './AuthScreen';
+import { useWakingHint } from './useWakingHint';
 import { authErrorMessage, checkSignIn } from './messages';
 
 export function SignInScreen() {
-  const { signIn } = useAuth();
+  const { signIn, beginOnboarding } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const waking = useWakingHint(busy);
 
   const submit = async () => {
     const problem = checkSignIn({ email, password });
@@ -64,15 +66,20 @@ export function SignInScreen() {
       actions={
         <>
           <Button
-            title={busy ? 'Signing in…' : 'Sign in'}
+            title={busy ? (waking ? 'Waking the server…' : 'Signing in…') : 'Sign in'}
             size="medium"
             onPress={submit}
             disabled={busy}
           />
+          {/* A new account starts with onboarding (02-04), like "Get started" on 01; the
+              account itself is created at its end. */}
           <Button
             title="Create an account"
             variant="secondary"
-            onPress={() => router.replace('/sign-up')}
+            onPress={async () => {
+              await beginOnboarding();
+              router.replace('/units');
+            }}
           />
         </>
       }

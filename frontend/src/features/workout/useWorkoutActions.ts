@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useSync } from '@/api/AppProviders';
 import { BODYWEIGHT_KEY, type BodyweightEntry } from '@/api/bodyweight';
 import { cacheHistoryRecap } from '@/api/history';
+import { type Settings, SETTINGS_KEY } from '@/api/settings';
 import { cachedLastSessions, type LastSession, WORKOUTS_KEY, type WorkoutSummary } from '@/api/workouts';
 import { useExercises } from '@/api/splits';
 import { todayOverride } from '@/features/today/overrideStore';
@@ -32,7 +33,7 @@ import {
   type Write,
 } from './workout';
 import { finishedWorkout } from './finishedStore';
-import { adjustRest, startRest } from './rest';
+import { adjustRest, restLength, startRest } from './rest';
 import { bestsAfter, type Summary, summarize } from './summary';
 import { activeWorkout, inProgress, type Saved } from './workoutStore';
 
@@ -98,13 +99,14 @@ export function useWorkoutActions() {
 
       /** Logs a new set, or edits one with `setId`. Completing the planned sets marks the
        * exercise done, and the next one comes up. A new set starts the rest timer with the
-       * exercise's rest length. */
+       * default rest. */
       logSet(input: { rowId: string; setId?: string; weightKg: number; reps: number; plannedSets?: number }) {
         const saved = require();
         const { state, writes } = logSet(saved.state, { ...input, now: now(), makeId: newId });
         const row = state.exercises.find((e) => e.id === input.rowId);
         const focusId = row?.status === 'done' && saved.focusId === input.rowId ? null : saved.focusId;
-        const rest = !input.setId && row && row.rest_seconds > 0 ? startRest(row.id, row.rest_seconds, now()) : saved.rest;
+        const seconds = restLength(queryClient.getQueryData<Settings>(SETTINGS_KEY));
+        const rest = !input.setId && row && seconds > 0 ? startRest(row.id, seconds, now()) : saved.rest;
         return commit({ state, focusId, rest }, writes);
       },
 
@@ -118,6 +120,16 @@ export function useWorkoutActions() {
       skipRest() {
         const saved = require();
         return commit({ ...saved, rest: null }, []);
+      },
+
+      /** A short rest after the rest ended: "+15 sec" on the rest-over screen, or on its banner
+       * while the app was away (then the alarm already set `endsAt`). */
+      restAgain(seconds: number, endsAt?: Date) {
+        const saved = require();
+        const rowId = saved.rest?.rowId ?? currentExercise(saved.state, { focusId: saved.focusId })?.id;
+        if (!rowId) return Promise.resolve();
+        const rest = startRest(rowId, seconds, now());
+        return commit({ ...saved, rest: endsAt ? { ...rest, endsAt: endsAt.toISOString() } : rest }, []);
       },
 
       deleteSet(setId: string) {

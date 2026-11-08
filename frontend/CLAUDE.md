@@ -6,7 +6,7 @@ Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 
 ## Stack
 
-- Expo (SDK 57) with TypeScript in strict mode. Config is `app.config.ts`, so native
+- Expo (SDK 58) with TypeScript in strict mode. Config is `app.config.ts`, so native
   colors come from the tokens.
 - Expo Router, with its required packages (react-native-screens, react-native-safe-area-context,
   expo-linking, expo-constants, expo-status-bar). Tabs: Today, Splits, Progress, History.
@@ -18,7 +18,7 @@ Read the root `../CLAUDE.md` first. Domain rules there apply here too.
 - TanStack Query for reading server data; our own outbox (`src/api/outbox.ts`) for writes.
 - @react-native-async-storage/async-storage: the outbox queue and the offline cache.
 - react-native-svg for charts, hand-built and simple.
-- expo-haptics, expo-notifications, @react-native-community/netinfo (Wi-Fi check),
+- expo-haptics, expo-notifications, @react-native-community/netinfo (connection check),
   expo-secure-store (auth tokens).
 
 Ask before adding anything not on this list.
@@ -34,7 +34,7 @@ src/review/           review mode: ?review=1 flag, fixed clock, sample data
 src/features/<name>/  feature screens, hooks and logic (auth/, onboarding/, splits/, today/,
                       workout/, progress/, history/, profile/, dev/)
 src/api/              config (API URL), http (fetch), session (token), outbox, network
-                      (Wi-Fi rule, status copy), cache (offline queries), settings,
+                      (connection rule, status copy), cache (offline queries), settings,
                       AppProviders (wires it all up: useAuth, useSync)
 src/lib/              small pure helpers: ids, units (kg ⇄ lb, bodyweight input), dates,
                       exercises (search, labels, rest format)
@@ -65,9 +65,14 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
 
 ## Talking to the API
 
-- `API_URL` (`src/api/config.ts`): `EXPO_PUBLIC_API_URL` if set, otherwise port 8000 on the
-  computer running the Expo dev server, so a phone on the same Wi-Fi reaches
-  `docker compose up` with no setup. On Windows, allow inbound port 8000 in the firewall.
+- `API_URL` (`src/api/config.ts`): `EXPO_PUBLIC_API_URL` if set; otherwise release builds use
+  the deployed API (`PRODUCTION_API_URL`, https://overload-api-tmv6.onrender.com) and
+  development uses port 8000 on the computer running the Expo dev server, so a phone on the
+  same Wi-Fi reaches `docker compose up` with no setup. On Windows, allow inbound port 8000
+  in the firewall.
+- Requests wait up to 75 s (`REQUEST_TIMEOUT_MS`): Render's free plan sleeps when idle and
+  takes about a minute to wake. Sign-in and sign-up buttons say "Waking the server…" after
+  5 s.
 - **Writes** go through `useSync().write({ method, path, body })` (or a hook built on it,
   like `useUpdateSettings`), never through `fetch`. Update the query cache first, so the
   screen changes at once. See "Offline" in `../docs/api-and-sync.md`.
@@ -78,12 +83,28 @@ routes without a leading slash in Git Bash (`progress`, `index` for the root).
 - A 401 anywhere sends the user back to sign-in; their unsent writes stay and go out after.
   Signing in as someone else clears the outbox and cache first.
 
+## Building the APK
+
+The Android app is shared as an APK built by EAS (project `@shayan47/overload`, linked in
+`app.config.ts`; package `com.shayan047.overload`, which never changes). From `frontend/`:
+
+```
+npx eas-cli build -p android --profile preview    # cloud build; prints a download link and QR code
+```
+
+- The `preview` profile (`eas.json`) makes an installable APK, and EAS raises the version
+  code by itself (`appVersionSource: remote`), so each new APK installs over the last one.
+- EAS uploads the whole repository (the app reads `../design/tokens.json`), minus what
+  `.gitignore` leaves out.
+- The build talks to the deployed API. Point a build elsewhere with
+  `EXPO_PUBLIC_API_URL=… npx eas-cli build …`.
+- Free EAS builds wait in a queue; a build usually takes 10–20 minutes.
+
 ## Testing on the web
 
 `npm run web` serves the app at http://localhost:8081 and talks to the real API (the
 backend allows that origin; see "CORS" in `../docs/api-and-sync.md`). Differences from a
-phone: the token is kept in localStorage, and "Sync on Wi-Fi only" is ignored because
-browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
+phone: the token is kept in localStorage. Add `?review=1` for the fixed sample data instead.
 
 ## Splits screens
 
@@ -109,23 +130,29 @@ browsers don't report Wi-Fi. Add `?review=1` for the fixed sample data instead.
 
 ## Progress screens
 
-- `features/progress/`: Progress (13), Exercise detail (14), One weight (15, 16) and the
-  frontier (17). Chart geometry and copy are pure and tested (`chart.ts`, `progressText.ts`,
-  `oneWeight.ts`, `frontier.ts`), in
-  the designs' SVG coordinates, so positions can be checked against the HTML.
+- `features/progress/`: Progress (13), Exercise detail (14, in sections), All workouts (23)
+  and the frontier (17). Chart geometry and copy are pure and tested (`chart.ts`,
+  `sessionLines.ts`, `progressText.ts`, `oneWeight.ts`, `frontier.ts`), in the designs' SVG
+  coordinates, so positions can be checked against the HTML.
 - Stats come from the API (`src/api/stats.ts`) as persisted queries, so they open offline.
-- One weight is `one-weight?exerciseId=…&weightKg=…[&view=fingerprint]`; the chips and the
-  Progress/Fingerprint toggle change the params in place, and "All weights" goes back.
-- Review routes: `progress`, `exercise/rv-curl`,
-  `one-weight?exerciseId=rv-curl&weightKg=4.536` (add `&view=fingerprint` for 16),
-  `frontier?exerciseId=rv-curl`. Quote
-  routes with `&` in the shell.
+- Exercise detail is `exercise/[exerciseId]`, with an optional `weightKg` for the "Reps at
+  one weight" chip (the latest weight used otherwise). All workouts is
+  `all-workouts?exerciseId=…[&pick=<workout id>]`. Fingerprint and the one-weight screen
+  are gone (15 and 16 are retired).
+- Review routes: `progress`, `exercise/rv-curl?weightKg=4.536` (14, height 2080),
+  `all-workouts?exerciseId=rv-curl&pick=rv-curl-8` (23, height 1460),
+  `frontier?exerciseId=rv-curl`. Quote routes with `&` in the shell.
 
 ## History, profile and bodyweight
 
 - `features/history/history.ts` and `features/profile/bodyweight.ts` hold the calendar, its
   line, and the bodyweight chart and ranges (tested). Data: `api/history.ts` and
   `api/bodyweight.ts`, both persisted and merged with writes still in the outbox.
+- A past workout (21) and its edit (22) are `past-workout/[workoutId]`
+  (`WorkoutDetailScreen.tsx`). `workoutDetail.ts` (totals, best sets) and `workoutEdit.ts`
+  (the draft, what Save refuses, the writes) are tested. Data: `useWorkoutDetail` and
+  `useWorkoutEdits` in `api/workouts.ts`. Review route: `past-workout/rv-workout-shoulders`
+  (height 1300; tap "Edit workout" for 22).
 - Review routes: `history` (18, height 880), `profile` (19, height 940) and `bodyweight` (20).
   Profile has no "Export workouts" row: CSV export was dropped.
 
@@ -135,6 +162,13 @@ The designs' top padding includes a 44 px status bar, and the bottom padding a 3
 indicator. Use `useFrameInsets()` and add the rest: 07's `padding-top: 52px` is `top + 8`,
 02's `padding-bottom: 36px` is `bottom + 2`. Phones get their real safe area, and review
 screenshots line up with the designs.
+
+- Put `top` on the screen's root view and only the `+ 8` on the scroll content, so nothing
+  scrolls under the phone's clock (Android draws the app edge to edge, behind the status bar).
+- Screens with text fields wrap their content in `KeyboardAvoidingView behavior="padding"` on
+  both platforms: edge to edge, Android no longer resizes the window for the keyboard.
+- A `BottomSheet` with a text field takes `avoidKeyboard`: it's drawn inside the screen (last
+  child of the root view) instead of in a Modal, so it can rise above the keyboard.
 
 ## Text styles
 
@@ -170,26 +204,48 @@ Need something new? Add a named style to the theme; never write a font size, wei
   "today", so review screenshots match the designs.
 - The root layout sets `data-review-ready` on `<html>` once fonts are loaded; the
   screenshot script waits for it.
-- Review mode is signed in as a sample user, shows "1 waiting for Wi-Fi" like 07, makes no
+- Review mode is signed in as a sample user, shows "Saved on this phone" like 07, makes no
   API calls, and also opens the sign-in and sign-up screens (`sign-in`, `sign-up` routes).
 - The auth screens have no design number; their screenshots are `00-sign-in` and `00-sign-up`.
 - Signed-out users land on Welcome (`welcome`); Units is `units`.
+
+## Native code and the dev app
+
+- `modules/rest-alarm` is a local Expo module (Kotlin, autolinked from `modules/`): the
+  rest-over alarm (exact alarm, full-screen notification, over-the-lock-screen helpers). Its
+  TypeScript side (`modules/rest-alarm/index.ts`) is null in Expo Go, on the web and on iOS,
+  and `RestAlerts` then schedules the notification instead.
+- Native code means Expo Go can't run every feature. The development build is a separate
+  app, "Overload Dev" (`com.shayan047.overload.dev`, scheme `overload-dev`), from the
+  `development` EAS profile (`APP_VARIANT=development` in `app.config.ts`, with
+  `expo-dev-client`). It installs next to the real Overload and never touches its data.
+  Build it with `npx eas-cli build -p android --profile development`; rebuild only when
+  native code or native dependencies change.
+
+## Testing on a phone over USB
+
+- Local API: `docker compose up -d --build` in `backend/` (Postgres + API on 8000, never Neon).
+- `adb reverse tcp:8000 tcp:8000` and `adb reverse tcp:8082 tcp:8082`, then
+  `CI=1 npx expo start --port 8082 --localhost` (CI mode doesn't watch files: restart it after
+  changes). Open Overload Dev (or Expo Go for JS-only work) at the dev server.
+- The workout screen's clock keeps the UI busy, so `uiautomator dump` fails there; tap by
+  coordinates from a screenshot. In Expo Go, keys typed with no field focused act as
+  shortcuts ("r" reloads).
 
 ## Checking sync by hand
 
 Development builds have a **Sync check** screen (link on the Today placeholder, route
 `/dev-sync`). Sign in, turn on airplane mode, tap "Toggle ghost mode": the pill says "Saved on
-this phone" and "Waiting to send" is 1. Turn airplane mode off on Wi-Fi: it drops to 0. With
-"Sync on Wi-Fi only" on, mobile data shows "1 waiting for Wi-Fi" instead.
+this phone" and "Waiting to send" is 1. Turn airplane mode off: it drops to 0, on Wi-Fi or
+mobile data.
 
-## Dependency hold
+## SDK 58
 
-`expo` is held at 57.0.27 and `expo-router` at 57.0.25 (`expo.install.exclude` in
-package.json, so `npx expo install --fix` leaves them alone). Their next patches pull in
-`react-native-worklets` 0.13, which conflicts with `expo-modules-core`'s peer range (up to
-0.10). npm then nests `expo-modules-core`, and jest-expo, which requires it without declaring
-it, can't find it. Lift the hold when `npx expo install expo expo-router` leaves
-`node_modules/expo-modules-core` at the top level and `npm test` passes.
+The app moved from SDK 57 to 58 after launch (React Native 0.88, React 19.3, expo-router
+58, Jest 30). SDK 57 had to hold `expo` and `expo-router` back because of a
+`react-native-worklets` peer conflict; 58 resolves it, so nothing is held now. In
+expo-router 58 a custom tab bar gets `emitter` and `navigateToTab` instead of `navigation`
+(`TabBar.tsx`). Phones open the dev server in Expo Go for SDK 58.
 
 ## UI rules
 
@@ -212,7 +268,8 @@ it, can't find it. Lift the hold when `npx expo install expo expo-router` leaves
 - The rest timer and workout clock are computed from timestamps, never from a ticking
   interval, so they survive the app being backgrounded.
 - Generate UUIDs on the phone for every new row.
-- Ghost/last-time comparison and the workout summary are computed on the phone from the
+- Ghost/last-time comparison (`ghost.ts`: reps at the same weight, the move up when heavier,
+  est. max when lighter) and the workout summary are computed on the phone from the
   cached previous session.
 
 Details: `../docs/api-and-sync.md`.

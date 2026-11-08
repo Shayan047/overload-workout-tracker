@@ -49,7 +49,7 @@ export function RestTimerCard({ rest, label, onAdjust, onSkip }: Props) {
         <View style={styles.text}>
           <View style={styles.title}>
             <TimerIcon color={colors.textMuted} size={15} strokeWidth={1.8} />
-            <Text variant="label" color="textMuted">
+            <Text variant="label" color="textMuted" numberOfLines={1} style={styles.label}>
               {label}
             </Text>
           </View>
@@ -86,6 +86,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   text: { flex: 1, minWidth: 0 },
   title: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  // A long exercise name stops short of the buttons.
+  label: { flexShrink: 1 },
   time: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 4 },
   countdown: { ...figure(figures.restCountdown), color: colors.accent },
   button: {

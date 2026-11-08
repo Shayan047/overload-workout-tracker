@@ -25,12 +25,15 @@ Personal workout tracker for iOS and Android. "Overload" is a working name.
 - Multi-user from day one (personal use first, maybe public later). Dark mode only.
 - Splits: presets (PPL, Arnold, Upper/Lower, Body part, Full body) or custom. Repeat
   "in order" (rotation; rest days never shift it) or "set weekdays".
-- Each split day is an ordered list of exercises, each with its own rest length.
+- Each split day is an ordered list of exercises. One default rest (Profile) applies to all of them.
 - Exercise library seeded from free-exercise-db, plus custom exercises.
 - Workout: start today's day, log working sets (weight, reps), finish. Resumes after restart.
-- Ghost mode shows last time set by set while logging. Today-only swap/skip/move/add.
+- Ghost mode shows last time set by set while logging. It compares reps at the same weight,
+  counts a heavier weight as ahead, and compares est. max at a lighter one. Today-only
+  swap/skip/move/add.
 - Rest timer auto-starts on set save; works with the phone locked.
-- Summary, progress (est. max, one-weight views, frontier), history, bodyweight, profile.
+- Summary, progress (est. max, last workouts set by set, reps at one weight, frontier),
+  history (past workouts open in full and can be edited), bodyweight, profile.
 - Out of scope: social, AI, muscle heatmap, rest-time stats.
 
 Full detail: `docs/product-spec.md`.
@@ -41,7 +44,8 @@ Full detail: `docs/product-spec.md`.
 - PostgreSQL is the source of truth. The app talks only to the API, never to the database.
 - Offline first for logging: an outbox queue of unsent writes in on-device key-value
   storage (not a local database), plus a cache of today's split, last-time data and recent stats.
-- "Sync on Wi-Fi only" is on by default. UI shows "Saved on this phone" / "Waiting for Wi-Fi".
+- Writes go out on any connection, Wi-Fi or mobile data; only having no internet holds them
+  back. The UI shows "Saved on this phone" until they're sent.
 - UUIDs are generated on the phone. Writes are idempotent `PUT /resource/{id}` upserts.
 - Pulls use `updated_since`; soft-deleted rows return with `deleted_at` set.
 - Conflicts: last write wins per row by `updated_at`.
@@ -59,11 +63,11 @@ Full detail: `docs/api-and-sync.md`.
    changes old workouts.
 4. Est. max = weight × (1 + reps ÷ 30) (Epley). A session's est. max comes from its best set.
    It is computed, never stored.
-5. Rest durations are never recorded or used in any stat. Only each exercise's configured
-   rest length is stored.
+5. Rest durations are never recorded or used in any stat. Only the user's default rest is
+   stored as a setting.
 6. Changes made during a workout apply to that workout only and never edit the split.
-7. One-weight stats (Progress and Fingerprint) only use sets done at that exact weight.
-   Retention = reps in the last set ÷ reps in the first set.
+7. One-weight stats ("Reps at one weight" on Exercise detail) only use sets done at that
+   exact weight.
 8. Frontier: for each weight, keep the most reps ever done. Drop a point if another point
    has at least the same weight and at least the same reps.
 9. Ghost = the most recent completed workout that contains the same exercise.

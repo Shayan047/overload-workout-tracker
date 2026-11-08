@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workout detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#060708}
+a{color:#FFA41B}a:hover{color:#FFC870}
+.app{position:relative;width:390px;overflow:hidden;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.4;color:#F3F5F7;background:#0B0C0E;-webkit-font-smoothing:antialiased}
+.app *{box-sizing:border-box}
+.num{font-stretch:68%;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.h1{margin:0;font-size:30px;line-height:1.1;font-weight:700;font-stretch:85%;letter-spacing:-0.01em}
+.h2{margin:0;font-size:17px;line-height:1.25;font-weight:650;font-stretch:92%}
+.muted{color:#A8AFB8}
+.faint{color:#88909A}
+.small{font-size:13px}
+.icon{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border:0;border-radius:999px;background:#16181B;color:#F3F5F7;text-decoration:none;cursor:pointer}
+.icon:hover{background:#22252A;color:#F3F5F7}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* "Edit": a quiet pill, like 08's Finish but not amber; editing isn't the main action here. */
+.pill{height:44px;padding:0 18px 0 14px;display:flex;align-items:center;gap:8px;border-radius:999px;background:#16181B;color:#F3F5F7;font-weight:650;text-decoration:none}
+.pill:hover{background:#22252A;color:#F3F5F7}
+.stat{flex:1;display:flex;flex-direction:column;gap:6px}
+/* One card per exercise. */
+.ex{margin-top:12px;padding:14px 16px 16px;border-radius:20px;background:#16181B}
+.exhead{display:flex;align-items:flex-start;gap:12px}
+/* The logbook strip: every set as a tile, in the order done; four to a row. */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.tile{height:58px;padding:8px 10px 0;border-radius:12px;background:#22252A;display:flex;flex-direction:column;justify-content:space-between}
+.tile .n{font-size:11px;font-weight:600;color:#88909A}
+.tile .v{font-size:21px;padding-bottom:9px;white-space:nowrap}
+.tile .x{font-weight:300;font-stretch:100%;color:#A8AFB8;font-size:15px;margin:0 1px;position:relative;top:-2px}
+/* The set the exercise's est. max comes from. */
+.tile.best{box-shadow:inset 0 0 0 1px #555B64}
+</style>
+</helmet>
+<main class="app" style="height:1300px;padding:52px 20px 0">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <a class="icon" href="History.dc.html" aria-label="Back to history"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+    <a class="pill" href="EditWorkout.dc.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg>Edit</a>
+  </div>
+
+  <h1 class="h1" style="margin-top:22px">Shoulders &amp; Arms</h1>
+  <p class="muted" style="margin:6px 0 0">Tuesday, Oct 6, 6:00 to 6:45 PM</p>
+
+  <div style="display:flex;gap:16px;margin-top:20px;padding:16px 18px;border-radius:18px;background:#16181B">
+    <div class="stat"><span class="num" style="font-size:34px">45</span><span class="muted small">minutes</span></div>
+    <div style="width:1px;background:#212429"></div>
+    <div class="stat"><span class="num" style="font-size:34px">20</span><span class="muted small">sets</span></div>
+    <div style="width:1px;background:#212429"></div>
+    <div class="stat" style="flex:1.4"><span class="num" style="font-size:34px">9,100</span><span class="muted small">lb lifted</span></div>
+  </div>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Overhead press</h2><span class="muted small">Barbell, 28 reps</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">95.0</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">75<span class="x">×</span>8</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">75<span class="x">×</span>7</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">75<span class="x">×</span>7</span></div>
+      <div class="tile"><span class="n">Set 4</span><span class="num v">75<span class="x">×</span>6</span></div>
+    </div>
+  </section>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Lateral raise</h2><span class="muted small">Dumbbell, 33 reps</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">28.0</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">20<span class="x">×</span>12</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">20<span class="x">×</span>11</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">20<span class="x">×</span>10</span></div>
+    </div>
+  </section>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Bicep curl</h2><span class="muted small">Dumbbell, 20 reps</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">24.0</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">20<span class="x">×</span>6</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">20<span class="x">×</span>5</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">20<span class="x">×</span>5</span></div>
+      <div class="tile"><span class="n">Set 4</span><span class="num v">20<span class="x">×</span>4</span></div>
+    </div>
+  </section>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Hammer curl</h2><span class="muted small">Dumbbell, 24 reps</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">32.5</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">25<span class="x">×</span>9</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">25<span class="x">×</span>8</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">25<span class="x">×</span>7</span></div>
+    </div>
+  </section>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Triceps pushdown</h2><span class="muted small">Cable, 34 reps</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">70.0</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">50<span class="x">×</span>12</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">50<span class="x">×</span>12</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">50<span class="x">×</span>10</span></div>
+    </div>
+  </section>
+
+  <section class="ex">
+    <div class="exhead">
+      <div style="flex:1;min-width:0"><h2 class="h2">Chin-up</h2><span class="muted small">Bodyweight 172 lb plus added weight</span></div>
+      <div style="text-align:right"><span class="num" style="font-size:22px">231</span><div class="faint small">est. max</div></div>
+    </div>
+    <div class="tiles">
+      <div class="tile best"><span class="n">Set 1</span><span class="num v">+10<span class="x">×</span>8</span></div>
+      <div class="tile"><span class="n">Set 2</span><span class="num v">+10<span class="x">×</span>6</span></div>
+      <div class="tile"><span class="n">Set 3</span><span class="num v">+10<span class="x">×</span>6</span></div>
+    </div>
+  </section>
+
+  <p class="faint small" style="margin:14px 4px 0">The outlined set is each exercise&apos;s best set. Its est. max comes from that set.</p>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

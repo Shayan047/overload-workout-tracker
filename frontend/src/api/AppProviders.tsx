@@ -28,7 +28,7 @@ import {
   type Session,
   type User,
 } from './session';
-import type { Settings } from './settings';
+import { signInAndKeepAccount } from './signIn';
 import { deviceStorage } from './storage';
 
 type Services = {
@@ -51,10 +51,7 @@ async function startServices(): Promise<Services> {
 
   const session = await loadSession();
   const token = { current: session?.token ?? null };
-  let network: NetworkState = { type: 'unknown', isConnected: null, isInternetReachable: null };
-  const syncWifiOnly = () =>
-    // The web build is only for review screenshots and has no Wi-Fi information.
-    Platform.OS !== 'web' && (queryClient.getQueryData<Settings>(['settings'])?.sync_wifi_only ?? true);
+  let network: NetworkState = { isConnected: null, isInternetReachable: null };
 
   const outbox = await Outbox.open({
     storage: deviceStorage,
@@ -64,7 +61,7 @@ async function startServices(): Promise<Services> {
       token.current
         ? sendEntry(entry, token.current)
         : Promise.resolve({ ok: false, kind: 'http', status: 401 } as const),
-    connection: () => connectionFor(network, syncWifiOnly()),
+    connection: () => connectionFor(network),
     setTimer: (fn, ms) => {
       const timer = setTimeout(fn, ms);
       return () => clearTimeout(timer);
@@ -73,7 +70,7 @@ async function startServices(): Promise<Services> {
   });
 
   if (!isReviewMode) {
-    // Every network change (e.g. airplane mode off, Wi-Fi back) and every return to the
+    // Every network change (e.g. airplane mode off, signal back) and every return to the
     // foreground gives the outbox a chance to send.
     NetInfo.addEventListener((state) => {
       network = state;
@@ -122,8 +119,8 @@ const AuthContext = createContext<AuthValue | null>(null);
 const SyncContext = createContext<SyncValue | null>(null);
 
 const REVIEW_USER: User = { id: 'review', email: 'shayan@example.com', display_name: 'Shayan' };
-// Today (07) shows "1 waiting for Wi-Fi".
-const REVIEW_STATUS: OutboxStatus = { pending: 1, state: 'waiting-for-wifi', dropped: 0 };
+// Today (07) shows "Saved on this phone".
+const REVIEW_STATUS: OutboxStatus = { pending: 1, state: 'offline', dropped: 0 };
 
 type TokenResponse = { access_token: string; user: User };
 
@@ -185,8 +182,16 @@ function Providers({ services, children }: { services: Services; children: React
     () => ({
       user: isReviewMode ? REVIEW_USER : user,
       signedIn: isReviewMode || user !== null,
-      signIn: async (email, password) =>
-        startSession(await apiRequest('POST', '/auth/sign-in', { body: { email, password } })),
+      signIn: (email, password) =>
+        signInAndKeepAccount({
+          request: () => apiRequest<TokenResponse>('POST', '/auth/sign-in', { body: { email, password } }),
+          previousUser: lastUserId,
+          discardOnboarding: async () => {
+            await outbox.clear();
+            await clearQueryCache(queryClient, deviceStorage);
+          },
+          start: startSession,
+        }),
       signUp: async (email, password, displayName) =>
         startSession(
           await apiRequest('POST', '/auth/sign-up', {

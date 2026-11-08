@@ -1,6 +1,8 @@
 // The rest timer, from timestamps only: the end time is stored, never a running count, so
-// it stays right when the app is in the background or killed. Rest lengths are never
+// it stays right when the app is in the background or killed. Rests taken are never
 // recorded (rule 5); this lives on the phone only.
+
+import { DEFAULT_REST_SECONDS } from '@/features/splits/draft';
 
 export type Rest = {
   /** The exercise row whose set started it. */
@@ -12,6 +14,12 @@ export type Rest = {
 
 /** Haptic at this many seconds left. */
 export const WARN_AT_SECONDS = 10;
+
+/** The one rest length, for every exercise. Settings cached on the phone before this setting
+ * existed don't have it. */
+export function restLength(settings?: { default_rest_seconds?: number } | null): number {
+  return settings?.default_rest_seconds ?? DEFAULT_REST_SECONDS;
+}
 
 export function startRest(rowId: string, seconds: number, now: Date): Rest {
   return { rowId, endsAt: new Date(now.getTime() + seconds * 1000).toISOString(), totalSeconds: seconds };

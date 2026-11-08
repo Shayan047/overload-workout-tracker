@@ -109,3 +109,73 @@ export function withPendingWorkouts(server: readonly WorkoutSummary[], pending: 
   }
   return [...byId.values()];
 }
+
+/** GET /workouts/{id}: a workout with its exercises in order, each with its sets in order. */
+export type WorkoutSet = {
+  id: string;
+  workout_exercise_id: string;
+  set_number: number;
+  weight_kg: number;
+  reps: number;
+  logged_at: string;
+};
+export type WorkoutExerciseRow = {
+  id: string;
+  workout_id: string;
+  exercise_id: string;
+  position: number;
+  status: string;
+  source: string;
+  rest_seconds: number;
+  sets: WorkoutSet[];
+};
+export type WorkoutDetail = WorkoutSummary & { exercises: WorkoutExerciseRow[] };
+
+const ROW_PATH = /^\/workout-exercises\/([^/?]+)$/;
+const SET_PATH = /^\/sets\/([^/?]+)$/;
+
+/** A past workout (21) as the server has it, with the writes still in the outbox applied in
+ * order: edits made on the phone show at once, and a workout the server hasn't received yet
+ * is built from the outbox alone (`summary` fills in what its writes leave out). Null when
+ * there's nothing to show, or the workout was deleted on the phone. */
+export function withPendingDetail(
+  server: WorkoutDetail | null,
+  summary: WorkoutSummary | null,
+  pending: readonly OutboxEntry[],
+): WorkoutDetail | null {
+  const id = server?.id ?? summary?.id;
+  if (!id) return null;
+  let workout: WorkoutSummary | null = server ?? summary;
+  const rows = new Map((server?.exercises ?? []).map((r) => [r.id, { ...r, sets: [...r.sets] }]));
+  for (const entry of pending) {
+    const workoutId = WORKOUT_PATH.exec(entry.path)?.[1];
+    if (workoutId === id) {
+      if (entry.method === 'DELETE') return null;
+      if (entry.method === 'PUT') {
+        workout = withPendingWorkouts(workout ? [workout] : [], [entry])[0];
+      }
+      continue;
+    }
+    const rowId = ROW_PATH.exec(entry.path)?.[1];
+    if (rowId) {
+      if (entry.method === 'DELETE') rows.delete(rowId);
+      const body = entry.body as Omit<WorkoutExerciseRow, 'id' | 'sets'> | undefined;
+      if (entry.method === 'PUT' && body?.workout_id === id) {
+        rows.set(rowId, { ...body, id: rowId, sets: rows.get(rowId)?.sets ?? [] });
+      }
+      continue;
+    }
+    const setId = SET_PATH.exec(entry.path)?.[1];
+    if (setId) {
+      for (const row of rows.values()) row.sets = row.sets.filter((s) => s.id !== setId);
+      const body = entry.body as Omit<WorkoutSet, 'id'> | undefined;
+      const row = entry.method === 'PUT' && body ? rows.get(body.workout_exercise_id) : undefined;
+      if (row) row.sets.push({ ...body!, id: setId });
+    }
+  }
+  if (!workout) return null;
+  const exercises = [...rows.values()]
+    .sort((a, b) => a.position - b.position)
+    .map((r) => ({ ...r, sets: [...r.sets].sort((a, b) => a.set_number - b.set_number) }));
+  return { ...workout, exercises };
+}

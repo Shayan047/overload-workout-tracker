@@ -240,7 +240,7 @@ export function TodayScreen() {
               <View key={row.id}>
                 <Separator />
                 <View style={styles.row}>
-                  <Text numberOfLines={1} style={styles.rowName}>
+                  <Text numberOfLines={2} style={styles.rowName}>
                     {exercise?.name ?? 'Exercise'}
                   </Text>
                   {best ? <Text style={styles.best}>{best}</Text> : null}
@@ -274,8 +274,8 @@ export function TodayScreen() {
   };
 
   return (
-    <View style={styles.screen}>
-      <ScrollView contentContainerStyle={[styles.content, { paddingTop: top + 8 }]}>
+    <View style={[styles.screen, { paddingTop: top }]}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingTop: 8 }]}>
         {header}
         {body()}
       </ScrollView>
@@ -315,8 +315,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   lastTime: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  // 44 px as in 07; a long name wraps and the row grows.
   row: {
-    height: 44,
+    minHeight: 44,
+    paddingVertical: 10,
     paddingHorizontal: 18,
     flexDirection: 'row',
     alignItems: 'center',

@@ -12,7 +12,6 @@ import {
   renameSplit,
   setDayWeekday,
   setRepeatMode,
-  setRest,
   validateDraft,
   type Preset,
   type SplitDraft,
@@ -145,9 +144,6 @@ describe('editing', () => {
 
     expect(removeExercise(draft, day.id, ohp.id).days[1].exercises).toEqual([curl]);
     expect(moveExercise(draft, day.id, 1, 0).days[1].exercises.map((e) => e.id)).toEqual([curl.id, ohp.id]);
-    expect(setRest(draft, day.id, curl.id, 105).days[1].exercises[1].restSeconds).toBe(105);
-    expect(setRest(draft, day.id, curl.id, -15).days[1].exercises[1].restSeconds).toBe(0);
-    expect(setRest(draft, day.id, curl.id, 4000).days[1].exercises[1].restSeconds).toBe(3600);
   });
 
   test('a weekday can be set per day', () => {
@@ -162,7 +158,6 @@ describe('editing', () => {
     addDay(draft, makeId);
     removeDay(draft, draft.days[0].id);
     addExercises(draft, draft.days[0].id, ['a'], makeId);
-    setRest(draft, draft.days[1].id, draft.days[1].exercises[0].id, 30);
     expect(JSON.stringify(draft)).toBe(before);
   });
 });
